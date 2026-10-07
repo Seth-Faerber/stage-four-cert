@@ -1,0 +1,59 @@
+{
+  "test_input": {
+    "claude_md": "# Stage Four Cert \u2014 Project Guide\n\n## Overview\nA minimal Node.js/Express API demonstrating JWT authentication and user management. Built with TypeScript.\n**Stack**: Express, TypeScript, dotenv, jsonwebtoken\n\n## Common Commands\n| Command | Description |\n|---------|-------------|\n| `npm start` | Start the server (ts-node) |\n| `npm test` | No test runner configured yet |\n\n## Architecture\n\n### API Routes\n| Route | Auth | Description |\n|-------|------|-------------|\n| `GET /api/users` | Required | List all users |\n| `GET /api/users/:id` | Required | Get a single user |\n\n### Authentication\nJWT-based. All routes require a Bearer token except those in PUBLIC_PATHS in src/auth.ts.\n\n### Directory Structure\n```\nsrc/\n  index.ts          \u2014 Express app entry point\n  auth.ts           \u2014 JWT middleware\n  app/api/\n    users/\n      route.ts      \u2014 GET /api/users, GET /api/users/:id\n```\n\n## Environment Variables\n| Variable | Required | Description |\n|----------|----------|-------------|\n| `DATABASE_URL` | Yes | PostgreSQL connection string |\n| `JWT_SECRET` | Yes | Secret for signing/verifying JWTs |\n| `API_KEY` | Yes | External API key |\n| `PORT` | No | Server port (default: 3000) |\n",
+    "codebase_context": "package.json dependencies: express, dotenv, jsonwebtoken, node-cache\npackage.json devDependencies: @types/express, @types/jsonwebtoken, @types/node, @types/node-cache, ts-node, typescript\n\n.env.example variables: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL\n\nSource files:\n  src/index.ts\n  src/auth.ts\n  src/cache.ts\n  src/app/api/users/route.ts\n  src/app/api/health/route.ts\n\nAPI routes:\n  GET /api/health (src/app/api/health/route.ts) \u2014 no auth, returns {status: ok, timestamp}\n  GET /api/users (src/app/api/users/route.ts) \u2014 auth required\n  GET /api/users/:id (src/app/api/users/route.ts) \u2014 auth required\n\nsrc/cache.ts: in-memory caching module using node-cache; reads HEALTH_CHECK_INTERVAL env var\n"
+  },
+  "output": "```json\n{\n  \"findings\": [\n    {\n      \"section\": \"Overview - Stack\",\n      \"action\": \"add\",\n      \"detail\": \"Missing node-cache from the stack list; it is a production dependency used in src/cache.ts\"\n    },\n    {\n      \"section\": \"Architecture - API Routes\",\n      \"action\": \"add\",\n      \"detail\": \"Missing GET /api/health route (no auth required, returns {status: ok, timestamp})\"\n    },\n    {\n      \"section\": \"Architecture - Directory Structure\",\n      \"action\": \"add\",\n      \"detail\": \"Missing src/cache.ts file which implements in-memory caching using node-cache\"\n    },\n    {\n      \"section\": \"Architecture - Directory Structure\",\n      \"action\": \"add\",\n      \"detail\": \"Missing src/app/api/health/ directory and route.ts file\"\n    },\n    {\n      \"section\": \"Environment Variables\",\n      \"action\": \"update\",\n      \"detail\": \"HEALTH_CHECK_INTERVAL is present in .env.example but not documented in the table; add it as optional variable\"\n    },\n    {\n      \"section\": \"Environment Variables\",\n      \"action\": \"update\",\n      \"detail\": \"PORT is listed as optional with default 3000, but verify this is actually implemented or remove if not\"\n    }\n  ]\n}\n```",
+  "deterministic_checks": {
+    "Returns JSON findings": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "\"findings\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Identifies missing health route": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Identifies missing cache.ts or node-cache": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "cache",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Identifies missing HEALTH_CHECK_INTERVAL": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "HEALTH_CHECK_INTERVAL",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output finds all four expected gaps with accurate details: (1) the missing GET /api/health route, with correct no-auth and response details; (2) the missing src/cache.ts in Directory Structure; (3) HEALTH_CHECK_INTERVAL missing from the Environment Variables table; (4) node-cache missing from the Stack. It also reports the health directory missing from the Directory Structure, which is a valid extra gap. There are two minor inaccuracies. First, the HEALTH_CHECK_INTERVAL finding uses action 'update' where 'add' would be more precise. Second, the PORT finding is speculative: the doc's PORT entry is not shown to be wrong, and the codebase context says nothing about PORT, which is absent from .env.example. It is hedged with 'verify', so it is a weak false positive, not a confident hallucination, and it does not undermine the core findings. Under the rubric, all 3-4 gaps are identified, but the small inaccuracies (the wrong action label and the speculative PORT item) keep it from a 5, so the score is 4.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 3.360224,
+  "timestamp": "2026-10-07T13:17:38.135978"
+}

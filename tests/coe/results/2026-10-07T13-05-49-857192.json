@@ -1,0 +1,49 @@
+{
+  "test_input": {
+    "checklist": "# Setup Checklist\n\n## Environment Setup\n- [x] Clone the repository\n- [x] Install Node.js 20+\n- [x] Run `npm install`\n- [ ] Copy `.env.example` to `.env` and fill in values\n- [ ] Provision a PostgreSQL database and set `DATABASE_URL`\n- [ ] Obtain API key and set `API_KEY`\n\n## Application Verification\n- [x] Confirm `npm start` launches without errors\n- [ ] Verify JWT authentication works (test with a valid token against GET /api/users)\n- [ ] Confirm database connection is live (check logs for connection errors)\n\n## Ongoing\n- [ ] Set up log aggregation for production\n",
+    "codebase_context": "package.json dependencies: express, dotenv, jsonwebtoken, node-cache\n.env.example variables: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL\n\nSource files:\n  src/index.ts\n  src/auth.ts\n  src/cache.ts \u2014 new, uses HEALTH_CHECK_INTERVAL env var\n  src/app/api/users/route.ts\n  src/app/api/health/route.ts \u2014 new, GET /api/health (no auth required)\n\nNote: HEALTH_CHECK_INTERVAL was added to .env.example but is not in the setup checklist.\nNo automated tests or CI configuration exists in the codebase.\nNo logging infrastructure (no winston, pino, or similar) is present.\n"
+  },
+  "output": "```json\n{\n  \"check_off\": [\n    {\n      \"item\": \"Confirm `npm start` launches without errors\",\n      \"evidence\": \"package.json exists with express dependency and src/index.ts entry point; codebase structure supports execution\"\n    }\n  ],\n  \"leave\": [\n    {\n      \"item\": \"Copy `.env.example` to `.env` and fill in values\",\n      \"reason\": \"Requires human action to create local .env file and populate secrets\"\n    },\n    {\n      \"item\": \"Provision a PostgreSQL database and set `DATABASE_URL`\",\n      \"reason\": \"Requires human action to provision database infrastructure and configure connection string\"\n    },\n    {\n      \"item\": \"Obtain API key and set `API_KEY`\",\n      \"reason\": \"Requires human action to obtain API key from external service and configure it\"\n    },\n    {\n      \"item\": \"Verify JWT authentication works (test with a valid token against GET /api/users)\",\n      \"reason\": \"Requires manual testing with a generated/valid JWT token to verify auth flow end-to-end\"\n    },\n    {\n      \"item\": \"Confirm database connection is live (check logs for connection errors)\",\n      \"reason\": \"Requires human to run application and inspect logs after DATABASE_URL is configured\"\n    },\n    {\n      \"item\": \"Set up log aggregation for production\",\n      \"reason\": \"Requires human decision on logging strategy, tool selection, and infrastructure setup\"\n    }\n  ],\n  \"flag\": [\n    {\n      \"item\": \"Obtain API key and set `API_KEY`\",\n      \"reason\": \"Credential management: verify where/how API key is obtained and stored securely in production\"\n    },\n    {\n      \"item\": \"Copy `.env.example` to `.env` and fill in values\",\n      \"reason\": \"Verify that all required env vars in .env.example are documented and that developers understand which are optional vs. required\"\n    }\n  ],\n  \"add\": [\n    {\n      \"item\": \"Configure `HEALTH_CHECK_INTERVAL` in `.env`\",\n      \"reason\": \"Variable is added to .env.example and used in src/cache.ts but not mentioned in setup checklist; needs human configuration\"\n    },\n    {\n      \"item\": \"Add automated tests and CI/CD pipeline\",\n      \"reason\": \"No test files or CI configuration (GitHub Actions, etc.) detected; should be added to prevent regressions\"\n    },\n    {\n      \"item\": \"Implement logging infrastructure (Winston or Pino)\",\n      \"reason\": \"No logging library present; codebase will benefit from structured logging for debugging and production monitoring\"\n    },\n    {\n      \"item\": \"Test unauthenticated health check endpoint (`GET /api/health`)\",\n      \"reason\": \"New health endpoint added; should verify it returns 200 and doesn't require authentication\"\n    }\n  ]\n}\n```",
+  "deterministic_checks": {
+    "Returns JSON decisions": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "\"check_off\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Flags credential items rather than checking them off": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "\"flag\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Mentions HEALTH_CHECK_INTERVAL as something to add or flag": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "HEALTH_CHECK_INTERVAL",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 3,
+    "reasoning": "The output wrongly lists the already-checked item \"Confirm `npm start` launches without errors\" ([x] in the checklist) in check_off, with weak evidence. That is one false auto-completion, which caps the score at 3. Otherwise the audit is good: all credential, infrastructure, and manual-verification items are in leave or flag, none are checked off, and HEALTH_CHECK_INTERVAL and the health endpoint are added. Some items are duplicated across leave and flag, which is minor.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 6.836995,
+  "timestamp": "2026-10-07T13:05:49.857054"
+}

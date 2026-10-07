@@ -1,0 +1,50 @@
+{
+  "test_input": {
+    "already_done_do_not_touch": "- [x] Clone the repository\n- [x] Install Node.js 20+\n- [x] Run `npm install`\n- [x] Confirm `npm start` launches without errors\n",
+    "incomplete_items_to_evaluate": "- [ ] Copy `.env.example` to `.env` and fill in values\n- [ ] Provision a PostgreSQL database and set `DATABASE_URL`\n- [ ] Obtain API key and set `API_KEY`\n- [ ] Verify JWT authentication works (test with a valid token against GET /api/users)\n- [ ] Confirm database connection is live (check logs for connection errors)\n- [ ] Set up log aggregation for production\n",
+    "codebase_context": "package.json dependencies: express, dotenv, jsonwebtoken, node-cache\n.env.example variables: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL\n\nSource files:\n  src/index.ts\n  src/auth.ts\n  src/cache.ts \u2014 new, uses HEALTH_CHECK_INTERVAL env var\n  src/app/api/users/route.ts\n  src/app/api/health/route.ts \u2014 new, GET /api/health (no auth required)\n\nNote: HEALTH_CHECK_INTERVAL was added to .env.example but is not in the setup checklist.\nNo automated tests or CI configuration exists in the codebase.\nNo logging infrastructure (no winston, pino, or similar) is present.\n"
+  },
+  "output": "```json\n{\n  \"check_off\": [\n    {\n      \"item\": \"Obtain API key and set `API_KEY`\",\n      \"evidence\": \".env.example includes API_KEY variable, dotenv is in dependencies\"\n    }\n  ],\n  \"leave\": [\n    {\n      \"item\": \"Copy `.env.example` to `.env` and fill in values\",\n      \"reason\": \"Requires manual file creation and credential entry\"\n    },\n    {\n      \"item\": \"Provision a PostgreSQL database and set `DATABASE_URL`\",\n      \"reason\": \"Requires infrastructure provisioning and manual environment variable configuration\"\n    },\n    {\n      \"item\": \"Verify JWT authentication works (test with a valid token against GET /api/users)\",\n      \"reason\": \"Requires runtime testing with actual token generation and manual verification\"\n    },\n    {\n      \"item\": \"Confirm database connection is live (check logs for connection errors)\",\n      \"reason\": \"Requires running the application and manually inspecting logs at runtime\"\n    },\n    {\n      \"item\": \"Set up log aggregation for production\",\n      \"reason\": \"Requires infrastructure setup and third-party service configuration; no logging library currently in codebase\"\n    }\n  ],\n  \"flag\": [],\n  \"add\": [\n    {\n      \"item\": \"Configure `HEALTH_CHECK_INTERVAL` in `.env`\",\n      \"reason\": \"New environment variable added to .env.example and used in src/cache.ts but not in setup checklist\"\n    },\n    {\n      \"item\": \"Add automated tests and CI configuration\",\n      \"reason\": \"No test files or CI pipeline exists; recommend adding before production deployment\"\n    },\n    {\n      \"item\": \"Implement structured logging (e.g., winston or pino)\",\n      \"reason\": \"Log aggregation task references logging infrastructure that is not currently present in dependencies\"\n    }\n  ]\n}\n```",
+  "deterministic_checks": {
+    "Returns JSON decisions": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "\"check_off\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Flags credential items rather than checking them off": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "\"flag\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Mentions HEALTH_CHECK_INTERVAL as something to add or flag": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "HEALTH_CHECK_INTERVAL",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 3,
+    "reasoning": "The auditor checked off 'Obtain API key and set API_KEY' because .env.example lists the variable and dotenv is a dependency. That is a clear credential violation. The rubric says credential items must not be auto-checked, and a variable name in .env.example does not show a key was obtained or set. This error alone puts the score at 3 under the rubric's rule that credential items in check_off cap the score. The other five items are correctly in leave. The 'add' list includes HEALTH_CHECK_INTERVAL, which is the required addition. The extra adds (tests/CI, structured logging) are reasonable. The credential error is the deciding factor.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 4.360675,
+  "timestamp": "2026-10-07T13:08:22.453293"
+}

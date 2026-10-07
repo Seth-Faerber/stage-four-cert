@@ -1,0 +1,50 @@
+{
+  "test_input": {
+    "already_done_do_not_touch": "- [x] Clone the repository\n- [x] Install Node.js 20+\n- [x] Run `npm install`\n- [x] Confirm `npm start` launches without errors\n",
+    "incomplete_items_to_evaluate": "- [ ] Copy `.env.example` to `.env` and fill in values\n- [ ] Provision a PostgreSQL database and set `DATABASE_URL`\n- [ ] Obtain API key and set `API_KEY`\n- [ ] Verify JWT authentication works (test with a valid token against GET /api/users)\n- [ ] Confirm database connection is live (check logs for connection errors)\n- [ ] Set up log aggregation for production\n",
+    "codebase_context": "package.json dependencies: express, dotenv, jsonwebtoken, node-cache\n\n.env.example: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL\n  *** TEMPLATE ONLY. No .env file exists. No credentials are set. No database provisioned. ***\n  *** A variable name in .env.example does NOT mean it was obtained or configured. ***\n\nSource files:\n  src/index.ts\n  src/auth.ts\n  src/cache.ts \u2014 new, uses HEALTH_CHECK_INTERVAL env var\n  src/app/api/users/route.ts\n  src/app/api/health/route.ts \u2014 new, GET /api/health (no auth required)\n\nNote: HEALTH_CHECK_INTERVAL was added to .env.example but is not in the setup checklist.\nNo automated tests or CI configuration exists in the codebase.\nNo logging infrastructure (no winston, pino, or similar) is present.\n"
+  },
+  "output": "```json\n{\n  \"check_off\": [],\n  \"leave\": [\n    {\n      \"item\": \"Copy `.env.example` to `.env` and fill in values\",\n      \"reason\": \"No .env file exists. Creating it and filling in real values is a human action.\"\n    },\n    {\n      \"item\": \"Provision a PostgreSQL database and set `DATABASE_URL`\",\n      \"reason\": \"Infrastructure provisioning and credential setting require a human. Also, package.json has no PostgreSQL client dependency (pg, etc.), so the code does not currently use a database.\"\n    },\n    {\n      \"item\": \"Obtain API key and set `API_KEY`\",\n      \"reason\": \"Obtaining a key from a provider and setting it is a human action. The name in .env.example does not mean it was obtained.\"\n    },\n    {\n      \"item\": \"Verify JWT authentication works (test with a valid token against GET /api/users)\",\n      \"reason\": \"This is runtime verification. No automated tests exist, and it needs a valid token and JWT_SECRET. The presence of jsonwebtoken and auth.ts does not prove it works.\"\n    },\n    {\n      \"item\": \"Set up log aggregation for production\",\n      \"reason\": \"This is production infrastructure work. No logging library or aggregation config exists in the codebase.\"\n    }\n  ],\n  \"flag\": [\n    {\n      \"item\": \"Confirm database connection is live (check logs for connection errors)\",\n      \"reason\": \"This is runtime verification and depends on the database being provisioned. package.json lists no PostgreSQL driver (pg, etc.) and no logging library, so the code appears to make no DB connection and the item may be unachievable as written. A human should decide whether a DB dependency is missing or the item should be removed.\"\n    }\n  ],\n  \"add\": [\n    {\n      \"item\": \"Set `JWT_SECRET` in `.env`\",\n      \"reason\": \"JWT_SECRET is in .env.example and is required by jsonwebtoken for auth, but there is no explicit checklist item for it.\"\n    },\n    {\n      \"item\": \"Set `HEALTH_CHECK_INTERVAL` in `.env`\",\n      \"reason\": \"This new env var is used by src/cache.ts and was added to .env.example, but it is not in the setup checklist.\"\n    },\n    {\n      \"item\": \"Verify GET /api/health returns a successful response (no auth required)\",\n      \"reason\": \"A new health endpoint was added in src/app/api/health/route.ts. Confirming it works at runtime is a human verification step.\"\n    }\n  ]\n}\n```",
+  "deterministic_checks": {
+    "Returns JSON decisions": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "\"check_off\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Flags credential items rather than checking them off": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "\"flag\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Mentions HEALTH_CHECK_INTERVAL as something to add or flag": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "HEALTH_CHECK_INTERVAL",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "All six incomplete items are in leave or flag, and none are checked off. Four items are correctly left: the .env copy, PostgreSQL provisioning, API key, and log aggregation. JWT verification is also left, correctly, as runtime verification. 'Confirm database connection is live' is flagged rather than left. The rubric allows either for this item, since it only says LEAVE for runtime verification, and the flag is justified by the missing pg driver in package.json. The add list includes HEALTH_CHECK_INTERVAL, which the rubric requires. It also adds JWT_SECRET and a /api/health verification item, both reasonable and consistent with the codebase context. The already-done items are not touched. The output matches the rubric's score-5 criteria.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 5.65748,
+  "timestamp": "2026-10-07T13:23:24.503147"
+}
