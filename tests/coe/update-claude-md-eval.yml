@@ -1,0 +1,131 @@
+# Isolated evaluation for the update-claude-md skill.
+# Tests whether the skill's reasoning correctly identifies CLAUDE.md discrepancies
+# given a pre-gathered codebase snapshot. State B: code updated, docs stale.
+
+prompt-under-eval: |
+  You are auditing a project's CLAUDE.md documentation against the actual codebase state.
+
+  Compare the CLAUDE.md content against the codebase context provided. Identify every
+  discrepancy: missing information, stale information, or wrong information.
+
+  For each discrepancy, state:
+  - Which section of CLAUDE.md is affected
+  - What the current doc says (or omits)
+  - What the correct information should be
+
+  Return your findings as a JSON object:
+  {
+    "findings": [
+      { "section": "<section name>", "action": "add|update|remove", "detail": "<one line>" }
+    ]
+  }
+
+test_input:
+  claude_md: |
+    # Stage Four Cert — Project Guide
+
+    ## Overview
+    A minimal Node.js/Express API demonstrating JWT authentication and user management. Built with TypeScript.
+    **Stack**: Express, TypeScript, dotenv, jsonwebtoken
+
+    ## Common Commands
+    | Command | Description |
+    |---------|-------------|
+    | `npm start` | Start the server (ts-node) |
+    | `npm test` | No test runner configured yet |
+
+    ## Architecture
+
+    ### API Routes
+    | Route | Auth | Description |
+    |-------|------|-------------|
+    | `GET /api/users` | Required | List all users |
+    | `GET /api/users/:id` | Required | Get a single user |
+
+    ### Authentication
+    JWT-based. All routes require a Bearer token except those in PUBLIC_PATHS in src/auth.ts.
+
+    ### Directory Structure
+    ```
+    src/
+      index.ts          — Express app entry point
+      auth.ts           — JWT middleware
+      app/api/
+        users/
+          route.ts      — GET /api/users, GET /api/users/:id
+    ```
+
+    ## Environment Variables
+    | Variable | Required | Description |
+    |----------|----------|-------------|
+    | `DATABASE_URL` | Yes | PostgreSQL connection string |
+    | `JWT_SECRET` | Yes | Secret for signing/verifying JWTs |
+    | `API_KEY` | Yes | External API key |
+    | `PORT` | No | Server port (default: 3000) |
+
+  codebase_context: |
+    package.json dependencies: express, dotenv, jsonwebtoken, node-cache
+    package.json devDependencies: @types/express, @types/jsonwebtoken, @types/node, @types/node-cache, ts-node, typescript
+
+    .env.example variables: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL
+
+    Source files:
+      src/index.ts
+      src/auth.ts
+      src/cache.ts
+      src/app/api/users/route.ts
+      src/app/api/health/route.ts
+
+    API routes:
+      GET /api/health (src/app/api/health/route.ts) — no auth, returns {status: ok, timestamp}
+      GET /api/users (src/app/api/users/route.ts) — auth required
+      GET /api/users/:id (src/app/api/users/route.ts) — auth required
+
+    src/cache.ts: in-memory caching module using node-cache; reads HEALTH_CHECK_INTERVAL env var
+
+model_for_eval: claude-haiku-4-5-20251001
+
+model_parameters:
+  max_tokens: 2000
+
+deterministic_checks:
+  - name: Returns JSON findings
+    type: contains
+    values:
+      - '"findings"'
+
+  - name: Identifies missing health route
+    type: contains
+    values:
+      - "health"
+
+  - name: Identifies missing cache.ts or node-cache
+    type: contains
+    values:
+      - "cache"
+
+  - name: Identifies missing HEALTH_CHECK_INTERVAL
+    type: contains
+    values:
+      - "HEALTH_CHECK_INTERVAL"
+
+model_evaluation:
+  enabled: true
+  model: claude-sonnet-5-5
+  rubric: |
+    You are evaluating a CLAUDE.md audit response. The auditor was given a stale CLAUDE.md and
+    an updated codebase. Three specific gaps exist that the auditor should find:
+    1. GET /api/health route is missing from the API Routes table
+    2. src/cache.ts is missing from the Directory Structure
+    3. HEALTH_CHECK_INTERVAL is missing from the Environment Variables table
+    4. node-cache dependency is missing from the Stack/Overview
+
+    Score 5: Correctly identifies all 3-4 gaps with accurate details
+    Score 4: Correctly identifies at least 3 gaps, minor inaccuracies acceptable
+    Score 3: Identifies 2 of the gaps
+    Score 2: Identifies 1 gap or findings are mostly inaccurate
+    Score 1: Identifies no gaps or hallucinates non-existent issues
+
+    A score of 4+ is passing.
+
+    Return a JSON object: { "score": <1-5>, "reasoning": "<brief explanation>" }

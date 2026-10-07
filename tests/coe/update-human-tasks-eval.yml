@@ -1,0 +1,116 @@
+# Isolated evaluation for the update-human-tasks skill.
+# Tests whether the skill's reasoning correctly identifies which checklist items
+# can be marked done given a pre-gathered codebase snapshot.
+
+prompt-under-eval: |
+  You are auditing a project's human-tasks checklist against the actual codebase state.
+
+  Review the checklist items below against the codebase context. For each incomplete item ([ ]):
+  - CHECK OFF: codebase evidence proves the item is done
+  - LEAVE: the item requires human action or cannot be verified from code alone
+  - FLAG: the item needs human review (credentials, accounts, manual verification)
+
+  Also identify any checklist items that should be added given the codebase context.
+
+  Return your decisions as a JSON object:
+  {
+    "check_off": [
+      { "item": "<item text>", "evidence": "<one line>" }
+    ],
+    "leave": [
+      { "item": "<item text>", "reason": "<why it needs human action>" }
+    ],
+    "flag": [
+      { "item": "<item text>", "reason": "<why it needs human review>" }
+    ],
+    "add": [
+      { "item": "<new item text>", "reason": "<why it should be added>" }
+    ]
+  }
+
+test_input:
+  checklist: |
+    # Setup Checklist
+
+    ## Environment Setup
+    - [x] Clone the repository
+    - [x] Install Node.js 20+
+    - [x] Run `npm install`
+    - [ ] Copy `.env.example` to `.env` and fill in values
+    - [ ] Provision a PostgreSQL database and set `DATABASE_URL`
+    - [ ] Obtain API key and set `API_KEY`
+
+    ## Application Verification
+    - [x] Confirm `npm start` launches without errors
+    - [ ] Verify JWT authentication works (test with a valid token against GET /api/users)
+    - [ ] Confirm database connection is live (check logs for connection errors)
+
+    ## Ongoing
+    - [ ] Set up log aggregation for production
+
+  codebase_context: |
+    package.json dependencies: express, dotenv, jsonwebtoken, node-cache
+    .env.example variables: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL
+
+    Source files:
+      src/index.ts
+      src/auth.ts
+      src/cache.ts — new, uses HEALTH_CHECK_INTERVAL env var
+      src/app/api/users/route.ts
+      src/app/api/health/route.ts — new, GET /api/health (no auth required)
+
+    Note: HEALTH_CHECK_INTERVAL was added to .env.example but is not in the setup checklist.
+    No automated tests or CI configuration exists in the codebase.
+    No logging infrastructure (no winston, pino, or similar) is present.
+
+model_for_eval: claude-haiku-4-5-20251001
+
+model_parameters:
+  max_tokens: 1500
+
+deterministic_checks:
+  - name: Returns JSON decisions
+    type: contains
+    values:
+      - '"check_off"'
+
+  - name: Flags credential items rather than checking them off
+    type: contains
+    values:
+      - '"flag"'
+
+  - name: Mentions HEALTH_CHECK_INTERVAL as something to add or flag
+    type: contains
+    values:
+      - "HEALTH_CHECK_INTERVAL"
+
+model_evaluation:
+  enabled: true
+  model: claude-sonnet-5-5
+  rubric: |
+    You are evaluating a human-tasks checklist audit. The auditor was given a stale checklist
+    and an updated codebase. The correct decisions are:
+
+    LEAVE/FLAG (require human action — do NOT check off):
+    - "Copy .env.example to .env and fill in values" — human action required
+    - "Provision a PostgreSQL database and set DATABASE_URL" — infrastructure, can't verify from code
+    - "Obtain API key and set API_KEY" — credentials, human must confirm
+    - "Verify JWT authentication works" — requires manual test
+    - "Confirm database connection is live" — runtime verification
+    - "Set up log aggregation for production" — no logging infrastructure in codebase
+
+    ADD (new items the checklist is missing):
+    - Something about HEALTH_CHECK_INTERVAL being a new env var that needs to be set
+    - OR something about the new /api/health endpoint being available to verify
+
+    The auditor should NOT auto-check off credential or manual-verification items.
+
+    Score 5: Correctly flags/leaves all human-action items; adds HEALTH_CHECK_INTERVAL item; no false auto-completions
+    Score 4: Correctly handles all human-action items; may miss the new env var addition
+    Score 3: Mostly correct but auto-checks off 1-2 items that require human action
+    Score 2: Auto-checks off credential items without evidence, or misses most human-action items
+    Score 1: Checks off things that need human verification, or produces no useful output
+
+    A score of 4+ is passing.
+
+    Return a JSON object: { "score": <1-5>, "reasoning": "<brief explanation>" }

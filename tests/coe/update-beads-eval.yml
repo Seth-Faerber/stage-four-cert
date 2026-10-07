@@ -1,0 +1,101 @@
+# Isolated evaluation for the update-beads skill.
+# Tests whether the skill's reasoning correctly identifies which beads issues
+# should be closed given a pre-gathered codebase snapshot. State B: health check
+# and caching are implemented, but their issues are still open.
+
+prompt-under-eval: |
+  You are auditing a project's beads issues against the actual codebase state.
+
+  Review the open issues listed below against the codebase context. For each issue, decide:
+  - CLOSE: the work is clearly implemented in the codebase
+  - LEAVE: the work is not done or it is genuinely ambiguous
+  - FLAG: the issue needs human judgment before closing
+
+  Return your decisions as a JSON object:
+  {
+    "decisions": [
+      {
+        "id": "<issue id>",
+        "title": "<title>",
+        "decision": "close|leave|flag",
+        "reason": "<one line of evidence or rationale>"
+      }
+    ]
+  }
+
+test_input:
+  open_issues: |
+    ID: stage-four-cert-k0w
+    Title: Add health check endpoint
+    Status: open
+    Body: Add GET /api/health that returns {status: ok, timestamp}. No auth required. Useful for load balancer checks.
+
+    ID: stage-four-cert-5bs
+    Title: Add in-memory caching layer
+    Status: in_progress
+    Body: Add a simple cache module to reduce repeated computation. Consider node-cache or similar. Used initially for user lookups.
+
+    ID: stage-four-cert-3ey
+    Title: Set up log aggregation
+    Status: open (blocked by stage-four-cert-5bs)
+    Body: Configure structured logging and ship to a log aggregator. Blocked on ops team provisioning the log destination.
+
+  codebase_context: |
+    Source files:
+      src/index.ts — mounts /api/health (no auth) and /api/users routes
+      src/auth.ts — JWT middleware with PUBLIC_PATHS that now includes /health
+      src/cache.ts — in-memory caching module using node-cache package
+      src/app/api/health/route.ts — GET /api/health returns {status: ok, timestamp}
+      src/app/api/users/route.ts — GET /api/users, GET /api/users/:id
+
+    package.json dependencies: express, dotenv, jsonwebtoken, node-cache
+
+    Recent git log:
+      abc123 Add health check endpoint and cache module
+      518d6bc feat: State A — minimal Express API with JWT auth
+
+model_for_eval: claude-haiku-4-5-20251001
+
+model_parameters:
+  max_tokens: 1500
+
+deterministic_checks:
+  - name: Returns JSON decisions
+    type: contains
+    values:
+      - '"decisions"'
+
+  - name: References health check issue
+    type: contains
+    values:
+      - "stage-four-cert-k0w"
+
+  - name: References caching issue
+    type: contains
+    values:
+      - "stage-four-cert-5bs"
+
+  - name: References log aggregation issue
+    type: contains
+    values:
+      - "stage-four-cert-3ey"
+
+model_evaluation:
+  enabled: true
+  model: claude-sonnet-5-5
+  rubric: |
+    You are evaluating a beads issue audit response. The auditor was given three open issues
+    and a codebase snapshot. The correct decisions are:
+    1. stage-four-cert-k0w (health check endpoint) — CLOSE: GET /api/health is implemented in src/app/api/health/route.ts
+    2. stage-four-cert-5bs (in-memory caching) — CLOSE: src/cache.ts uses node-cache, which is in package.json
+    3. stage-four-cert-3ey (log aggregation) — LEAVE: no logging infrastructure is in the codebase; still blocked
+
+    Score 5: Correctly closes k0w and 5bs, correctly leaves 3ey
+    Score 4: Gets 2 of 3 correct with reasonable reasoning
+    Score 3: Gets 1 of 3 correct, or makes a wrong closure with no evidence
+    Score 2: Closes log aggregation without evidence, or refuses to close the implemented ones
+    Score 1: All decisions wrong or no decisions made
+
+    A score of 4+ is passing.
+
+    Return a JSON object: { "score": <1-5>, "reasoning": "<brief explanation>" }
