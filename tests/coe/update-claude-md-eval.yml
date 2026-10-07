@@ -2,23 +2,9 @@
 # Tests whether the skill's reasoning correctly identifies CLAUDE.md discrepancies
 # given a pre-gathered codebase snapshot. State B: code updated, docs stale.
 
-prompt-under-eval: |
-  You are auditing a project's CLAUDE.md documentation against the actual codebase state.
+setup: reset_eval.sh
 
-  Compare the CLAUDE.md content against the codebase context provided. Identify every
-  discrepancy: missing information, stale information, or wrong information.
-
-  For each discrepancy, state:
-  - Which section of CLAUDE.md is affected
-  - What the current doc says (or omits)
-  - What the correct information should be
-
-  Return your findings as a JSON object:
-  {
-    "findings": [
-      { "section": "<section name>", "action": "add|update|remove", "detail": "<one line>" }
-    ]
-  }
+prompt-under-eval: "~/.claude/skills/update-claude-md/SKILL.md"
 
 test_input:
   claude_md: |

@@ -2,27 +2,9 @@
 # Tests whether the skill's reasoning correctly identifies which checklist items
 # can be marked done given a pre-gathered codebase snapshot.
 
-prompt-under-eval: |
-  You are auditing a project's human-tasks checklist against the actual codebase state.
+setup: reset_eval.sh
 
-  The checklist has two groups: already-done items and incomplete items.
-  Already-done items (marked [x]) are complete — do not touch them. Do not include them in any output list.
-  Evaluate ONLY the incomplete items listed under "Incomplete items to evaluate".
-
-  For each incomplete item:
-  - CHECK OFF: codebase source code directly proves the feature is implemented (e.g. a file exists, a route is in the code)
-  - LEAVE: requires human action (copying/creating files, setting credentials, provisioning infrastructure, running tests, any runtime verification)
-  - FLAG: needs human review
-
-  Also add new items the checklist is missing based on what's new in the codebase.
-
-  Return your decisions as a JSON object:
-  {
-    "check_off": [ { "item": "<item text>", "evidence": "<one line>" } ],
-    "leave": [ { "item": "<item text>", "reason": "<why>" } ],
-    "flag": [ { "item": "<item text>", "reason": "<why>" } ],
-    "add": [ { "item": "<new item text>", "reason": "<why>" } ]
-  }
+prompt-under-eval: "~/.claude/skills/update-human-tasks/SKILL.md"
 
 test_input:
   already_done_do_not_touch: |

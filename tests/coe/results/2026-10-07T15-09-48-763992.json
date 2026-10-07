@@ -1,0 +1,70 @@
+{
+  "prompt_name": "update-docs-eval",
+  "test_input": {
+    "claude_md": "# Stage Four Cert \u2014 Project Guide\n\n## Overview\nA minimal Node.js/Express API demonstrating JWT authentication and user management. Built with TypeScript.\n**Stack**: Express, TypeScript, dotenv, jsonwebtoken\n\n## Common Commands\n| Command | Description |\n|---------|-------------|\n| `npm start` | Start the server (ts-node) |\n| `npm test` | No test runner configured yet |\n\n## Architecture\n\n### API Routes\n| Route | Auth | Description |\n|-------|------|-------------|\n| `GET /api/users` | Required | List all users |\n| `GET /api/users/:id` | Required | Get a single user |\n\n### Directory Structure\n```\nsrc/\n  index.ts\n  auth.ts\n  app/api/users/route.ts\n```\n\n## Environment Variables\n| Variable | Required | Description |\n|----------|----------|-------------|\n| `DATABASE_URL` | Yes | PostgreSQL connection string |\n| `JWT_SECRET` | Yes | Secret for signing/verifying JWTs |\n| `API_KEY` | Yes | External API key |\n| `PORT` | No | Server port (default: 3000) |\n",
+    "open_issues": "ID: stage-four-cert-k0w | Title: Add health check endpoint | Status: open\nBody: Add GET /api/health that returns {status: ok, timestamp}. No auth required.\n\nID: stage-four-cert-5bs | Title: Add in-memory caching layer | Status: in_progress\nBody: Add a simple cache module to reduce repeated computation. Consider node-cache.\n\nID: stage-four-cert-3ey | Title: Set up log aggregation | Status: open (blocked by 5bs)\nBody: Configure structured logging. Blocked on ops team provisioning log destination.\n",
+    "human_tasks": "## Environment Setup\n- [x] Clone the repository\n- [x] Install Node.js 20+\n- [x] Run `npm install`\n- [ ] Copy `.env.example` to `.env` and fill in values\n- [ ] Provision a PostgreSQL database and set `DATABASE_URL`\n- [ ] Obtain API key and set `API_KEY`\n\n## Application Verification\n- [x] Confirm `npm start` launches without errors\n- [ ] Verify JWT authentication works (test with a valid token against GET /api/users)\n- [ ] Confirm database connection is live\n\n## Ongoing\n- [ ] Set up log aggregation for production\n",
+    "codebase_context": "package.json dependencies: express, dotenv, jsonwebtoken, node-cache\n.env.example vars: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL\nNote: .env does NOT exist. No credentials have been set. No database has been provisioned.\n\nSource files:\n  src/index.ts, src/auth.ts, src/cache.ts (NEW), src/app/api/users/route.ts\n  src/app/api/health/route.ts (NEW \u2014 GET /api/health, no auth required)\n\nRecent git log:\n  abc123 Add health check endpoint and cache module\n  518d6bc feat: State A\n"
+  },
+  "output": "```json\n{\n  \"claude_md\": {\n    \"findings\": [\n      {\n        \"section\": \"Common Commands\",\n        \"action\": \"update\",\n        \"detail\": \"Add `npm test` description or remove row; currently says 'No test runner configured yet' but codebase has no test setup\"\n      },\n      {\n        \"section\": \"API Routes\",\n        \"action\": \"add\",\n        \"detail\": \"Add `GET /api/health` route (no auth required) \u2014 returns {status: ok, timestamp}\"\n      },\n      {\n        \"section\": \"Directory Structure\",\n        \"action\": \"update\",\n        \"detail\": \"Add `src/cache.ts` and `src/app/api/health/route.ts` to the tree\"\n      },\n      {\n        \"section\": \"Environment Variables\",\n        \"action\": \"add\",\n        \"detail\": \"Add `HEALTH_CHECK_INTERVAL` (optional) documented in .env.example but missing from table\"\n      }\n    ]\n  },\n  \"beads\": {\n    \"decisions\": [\n      {\n        \"id\": \"stage-four-cert-k0w\",\n        \"title\": \"Add health check endpoint\",\n        \"decision\": \"close\",\n        \"reason\": \"Health check route already implemented at src/app/api/health/route.ts per git log and codebase context\"\n      },\n      {\n        \"id\": \"stage-four-cert-5bs\",\n        \"title\": \"Add in-memory caching layer\",\n        \"decision\": \"close\",\n        \"reason\": \"Cache module (src/cache.ts) and node-cache dependency already added per git log and package.json\"\n      },\n      {\n        \"id\": \"stage-four-cert-3ey\",\n        \"title\": \"Set up log aggregation\",\n        \"decision\": \"leave\",\n        \"reason\": \"Blocked on ops team provisioning log destination \u2014 requires external infrastructure action\"\n      }\n    ]\n  },\n  \"human_tasks\": {\n    \"check_off\": [],\n    \"leave\": [\n      {\n        \"item\": \"Copy `.env.example` to `.env` and fill in values\",\n        \"reason\": \"Requires manual file creation and credential entry; .env does not exist in codebase\"\n      },\n      {\n        \"item\": \"Provision a PostgreSQL database and set `DATABASE_URL`\",\n        \"reason\": \"Infrastructure provisioning required; no database currently exists\"\n      },\n      {\n        \"item\": \"Obtain API key and set `API_KEY`\",\n        \"reason\": \"Requires obtaining external credentials and manual env var entry\"\n      },\n      {\n        \"item\": \"Verify JWT authentication works (test with a valid token against GET /api/users)\",\n        \"reason\": \"Requires runtime testing with valid credentials; source code only proves route exists, not runtime behavior\"\n      },\n      {\n        \"item\": \"Confirm database connection is live\",\n        \"reason\": \"Runtime verification required; depends on DATABASE_URL being set and database provisioned\"\n      },\n      {\n        \"item\": \"Set up log aggregation for production\",\n        \"reason\": \"Blocked on ops team provisioning log destination per issue stage-four-cert-3ey\"\n      }\n    ],\n    \"flag\": [],\n    \"add\": [\n      {\n        \"item\": \"Configure node-cache usage in application code\",\n        \"reason\": \"node-cache dependency added and cache.ts module created, but integration with existing routes (users, health) is unclear from codebase context\"\n      }\n    ]\n  }\n}\n```",
+  "deterministic_checks": {
+    "Returns all three domains in JSON": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "\"claude_md\"",
+          "passed": true
+        },
+        {
+          "value": "\"beads\"",
+          "passed": true
+        },
+        {
+          "value": "\"human_tasks\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Identifies health check gap in CLAUDE.md": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "References health check beads issue for closure": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "References caching beads issue": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 3,
+    "reasoning": "Beads decisions are all correct (k0w close, 5bs close, 3ey leave). Human-tasks correctly leave all credential and infrastructure items and check off nothing. CLAUDE.md has notable problems. It covers the health route, the HEALTH_CHECK_INTERVAL variable, and the directory structure (both cache.ts and health/route.ts). It misses node-cache in the Stack/dependencies section, which the rubric lists as an expected gap. It also adds a dubious finding about npm test: that row is accurate, since no test runner exists, so the finding is a false positive. It also uses action 'add' where the schema allows add|update|remove, which is fine. The human-tasks 'add' item is about node-cache integration rather than HEALTH_CHECK_INTERVAL needing to be set, so the expected add item is missing. That alone is a minor gap. Overall: beads are fully correct and human-tasks has no critical errors, but CLAUDE.md is missing the stack gap and contains a spurious finding, and the expected HEALTH_CHECK_INTERVAL add item is absent. For a score of 4, CLAUDE.md and beads must both be fully correct, and CLAUDE.md is not. This falls to a 3.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 7.715699,
+  "timestamp": "2026-10-07T15:09:48.763830"
+}

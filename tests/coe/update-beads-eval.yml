@@ -3,25 +3,9 @@
 # should be closed given a pre-gathered codebase snapshot. State B: health check
 # and caching are implemented, but their issues are still open.
 
-prompt-under-eval: |
-  You are auditing a project's beads issues against the actual codebase state.
+setup: reset_eval.sh
 
-  Review the open issues listed below against the codebase context. For each issue, decide:
-  - CLOSE: the work is clearly implemented in the codebase
-  - LEAVE: the work is not done or it is genuinely ambiguous
-  - FLAG: the issue needs human judgment before closing
-
-  Return your decisions as a JSON object:
-  {
-    "decisions": [
-      {
-        "id": "<issue id>",
-        "title": "<title>",
-        "decision": "close|leave|flag",
-        "reason": "<one line of evidence or rationale>"
-      }
-    ]
-  }
+prompt-under-eval: "~/.claude/skills/update-beads/SKILL.md"
 
 test_input:
   open_issues: |

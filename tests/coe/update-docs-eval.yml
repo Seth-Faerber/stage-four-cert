@@ -3,42 +3,46 @@
 # all in a single prompt. Measures whether the coordinator-level instructions
 # produce correct outputs across all three domains simultaneously.
 
-prompt-under-eval: |
-  You are auditing a project's documentation — CLAUDE.md, beads issues, and human-tasks
-  checklists — against the actual codebase state.
+# prompt-under-eval: |
+#   You are auditing a project's documentation — CLAUDE.md, beads issues, and human-tasks
+#   checklists — against the actual codebase state.
 
-  Given the full context below, produce a structured audit covering all three domains:
+#   Given the full context below, produce a structured audit covering all three domains:
 
-  1. CLAUDE.md: Identify every discrepancy (missing, stale, or wrong information). Check all
-     sections: overview/stack, commands, API routes, directory structure, and environment variables.
+#   1. CLAUDE.md: Identify every discrepancy (missing, stale, or wrong information). Check all
+#      sections: overview/stack, commands, API routes, directory structure, and environment variables.
 
-  2. Beads issues: For each open issue, decide: close (work is done), leave (not done), or flag (ambiguous).
+#   2. Beads issues: For each open issue, decide: close (work is done), leave (not done), or flag (ambiguous).
 
-  3. Human-tasks: Only evaluate items currently marked [ ] (incomplete). For each:
-     - check_off: ONLY if codebase source code directly proves the feature is implemented (e.g. a route file exists, a dependency is in package.json). These MUST go in leave, not check_off: copying/creating local files, setting env vars, provisioning databases, obtaining credentials, running manual tests, verifying runtime behavior.
-     - leave: requires human action (infrastructure, credentials, copying files, manual testing, runtime verification) — add to leave
-     - flag: genuinely ambiguous — add to flag
-     Do NOT include items already marked [x] in any list. Note new items to add based on what's new in the codebase.
+#   3. Human-tasks: Only evaluate items currently marked [ ] (incomplete). For each:
+#      - check_off: ONLY if codebase source code directly proves the feature is implemented (e.g. a route file exists, a dependency is in package.json). These MUST go in leave, not check_off: copying/creating local files, setting env vars, provisioning databases, obtaining credentials, running manual tests, verifying runtime behavior.
+#      - leave: requires human action (infrastructure, credentials, copying files, manual testing, runtime verification) — add to leave
+#      - flag: genuinely ambiguous — add to flag
+#      Do NOT include items already marked [x] in any list. Note new items to add based on what's new in the codebase.
 
-  Return your findings as a single JSON object:
-  {
-    "claude_md": {
-      "findings": [
-        { "section": "<section>", "action": "add|update|remove", "detail": "<one line>" }
-      ]
-    },
-    "beads": {
-      "decisions": [
-        { "id": "<id>", "title": "<title>", "decision": "close|leave|flag", "reason": "<one line>" }
-      ]
-    },
-    "human_tasks": {
-      "check_off": [ { "item": "<currently-incomplete item now proven done>", "evidence": "<one line>" } ],
-      "leave": [ { "item": "<item>", "reason": "<why>" } ],
-      "flag": [ { "item": "<item>", "reason": "<why>" } ],
-      "add": [ { "item": "<new item>", "reason": "<why>" } ]
-    }
-  }
+#   Return your findings as a single JSON object:
+#   {
+#     "claude_md": {
+#       "findings": [
+#         { "section": "<section>", "action": "add|update|remove", "detail": "<one line>" }
+#       ]
+#     },
+#     "beads": {
+#       "decisions": [
+#         { "id": "<id>", "title": "<title>", "decision": "close|leave|flag", "reason": "<one line>" }
+#       ]
+#     },
+#     "human_tasks": {
+#       "check_off": [ { "item": "<currently-incomplete item now proven done>", "evidence": "<one line>" } ],
+#       "leave": [ { "item": "<item>", "reason": "<why>" } ],
+#       "flag": [ { "item": "<item>", "reason": "<why>" } ],
+#       "add": [ { "item": "<new item>", "reason": "<why>" } ]
+#     }
+#   }
+
+setup: reset_eval.sh
+
+prompt-under-eval: "~/.claude/skills/update-docs/SKILL.md"
 
 test_input:
   claude_md: |
