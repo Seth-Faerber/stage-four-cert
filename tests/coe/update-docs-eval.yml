@@ -9,9 +9,16 @@ prompt-under-eval: |
 
   Given the full context below, produce a structured audit covering all three domains:
 
-  1. CLAUDE.md: Identify every discrepancy (missing, stale, or wrong information).
+  1. CLAUDE.md: Identify every discrepancy (missing, stale, or wrong information). Check all
+     sections: overview/stack, commands, API routes, directory structure, and environment variables.
+
   2. Beads issues: For each open issue, decide: close (work is done), leave (not done), or flag (ambiguous).
-  3. Human-tasks: For each incomplete item, decide: check off (codebase proves it done), leave (human action needed), or flag (requires human review). Also note new items to add.
+
+  3. Human-tasks: Only evaluate items currently marked [ ] (incomplete). For each:
+     - check_off: ONLY if codebase source code directly proves the feature is implemented (e.g. a route file exists, a dependency is in package.json). These MUST go in leave, not check_off: copying/creating local files, setting env vars, provisioning databases, obtaining credentials, running manual tests, verifying runtime behavior.
+     - leave: requires human action (infrastructure, credentials, copying files, manual testing, runtime verification) — add to leave
+     - flag: genuinely ambiguous — add to flag
+     Do NOT include items already marked [x] in any list. Note new items to add based on what's new in the codebase.
 
   Return your findings as a single JSON object:
   {
@@ -26,7 +33,7 @@ prompt-under-eval: |
       ]
     },
     "human_tasks": {
-      "check_off": [ { "item": "<item>", "evidence": "<one line>" } ],
+      "check_off": [ { "item": "<currently-incomplete item now proven done>", "evidence": "<one line>" } ],
       "leave": [ { "item": "<item>", "reason": "<why>" } ],
       "flag": [ { "item": "<item>", "reason": "<why>" } ],
       "add": [ { "item": "<new item>", "reason": "<why>" } ]
@@ -101,6 +108,7 @@ test_input:
   codebase_context: |
     package.json dependencies: express, dotenv, jsonwebtoken, node-cache
     .env.example vars: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL
+    Note: .env does NOT exist. No credentials have been set. No database has been provisioned.
 
     Source files:
       src/index.ts, src/auth.ts, src/cache.ts (NEW), src/app/api/users/route.ts
@@ -161,10 +169,10 @@ model_evaluation:
     - Do NOT check off any credential/manual-verification items
     - ADD: something about HEALTH_CHECK_INTERVAL needing to be set
 
-    Score 5: All three domains handled correctly with accurate decisions
-    Score 4: 2 of 3 domains fully correct; minor gaps in the third
-    Score 3: 1-2 domains correct; notable errors in others
-    Score 2: Significant errors across multiple domains
+    Score 5: All three domains correct; no false auto-completions of credential/infra items; HEALTH_CHECK_INTERVAL add item present
+    Score 4: CLAUDE.md and beads fully correct; human-tasks minor issues acceptable (e.g. checking off JWT auth item because auth.ts exists is borderline OK; missing HEALTH_CHECK_INTERVAL add is a minor gap). Core rule: credential and infrastructure items (DATABASE_URL, API_KEY, Provision DB) must NOT be in check_off.
+    Score 3: One domain has notable errors; e.g. checking off DATABASE_URL or API_KEY provisioning items, or beads decisions wrong
+    Score 2: Two or more domains significantly wrong
     Score 1: Mostly wrong or no structured output
 
     A score of 4+ is passing.

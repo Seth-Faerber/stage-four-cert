@@ -5,52 +5,46 @@
 prompt-under-eval: |
   You are auditing a project's human-tasks checklist against the actual codebase state.
 
-  Review the checklist items below against the codebase context. For each incomplete item ([ ]):
-  - CHECK OFF: codebase evidence proves the item is done
-  - LEAVE: the item requires human action or cannot be verified from code alone
-  - FLAG: the item needs human review (credentials, accounts, manual verification)
+  The checklist has two groups: already-done items and incomplete items.
+  Already-done items (marked [x]) are complete — do not touch them. Do not include them in any output list.
+  Evaluate ONLY the incomplete items listed under "Incomplete items to evaluate".
 
-  Also identify any checklist items that should be added given the codebase context.
+  For each incomplete item:
+  - CHECK OFF: codebase source code directly proves the feature is implemented (e.g. a file exists, a route is in the code)
+  - LEAVE: requires human action (copying/creating files, setting credentials, provisioning infrastructure, running tests, any runtime verification)
+  - FLAG: needs human review
+
+  Also add new items the checklist is missing based on what's new in the codebase.
 
   Return your decisions as a JSON object:
   {
-    "check_off": [
-      { "item": "<item text>", "evidence": "<one line>" }
-    ],
-    "leave": [
-      { "item": "<item text>", "reason": "<why it needs human action>" }
-    ],
-    "flag": [
-      { "item": "<item text>", "reason": "<why it needs human review>" }
-    ],
-    "add": [
-      { "item": "<new item text>", "reason": "<why it should be added>" }
-    ]
+    "check_off": [ { "item": "<item text>", "evidence": "<one line>" } ],
+    "leave": [ { "item": "<item text>", "reason": "<why>" } ],
+    "flag": [ { "item": "<item text>", "reason": "<why>" } ],
+    "add": [ { "item": "<new item text>", "reason": "<why>" } ]
   }
 
 test_input:
-  checklist: |
-    # Setup Checklist
-
-    ## Environment Setup
+  already_done_do_not_touch: |
     - [x] Clone the repository
     - [x] Install Node.js 20+
     - [x] Run `npm install`
+    - [x] Confirm `npm start` launches without errors
+
+  incomplete_items_to_evaluate: |
     - [ ] Copy `.env.example` to `.env` and fill in values
     - [ ] Provision a PostgreSQL database and set `DATABASE_URL`
     - [ ] Obtain API key and set `API_KEY`
-
-    ## Application Verification
-    - [x] Confirm `npm start` launches without errors
     - [ ] Verify JWT authentication works (test with a valid token against GET /api/users)
     - [ ] Confirm database connection is live (check logs for connection errors)
-
-    ## Ongoing
     - [ ] Set up log aggregation for production
 
   codebase_context: |
     package.json dependencies: express, dotenv, jsonwebtoken, node-cache
-    .env.example variables: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL
+
+    .env.example: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL
+      *** TEMPLATE ONLY. No .env file exists. No credentials are set. No database provisioned. ***
+      *** A variable name in .env.example does NOT mean it was obtained or configured. ***
 
     Source files:
       src/index.ts
@@ -63,7 +57,7 @@ test_input:
     No automated tests or CI configuration exists in the codebase.
     No logging infrastructure (no winston, pino, or similar) is present.
 
-model_for_eval: claude-haiku-4-5-20251001
+model_for_eval: claude-sonnet-5-5
 
 model_parameters:
   max_tokens: 1500
@@ -105,11 +99,19 @@ model_evaluation:
 
     The auditor should NOT auto-check off credential or manual-verification items.
 
-    Score 5: Correctly flags/leaves all human-action items; adds HEALTH_CHECK_INTERVAL item; no false auto-completions
-    Score 4: Correctly handles all human-action items; may miss the new env var addition
-    Score 3: Mostly correct but auto-checks off 1-2 items that require human action
-    Score 2: Auto-checks off credential items without evidence, or misses most human-action items
-    Score 1: Checks off things that need human verification, or produces no useful output
+    The correct decisions for each incomplete item:
+    - "Copy .env.example to .env" → LEAVE (copying files, human action)
+    - "Provision PostgreSQL database / set DATABASE_URL" → LEAVE or FLAG (infrastructure)
+    - "Obtain API key / set API_KEY" → LEAVE or FLAG (credentials)
+    - "Verify JWT authentication works (test with a valid token)" → LEAVE (requires runtime test with real token)
+    - "Confirm database connection is live" → LEAVE (runtime verification)
+    - "Set up log aggregation" → LEAVE (no logging infrastructure in codebase)
+
+    Score 5: All six items correctly in leave/flag; HEALTH_CHECK_INTERVAL env var added
+    Score 4: At most one item is wrong (e.g. JWT checked off because auth.ts exists is borderline acceptable); HEALTH_CHECK_INTERVAL may be missing from add
+    Score 3: Two items wrong, OR DATABASE_URL/API_KEY/Provision DB in check_off (clear credential violations)
+    Score 2: Three or more items wrong
+    Score 1: Mostly wrong or no useful output
 
     A score of 4+ is passing.
 
