@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "stage_four_cert",
+  "project_id": "be4ac109-31ed-46ff-991e-7276008283a4"
+}

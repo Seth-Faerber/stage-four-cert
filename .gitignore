@@ -1,0 +1,17 @@
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
+
+# Node
+node_modules/
+dist/
+
+# Local env
+.env
+
+# Eval outputs (not state)
+audit_log/
+
