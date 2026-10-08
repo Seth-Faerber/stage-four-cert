@@ -2,7 +2,9 @@
 # Tests whether the skill's reasoning correctly identifies CLAUDE.md discrepancies
 # given a pre-gathered codebase snapshot. State B: code updated, docs stale.
 
-setup: reset_eval.sh
+setup: 
+  before: reset_eval.sh
+  after: reset_eval.sh
 
 prompt-under-eval: "~/.claude/skills/update-claude-md/SKILL.md"
 

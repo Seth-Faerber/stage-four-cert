@@ -40,7 +40,9 @@
 #     }
 #   }
 
-setup: reset_eval.sh
+setup: 
+  before: reset_eval.sh
+  after: reset_eval.sh
 
 prompt-under-eval: "~/.claude/skills/update-docs/SKILL.md"
 

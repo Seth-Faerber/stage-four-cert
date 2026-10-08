@@ -3,7 +3,9 @@
 # should be closed given a pre-gathered codebase snapshot. State B: health check
 # and caching are implemented, but their issues are still open.
 
-setup: reset_eval.sh
+setup: 
+  before: reset_eval.sh
+  after: reset_eval.sh
 
 prompt-under-eval: "~/.claude/skills/update-beads/SKILL.md"
 

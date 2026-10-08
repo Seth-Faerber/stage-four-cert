@@ -2,7 +2,9 @@
 # Tests whether the skill's reasoning correctly identifies which checklist items
 # can be marked done given a pre-gathered codebase snapshot.
 
-setup: reset_eval.sh
+setup: 
+  before: reset_eval.sh
+  after: reset_eval.sh
 
 prompt-under-eval: "~/.claude/skills/update-human-tasks/SKILL.md"
 
