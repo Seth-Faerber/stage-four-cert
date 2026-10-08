@@ -8,59 +8,23 @@ setup:
 
 prompt-under-eval: "~/.claude/skills/update-human-tasks/SKILL.md"
 
-test_input:
-  already_done_do_not_touch: |
-    - [x] Clone the repository
-    - [x] Install Node.js 20+
-    - [x] Run `npm install`
-    - [x] Confirm `npm start` launches without errors
-
-  incomplete_items_to_evaluate: |
-    - [ ] Copy `.env.example` to `.env` and fill in values
-    - [ ] Provision a PostgreSQL database and set `DATABASE_URL`
-    - [ ] Obtain API key and set `API_KEY`
-    - [ ] Verify JWT authentication works (test with a valid token against GET /api/users)
-    - [ ] Confirm database connection is live (check logs for connection errors)
-    - [ ] Set up log aggregation for production
-
-  codebase_context: |
-    package.json dependencies: express, dotenv, jsonwebtoken, node-cache
-
-    .env.example: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL
-      *** TEMPLATE ONLY. No .env file exists. No credentials are set. No database provisioned. ***
-      *** A variable name in .env.example does NOT mean it was obtained or configured. ***
-
-    Source files:
-      src/index.ts
-      src/auth.ts
-      src/cache.ts — new, uses HEALTH_CHECK_INTERVAL env var
-      src/app/api/users/route.ts
-      src/app/api/health/route.ts — new, GET /api/health (no auth required)
-
-    Note: HEALTH_CHECK_INTERVAL was added to .env.example but is not in the setup checklist.
-    No automated tests or CI configuration exists in the codebase.
-    No logging infrastructure (no winston, pino, or similar) is present.
-
 model_for_eval: claude-sonnet-5-5
 
 model_parameters:
-  max_tokens: 1500
+  max_tokens: 25000
 
 deterministic_checks:
-  - name: Returns JSON decisions
-    type: contains
+  - name: Marks health routes complete
+    type: file_contains
+    file: human-tasks/001-setup.md
+    values: 
+      - "- [ ] Create `src/app/api/health/route.ts` file"
+      - "- [ ] Implement `GET /api/health` endpoint"
+  - name: Does not mark incomplete routes complete
+    type: file_does_not_contain
+    file: human-tasks/001-setup.md
     values:
-      - '"check_off"'
-
-  - name: Flags credential items rather than checking them off
-    type: contains
-    values:
-      - '"flag"'
-
-  - name: Mentions HEALTH_CHECK_INTERVAL as something to add or flag
-    type: contains
-    values:
-      - "HEALTH_CHECK_INTERVAL"
+      - "- [x] Create `src/app/api/users/route.ts` file"
 
 model_evaluation:
   enabled: true

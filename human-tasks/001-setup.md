@@ -13,5 +13,10 @@
 - [ ] Verify JWT authentication works (test with a valid token against GET /api/users)
 - [ ] Confirm database connection is live (check logs for connection errors)
 
+## API Routes
+- [ ] Create `src/app/api/health/route.ts` file"
+- [ ] Implement `GET /api/health` endpoint"
+- [x] Create `src/app/api/users/route.ts` file"
+
 ## Ongoing
 - [ ] Set up log aggregation for production
