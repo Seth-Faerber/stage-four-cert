@@ -3,42 +3,21 @@
 # should be closed given a pre-gathered codebase snapshot. State B: health check
 # and caching are implemented, but their issues are still open.
 
-setup: 
+setup:
   before: reset_eval.sh
   after: reset_eval.sh
 
+runner: agentic
+
+agent_options:
+  max_turns: 15
+  allowed_tools:
+    - list_directory
+    - read_file
+    - write_file
+    - run_command
+
 prompt-under-eval: "~/.claude/skills/update-beads/SKILL.md"
-
-test_input:
-  open_issues: |
-    ID: stage-four-cert-k0w
-    Title: Add health check endpoint
-    Status: open
-    Body: Add GET /api/health that returns {status: ok, timestamp}. No auth required. Useful for load balancer checks.
-
-    ID: stage-four-cert-5bs
-    Title: Add in-memory caching layer
-    Status: in_progress
-    Body: Add a simple cache module to reduce repeated computation. Consider node-cache or similar. Used initially for user lookups.
-
-    ID: stage-four-cert-3ey
-    Title: Set up log aggregation
-    Status: open (blocked by stage-four-cert-5bs)
-    Body: Configure structured logging and ship to a log aggregator. Blocked on ops team provisioning the log destination.
-
-  codebase_context: |
-    Source files:
-      src/index.ts — mounts /api/health (no auth) and /api/users routes
-      src/auth.ts — JWT middleware with PUBLIC_PATHS that now includes /health
-      src/cache.ts — in-memory caching module using node-cache package
-      src/app/api/health/route.ts — GET /api/health returns {status: ok, timestamp}
-      src/app/api/users/route.ts — GET /api/users, GET /api/users/:id
-
-    package.json dependencies: express, dotenv, jsonwebtoken, node-cache
-
-    Recent git log:
-      abc123 Add health check endpoint and cache module
-      518d6bc feat: State A — minimal Express API with JWT auth
 
 model_for_eval: claude-haiku-4-5-20251001
 
@@ -46,25 +25,42 @@ model_parameters:
   max_tokens: 1500
 
 deterministic_checks:
-  - name: Returns JSON decisions
+  - name: SHOULD close k0w in beads (health check is implemented)
+    type: file_contains
+    file: .beads/interactions.jsonl
+    values:
+      - '"issue_id":"stage-four-cert-k0w"'
+      - '"new_value":"done"'
+
+  - name: SHOULD close 5bs in beads (cache module is implemented)
+    type: file_contains
+    file: .beads/interactions.jsonl
+    values:
+      - '"issue_id":"stage-four-cert-5bs"'
+      - '"new_value":"done"'
+
+  - name: SHOULD NOT touch 3ey in beads (log aggregation not implemented)
+    type: file_does_not_contain
+    file: .beads/interactions.jsonl
+    values:
+      - '"issue_id":"stage-four-cert-3ey"'
+
+  - name: SHOULD output Beads Audit header with Closed section
     type: contains
     values:
-      - '"decisions"'
+      - "## Beads Audit"
+      - "**Closed**"
 
-  - name: References health check issue
+  - name: SHOULD report k0w and 5bs as closed in audit output
     type: contains
     values:
       - "stage-four-cert-k0w"
-
-  - name: References caching issue
-    type: contains
-    values:
       - "stage-four-cert-5bs"
 
-  - name: References log aggregation issue
+  - name: SHOULD write audit artifact to audit_log/
     type: contains
     values:
-      - "stage-four-cert-3ey"
+      - "audit_log/update-beads-"
 
 model_evaluation:
   enabled: true
