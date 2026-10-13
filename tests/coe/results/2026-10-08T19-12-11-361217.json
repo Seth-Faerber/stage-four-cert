@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "Not logged in \u00b7 Please run /login\n",
+  "deterministic_checks": {
+    "Marks health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": false
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "Will uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Will not check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is only the error message 'Not logged in \u00b7 Please run /login'. No audit was performed. It does not read the checklist, evaluate any of the six items, add HEALTH_CHECK_INTERVAL or the /api/health endpoint, or give any structured findings. Nothing was wrongly checked off, but the output has no usable content, so it fails the rubric.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 2.303403,
+  "timestamp": "2026-10-08T19:12:11.361112"
+}

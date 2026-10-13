@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "I've read the skill, but there's no task attached to it, and I can't read your repo or run commands (`git log`, globbing routes, editing files, writing `audit_log/`) in this conversation.\n\n**To run the audit here, paste:**\n1. The contents of each file in `human-tasks/`\n2. `.env.example` and your env validation file (e.g. `src/env.ts`)\n3. `package.json`\n4. The output of `ls src/app/api/**/route.ts`\n5. The output of `git log --oneline -30`\n\nI'll then evaluate each item following Step 3. That means checking off only what the code proves, flagging credential and account items without checking them off, and adding items for new env vars or dependencies. I'll give you the edited checklists, the `audit_log/update-human-tasks-<timestamp>.json` contents, and the Step 5 summary block to apply yourself.\n\n**If you meant to run this in an agent environment with file and shell access,** the skill needs to be loaded there, not sent as a chat message.\n\n**Small gaps in the skill, if you want to tighten it:**\n- **Filename timestamps:** ISO 8601 contains colons (`2025-01-01T12:00:00Z`), which are invalid in filenames on Windows and awkward elsewhere. Consider a format like `20250101T120000Z`.\n- **No-directory case:** Step 5 lists a \"Skipped\" field, but the edge case says to output a plain message and stop. It's unclear whether an artifact is written, so pick one behavior.\n- **Stale `[x]` items:** Step 3 says to flag them, but the artifact schema has no category for that. They'd have to go under `flags`, so say so explicitly.\n- **Roadmap items:** \"Fully implemented\" is subjective. A rule like \"routes, schema, and UI all present, plus a test or a documented exception\" would reduce inconsistent check-offs.\n\nHow would you like to proceed?",
+  "deterministic_checks": {
+    "Marks health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [ ] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Will uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/users/route.ts` file",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "Will not check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [x] Implement `POST /api/users` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output never performs the audit. The test input was 'None', so the model had no checklist or codebase to examine. It asked the user to paste files and then offered critiques of the skill. It makes no decisions on any of the six rubric items (copy .env, provision DB, API key, JWT, DB connection, log aggregation). It also adds no HEALTH_CHECK_INTERVAL or /api/health item. It does not wrongly check off any credential item, but it gives no audit findings at all. The rubric is built around a specific stale checklist, and the output addresses none of it, so it counts as no useful output. The model's explanation of its limits is reasonable, but under this rubric the result is a 1.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 7.865169,
+  "timestamp": "2026-10-08T18:49:44.282719"
+}

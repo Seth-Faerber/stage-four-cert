@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "## Human-Tasks Audit\n\n- **Checked off**:\n  - Create `src/app/api/health/route.ts` file. The file exists.\n  - Implement `GET /api/health` endpoint. `router.get(\"/\")` returns `{status: \"ok\"}`, and `src/index.ts` mounts it at `/api/health`.\n\n  An earlier audit artifact lists these same two items as checked off, but `001-setup.md` still had them unchecked. I re-verified both against the code and made the edits this time.\n\n- **Added**:\n  - Set `JWT_SECRET` and `HEALTH_CHECK_INTERVAL` in `.env`. Both are in `.env.example`, and the checklist didn't mention them.\n  - Verify `GET /api/health` responds without a token. `src/auth.ts` lists `/health` in `PUBLIC_PATHS`, but the middleware is mounted globally. So `req.path` will be `/api/health`, which doesn't match, and the endpoint probably returns 401. This looks like a real bug.\n\n- **Needs human review**:\n  - Copy `.env.example` to `.env`. There is no `.env` in the repo, so I can't confirm it was done.\n  - Provision PostgreSQL and set `DATABASE_URL`. The credentials need human confirmation. There is also no Postgres driver in `package.json` and no DB client code.\n  - Obtain an API key and set `API_KEY`. The credentials need human confirmation.\n  - Verify JWT authentication against `GET /api/users`. There are no automated tests, so it needs a manual check.\n  - Confirm the database connection is live. There is no DB code to check, so it needs a manual check.\n  - `npm start` launches without errors (already `[x]`). The project is still npm-based and the script exists, but I didn't re-run it.\n  - Implement `POST /api/users`. I left it unchecked because `src/app/api/users/route.ts` only has `GET /` and `GET /:id`.\n  - Set up log aggregation for production. There is no evidence in the codebase, and it is an ongoing human task.\n\nThe audit artifact is at `audit_log/update-human-tasks-2026-10-09T01:00:00Z.json`.",
+  "deterministic_checks": {
+    "SHOULD mark health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "All six items the rubric says to leave or flag appear under 'Needs human review' and none were checked off: copy .env.example to .env, provision PostgreSQL / DATABASE_URL, obtain API_KEY, verify JWT authentication, confirm database connection is live, and set up log aggregation. The reasons given are sound: credentials need human confirmation, there are no automated tests, there is no DB code, and there is no logging infrastructure. HEALTH_CHECK_INTERVAL was added as a new item (set JWT_SECRET and HEALTH_CHECK_INTERVAL in .env), and an item to verify GET /api/health was also added. The two items checked off (create the health route file, implement GET /api/health) are roadmap-style items backed by code evidence, which the rubric allows. POST /api/users was correctly left unchecked because the route is only partially implemented. The output has some extra detail, such as the possible auth bug on /health, but it is accurate and useful. Overall it meets every criterion for a 5.",
+    "pass": true
+  },
+  "passed": false,
+  "duration_seconds": 22.877572,
+  "timestamp": "2026-10-13T15:15:38.721616"
+}

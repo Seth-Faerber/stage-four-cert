@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "## Human-Tasks Audit: incomplete, blocked\n\nI couldn't finish this audit. `human-tasks/` exists, but I couldn't read any checklist files in it.\n\n**What went wrong**\n- My tools can only read a file by exact path. They can't list a directory, run a glob or run `git log`.\n- Reading `human-tasks/` as a path returned \"Is a directory\".\n- I guessed these filenames and none exist: `README.md`, `checklist.md`, `setup.md`, `tasks.md`, `human-tasks.md`, `infrastructure.md`, `verification.md`, `TODO.md` and `roadmap.md`.\n\n**What I did read**\n- **`.env.example`** declares `DATABASE_URL`, `JWT_SECRET`, `API_KEY` and `HEALTH_CHECK_INTERVAL`.\n- **`package.json`** is npm-based. Its dependencies are express, jsonwebtoken, dotenv and node-cache, with TypeScript and ts-node as dev dependencies.\n- **Test runner**: `npm test` is a no-op (\"No test runner configured\"). So no verification item can be treated as covered by automated tests.\n- **Not done**: I couldn't glob `src/app/api/**/route.ts`. `package.json` suggests an Express app (`src/index.ts`) rather than Next.js route files, so that glob may not apply. I also didn't find or read an env validation file, and I couldn't get git history.\n\n**Results**\n- **Checked off**: none. I haven't seen the checklist items, so I can't verify any.\n- **Added**: none.\n- **Needs human review**: none identified yet. Once I can read the checklist, I expect to flag any items about `DATABASE_URL`, `JWT_SECRET` and `API_KEY` as credential items. Those need a human to confirm.\n- **Audit artifact**: I didn't write one to `audit_log/`. An empty file would wrongly suggest the audit ran cleanly.\n\n**To finish, I need one of these**\n1. The filenames inside `human-tasks/`, or their contents pasted in.\n2. The paths of the Express route files under `src/`, plus any env validation file, so I can check the API and env items.\n3. The output of `git log --oneline -30`, if you want history considered.\n\nOnce I have the filenames, I'll rerun the audit and write the artifact.",
+  "deterministic_checks": {
+    "SHOULD mark health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": false
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The auditor never read any checklist items, so it made no decisions on any of the six items. It did not flag or leave any of them, and it did not add HEALTH_CHECK_INTERVAL as a new item, even though it saw that variable in .env.example. It also wrote no audit artifact. It avoided wrongly checking off credential items, but only because it did nothing, not because it applied the rubric. The explanation of the tool limitations and the request for filenames are honest and clear, but they do not produce the audit the rubric asks for. The output is not useful for the task, so it scores 1.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 18.062703,
+  "timestamp": "2026-10-13T15:11:23.030844"
+}

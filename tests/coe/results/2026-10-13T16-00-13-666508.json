@@ -1,0 +1,75 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "## Human-Tasks Audit\n\n- **Checked off** (in `human-tasks/001-setup.md`):\n  - Create `src/app/api/health/route.ts` file. The file exists.\n  - Implement `GET /api/health` endpoint. The route returns `{status:\"ok\", timestamp}` and is mounted at `/api/health` in `src/index.ts`.\n- **Added**:\n  - Set `JWT_SECRET` in `.env`. The auth middleware needs it.\n  - Set `HEALTH_CHECK_INTERVAL` in `.env`. It sets the cache TTL and defaults to 60.\n  - Verify that `GET /api/health` responds without a token. `authMiddleware` is mounted app-wide and `PUBLIC_PATHS` lists `/health`, but `req.path` is `/api/health` there. The route will probably return 401, which looks like a real bug.\n- **Needs human review**:\n  - Copy `.env.example` to `.env`. I can't check from the repo whether this was done.\n  - Provision PostgreSQL and set `DATABASE_URL`. This is infrastructure. There is also no Postgres driver in `package.json` and no code reads `DATABASE_URL`.\n  - Obtain `API_KEY`. This is a credential, and no code reads it.\n  - Verify JWT authentication. `npm test` is a stub, so there are no automated tests.\n  - Confirm the database connection is live. There is no DB client code.\n  - `npm start` launches without errors (already `[x]`). The script still exists, but I didn't run it.\n  - Implement `POST /api/users`. The users route only has `GET /` and `GET /:id`, so I left it unchecked.\n  - Set up log aggregation. It's an ongoing human task and nothing in the codebase covers it.\n- **Process note**: I had no shell tool, so I couldn't run `git log --oneline -30`. This audit relied on reading files only. Earlier audit artifacts in `audit_log/` recorded the same health-route check-offs, but the checklist didn't show them. I've now applied them.\n\nThe audit artifact is `audit_log/update-human-tasks-2026-10-09T13:00:00Z.json`.",
+  "deterministic_checks": {
+    "SHOULD mark health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "All six rubric items are correctly left or flagged. The output puts the .env copy, PostgreSQL/DATABASE_URL, API_KEY, JWT verification, DB connection, and log aggregation under 'Needs human review' and checks none of them off. It adds HEALTH_CHECK_INTERVAL as a new env var item, which the rubric requires for a 5. It also adds a health-endpoint verification item and a JWT_SECRET item, both reasonable. The only check-offs are the health route file and the GET /api/health endpoint, which are roadmap items with clear code evidence. The output also flags POST /api/users as unimplemented and leaves it unchecked. The process note admits no shell tool was available for git log, which is honest. The claim that earlier audit artifacts had recorded the check-offs is a minor oddity but does not affect the core decisions.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 23.009764,
+  "timestamp": "2026-10-13T16:00:13.666304",
+  "logs": [
+    "\u2192 list_directory: human-tasks",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: human-tasks/001-setup.md",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: package.json",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: audit_log",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 list_directory: tests",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 list_directory: tests/coe",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app/api/health",
+    "\u2192 list_directory: src/app/api/users",
+    "\u2192 read_file: audit_log/update-human-tasks-2026-10-09T12:00:00Z.json",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 write_file: human-tasks/001-setup.md",
+    "\u2192 write_file: audit_log/update-human-tasks-2026-10-09T13:00:00Z.json",
+    "\u270e ## Human-Tasks Audit\n\n- **Checked off** (in `human-tasks/001-setup.md`):\n  - Create `src/app/api/hea"
+  ]
+}

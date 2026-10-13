@@ -2,34 +2,40 @@
 # Tests whether the skill's reasoning correctly identifies which checklist items
 # can be marked done given a pre-gathered codebase snapshot.
 
-setup: 
+setup:
   before: reset_eval.sh
   after: reset_eval.sh
+
+runner: agentic
+
+agent_options:
+  max_turns: 15
+  allowed_tools:
+    - list_directory
+    - read_file
+    - write_file
 
 prompt-under-eval: "~/.claude/skills/update-human-tasks/SKILL.md"
 
 model_for_eval: claude-sonnet-5-5
 
-model_parameters:
-  max_tokens: 25000
-
 deterministic_checks:
-  - name: Marks health routes complete
+  - name: SHOULD mark health routes complete
     type: file_contains
     file: human-tasks/001-setup.md
     values: 
-      - "- [ ] Create `src/app/api/health/route.ts` file"
-      - "- [ ] Implement `GET /api/health` endpoint"
-  - name: Will uncheck previously checked items if they are not found in the work.
+      - "- [x] Create `src/app/api/health/route.ts` file"
+      - "- [x] Implement `GET /api/health` endpoint"
+  - name: SHOULD uncheck previously checked items if they are not found in the work.
     type: file_does_not_contain
     file: human-tasks/001-setup.md
     values:
-      - "- [x] Create `src/app/api/users/route.ts` file"
-  - name: Will not check off items that are not done in the codebase (e.g. credentials, manual verification)
-    type: file_does_not_contain
+      - "- [ ] Create `src/app/api/users/route.ts` file"
+  - name: SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)
+    type: file_contains
     file: human-tasks/001-setup.md
     values:
-      - "- [x] Implement `POST /api/users` endpoint"
+      - "- [ ] Implement `POST /api/users` endpoint"
 
 model_evaluation:
   enabled: true

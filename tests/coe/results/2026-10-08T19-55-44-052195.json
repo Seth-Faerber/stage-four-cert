@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "## Human-Tasks Audit\n- **Checked off**:\n  - Create `src/app/api/health/route.ts`. The file exists.\n  - Implement `GET /api/health`. The handler returns `{status: \"ok\"}` and is mounted at `/api/health` in `src/index.ts`.\n- **Added** (both in `human-tasks/001-setup.md`):\n  - Set `JWT_SECRET` and `HEALTH_CHECK_INTERVAL` in `.env`.\n  - Verify `GET /api/health` responds without a token.\n- **Needs human review**:\n  - **Env and credentials:** copying `.env.example` to `.env`, provisioning PostgreSQL for `DATABASE_URL`, and obtaining `API_KEY`. There is no `.env` in the repo, and only a person can confirm credentials.\n  - **Manual checks:** JWT auth against `GET /api/users`, and a live database connection. No automated tests cover either.\n  - **POST /api/users:** I left it unchecked because only GET routes exist.\n  - **Log aggregation:** there is no evidence of it in the codebase.\n  - **`npm start` item:** it's still valid, but I didn't re-run it.\n- **Possible bug:** `PUBLIC_PATHS` in `src/auth.ts` is `[\"/health\"]`. The auth middleware runs globally, so `req.path` is `/api/health`, which doesn't match. The health endpoint therefore probably requires a token. That's why I added the verify item.\n\nThe audit artifact is at `audit_log/update-human-tasks-2026-10-09T00:55:35Z.json`.",
+  "deterministic_checks": {
+    "Marks health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Will uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Will not check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "All six rubric items are left or flagged and none are checked off. The .env copy, PostgreSQL/DATABASE_URL, and API_KEY items are flagged as env/credentials. JWT auth and the live DB connection are flagged as manual checks with no automated tests. Log aggregation is flagged as having no evidence in the codebase. The only items checked off were the health route file and the GET /api/health handler, which are roadmap items the code supports and which the rubric does not list as violations. The auditor added an item to set HEALTH_CHECK_INTERVAL (and JWT_SECRET) in .env, which meets the required add. It also added an item to verify the health endpoint. The extra bug note about PUBLIC_PATHS is useful and does no harm. Every requirement for a 5 is met.",
+    "pass": true
+  },
+  "passed": false,
+  "duration_seconds": 27.647439,
+  "timestamp": "2026-10-08T19:55:44.052044"
+}

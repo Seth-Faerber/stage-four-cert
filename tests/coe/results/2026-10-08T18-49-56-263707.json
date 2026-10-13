@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "You've shared the `update-human-tasks` skill definition but no request, and I don't have file or shell access in this conversation. I can't read `human-tasks/`, run `git log`, or write to `audit_log/` myself. Which of these do you want?\n\n1. **Run the audit.** Paste the contents of the `human-tasks/` files, `.env.example`, the env validation file, `package.json`, the API route list, and recent git log. I'll apply Steps 3-5 and give you the edited checklists, the audit JSON, and the findings block.\n2. **Review the skill itself.** I noticed a few gaps:\n   - **Stale items have no home in the artifact.** Step 3 says to flag stale `[x]` items, but the JSON schema only has `checked_off`, `added`, and `flags`. A `stale` category, or a convention that stale items go under `flags` with a specific reason, would fix this.\n   - **The timestamp in the filename may break on some systems.** ISO 8601 includes colons, which are invalid in Windows filenames. Use a format like `20250101T120000Z`.\n   - **The \"no directory\" case is inconsistent.** Step 1 says to skip all steps, which means no artifact. The edge-cases section says \"all items done\" writes an empty artifact. State explicitly whether a missing directory should also write one.\n   - **The env validation file is never located.** It's referenced without a path or search hint (e.g. `src/env.ts`, `env.mjs`).\n   - **The route glob is framework-specific.** `src/app/api/**/route.ts` only fits the Next.js App Router. It misses `pages/api`, monorepo layouts, and non-Next projects.\n   - **The git log has no stated purpose.** It's gathered but never tied to an evaluation rule. Say what it's for, such as detecting recently completed specs.\n   - **\"Fully implemented\" is vague for roadmap items.** The criterion is \"routes, schema, UI all present\", but there's no guidance on how to find the spec-to-code mapping.\n   - **Adding items has no guardrails.** Nothing says where new items go or how to avoid duplicates.\n3. **Something else**, such as converting it to another format or adapting it to a different stack.",
+  "deterministic_checks": {
+    "Marks health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [ ] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Will uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/users/route.ts` file",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "Will not check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [x] Implement `POST /api/users` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The test input was 'None', so the model had no checklist or codebase to audit. It correctly said it had no file access and asked for clarification. It then critiqued the skill definition instead of running the audit. The rubric expects a checklist audit: leaving or flagging the six human-action items and adding a HEALTH_CHECK_INTERVAL or /api/health item. The output made no decisions on any of the six items and added nothing. It did not check off any credential items, so it made no violations, but it also produced no audit output. Measured against the rubric, it is not useful, so it gets the lowest score. The model's behavior was reasonable given the missing input, but the rubric still scores the output as having no useful content.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 9.131722,
+  "timestamp": "2026-10-08T18:49:56.263527"
+}

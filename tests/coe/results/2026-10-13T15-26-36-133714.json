@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "## Human-Tasks Audit\n\nI couldn't run `git log --oneline -30` because I have no shell tool. I used the file contents instead.\n\n- **Checked off**\n  - `Create src/app/api/health/route.ts file`: the file exists.\n  - `Implement GET /api/health endpoint`: `route.ts` returns `{status:\"ok\"}`, and `src/index.ts` mounts it at `/api/health`.\n- **Added** (to `001-setup.md`)\n  - Set `JWT_SECRET` in `.env`. The auth middleware needs it, and it was missing from the checklist.\n  - Set `HEALTH_CHECK_INTERVAL` in `.env`. `cache.ts` reads it as a TTL and defaults to 60 if unset.\n  - Verify `GET /api/health` responds without a token. `PUBLIC_PATHS` is `[\"/health\"]`, but the middleware is applied globally. `req.path` is therefore `/api/health`, which isn't in the list, so the endpoint will probably return 401.\n- **Needs human review** (left unchecked)\n  - Copy `.env.example` to `.env`: there is no `.env` in the repo, and only a human can confirm it.\n  - Provision PostgreSQL and set `DATABASE_URL`: this is infrastructure, and `package.json` has no Postgres driver.\n  - Obtain `API_KEY`: it's a credential.\n  - Verify JWT authentication: there are no automated tests. `npm test` is a stub.\n  - Confirm the database connection is live: the code has no DB client.\n  - Implement `POST /api/users`: `users/route.ts` has only `GET /` and `GET /:id`.\n  - Set up log aggregation for production: there is no logging infrastructure.\n  - `Confirm npm start launches without errors` (already `[x]`): it is still valid, since the project uses npm and the script exists. I did not re-run it.\n- **Still valid**: the other `[x]` items (clone, Node, `npm install`, and the users route file) hold up.\n\nThe audit artifact is at `audit_log/update-human-tasks-2026-10-09T02:00:00Z.json`.\n\nThe earlier audit log (`...T01:00:00Z.json`) says the health items were checked off. The checklist still showed them unchecked, so that edit was never applied. I've applied it now.",
+  "deterministic_checks": {
+    "SHOULD mark health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "All six rubric items stay unchecked and are flagged for human review: copy .env, provision PostgreSQL/DATABASE_URL, obtain API_KEY, verify JWT, confirm DB connection, and set up log aggregation. None of the credential or manual-verification items were checked off. The auditor added HEALTH_CHECK_INTERVAL as a new env var item and also added a health endpoint verification item, so the ADD requirement is met. The auditor checked off the two health endpoint items (Create route.ts and Implement GET /api/health). Those are roadmap/implementation items, not in the rubric's leave list, and the output cites codebase evidence for them. The output also reports one limitation, that git log could not be run. The extra items it added (JWT_SECRET, the 401 concern) are reasonable. The output meets every rubric criterion for a 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 24.278907,
+  "timestamp": "2026-10-13T15:26:36.133492"
+}

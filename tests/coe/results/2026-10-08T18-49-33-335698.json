@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "I've read the skill, but you haven't asked me to do anything with it yet, and I don't have file or shell access in this conversation. I can't read `human-tasks/`, run `git log`, or write to `audit_log/`.\n\n**To run the audit here**, paste:\n1. The contents of each file in `human-tasks/`\n2. `.env.example` and the env validation file (if any)\n3. `package.json`\n4. The list of `src/app/api/**/route.ts` paths\n5. The output of `git log --oneline -30`\n\nI'll then return the Step 5 findings block, the updated checklists with items checked off, and the audit JSON ready to save.\n\n**To run it in an agent environment** (Claude Code or similar), drop this in as a skill and invoke it there, since it needs the Edit tool and filesystem access.\n\n**Possible improvements to the skill itself**, if you want feedback:\n- **Timestamp in filename:** ISO 8601 contains colons, which are invalid in Windows filenames. Consider `YYYYMMDDTHHMMSSZ`.\n- **Stale items:** Step 3 says to \"flag\" stale `[x]` items, but the JSON has no way to distinguish them from other flags. A `type` field (`credential`, `stale`, `ambiguous`, `verification`) would help.\n- **Where new items go:** \"Add new items\" doesn't say which file or section to put them in, so results may vary between runs.\n- **Missing env validation file:** Step 2 doesn't say how to find it (e.g. `src/env.ts`, `env.mjs`) or what to do if none exists.\n- **Stack assumptions:** The `src/app/api/**/route.ts` glob assumes the Next.js App Router and npm. It's worth noting that, or falling back gracefully for other layouts.\n- **Empty-run behavior:** The \"no directory\" case writes no artifact, while \"all done\" writes an empty one. That's fine, but it's worth stating explicitly.\n\nWhich would you like: the audit run on pasted content, or a revised version of the skill?",
+  "deterministic_checks": {
+    "Marks health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [ ] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Will uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/users/route.ts` file",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "Will not check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [x] Implement `POST /api/users` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output never performs the audit. It says it has no file or shell access, asks the user to paste the inputs, and offers feedback on the skill. It makes no decisions on any of the six checklist items and adds no HEALTH_CHECK_INTERVAL or /api/health item. It also produces no audit artifact and no Step 5 findings block. The output did not check off any credential or manual-verification items, so it made no clear violations. But with no leave/flag decisions at all, it cannot meet the rubric's criteria for a passing score. The skill feedback is reasonable, but it is not the audit the rubric evaluates. The test input was 'None', which explains the output, but the rubric still expects an audit with correct decisions. Under that standard, the result is not useful.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 9.816891,
+  "timestamp": "2026-10-08T18:49:33.335508"
+}

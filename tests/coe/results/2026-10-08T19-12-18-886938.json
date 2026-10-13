@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "Not logged in \u00b7 Please run /login\n",
+  "deterministic_checks": {
+    "Marks health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": false
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "Will uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Will not check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is only 'Not logged in \u00b7 Please run /login', an authentication error. The auditor never ran. It read no checklist, made no leave/flag decisions on the six items, and added nothing for HEALTH_CHECK_INTERVAL or the /api/health endpoint. It also wrote no audit artifact and returned no structured findings. Nothing in it is useful for the audit task, so it gets the lowest score.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 1.646209,
+  "timestamp": "2026-10-08T19:12:18.886591"
+}

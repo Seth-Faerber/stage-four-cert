@@ -1,0 +1,51 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "Not logged in \u00b7 Please run /login\n",
+  "deterministic_checks": {
+    "Marks health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": false
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "Will uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Will not check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is only the message 'Not logged in \u00b7 Please run /login'. It is an authentication error, not an audit. It never read the checklist or the codebase, made no decisions on any of the six items, added nothing (no HEALTH_CHECK_INTERVAL or /api/health item), and produced no audit artifact or structured findings. Nothing in it can be scored as correct leave/flag handling, so it counts as no useful output.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 2.016163,
+  "timestamp": "2026-10-08T19:24:29.524876"
+}

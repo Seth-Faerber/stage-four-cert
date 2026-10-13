@@ -1,0 +1,73 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "## Human-Tasks Audit\n\n- **Checked off** (in `human-tasks/001-setup.md`):\n  - Create `src/app/api/health/route.ts` file. The file exists.\n  - Implement `GET /api/health` endpoint. The handler returns `{status, timestamp}` and is mounted at `/api/health` in `src/index.ts`. See the auth bug below.\n- **Added**:\n  - Set `JWT_SECRET` in `.env`. The auth middleware falls back to an empty secret if it's unset.\n  - Set `HEALTH_CHECK_INTERVAL` in `.env`. It's optional and defaults to 60.\n  - Verify that `GET /api/health` responds without a token (see the auth bug below).\n- **Needs human review**:\n  - **Possible bug:** `PUBLIC_PATHS` in `src/auth.ts` is `[\"/health\"]`. The middleware is mounted at the app root, so `req.path` is `/api/health` and won't match. The health endpoint probably returns 401 without a token. I left this unfixed because it's outside this skill's scope.\n  - Copy `.env.example` to `.env`. A human has to confirm this.\n  - Provision PostgreSQL and set `DATABASE_URL`. There's no Postgres driver in `package.json` and no code reads `DATABASE_URL`.\n  - Obtain `API_KEY`. No code reads it.\n  - Verify JWT auth works, and confirm the database connection is live. `npm test` is a stub, and there's no DB client code.\n  - Implement `POST /api/users`. The users route only has `GET /` and `GET /:id`, so I left it unchecked.\n  - Set up log aggregation for production. This is an ongoing human task.\n  - `npm start` launches without errors (already `[x]`). The script still exists and the project is still npm-based, but I didn't run it.\n- **Audit process caveats**:\n  - I couldn't run `git log --oneline -30` because I have no shell tool, so I worked from file inspection only.\n  - I had no clock either, so the artifact's timestamp (`2026-10-09T21:00:00Z`) is the next one in sequence, not a real reading.\n  - `001-setup.md` was back in its original state even though earlier audits recorded edits to it. `reset_eval.sh` probably reverted it with `git checkout HEAD -- human-tasks/`. I re-applied the edits, and they are uncommitted.\n\nThe audit artifact is at `audit_log/update-human-tasks-2026-10-09T21:00:00Z.json`.",
+  "deterministic_checks": {
+    "SHOULD mark health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "All six rubric items are left or flagged and none are checked off. The six are: copy .env.example, provision PostgreSQL / DATABASE_URL, obtain API_KEY, verify JWT auth, confirm the DB connection is live, and set up log aggregation. Log aggregation is listed as 'ongoing human task' under needs human review, which counts as a flag. The only items checked off are the health route file and the GET /api/health endpoint, which are roadmap-type items and fall outside the six rubric items. The auditor added HEALTH_CHECK_INTERVAL as a new env var item and also added a verification item for /api/health, so both ADD options are covered. The output also surfaces a possible auth bug and is transparent about its caveats (no shell, no clock, reset file). Some of that is extra noise, such as the made-up timestamp, but it does not affect the core decisions. Checking off the health endpoint items is reasonable given the code evidence. This meets every criterion for a 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 23.633449,
+  "timestamp": "2026-10-13T16:04:02.054811",
+  "logs": [
+    "\u2192 list_directory: human-tasks",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: human-tasks/001-setup.md",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: package.json",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: audit_log",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 list_directory: tests",
+    "\u2192 read_file: audit_log/update-human-tasks-2026-10-09T20:00:00Z.json",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 list_directory: tests/coe",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 write_file: human-tasks/001-setup.md",
+    "\u2192 write_file: audit_log/update-human-tasks-2026-10-09T21:00:00Z.json",
+    "\u270e ## Human-Tasks Audit\n\n- **Checked off** (in `human-tasks/001-setup.md`):\n  - Create `src/app/api/hea"
+  ]
+}
