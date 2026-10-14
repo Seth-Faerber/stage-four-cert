@@ -1,0 +1,133 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Perfect! Now let me generate the final report output:\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: Implemented as GET /api/health returning {status: ok, timestamp} with proper auth bypass via PUBLIC_PATHS\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Implemented with cache.ts module using node-cache, TTL config, and get/set/del exports\n\n**Flagged**\n- stage-four-cert-3ey \u2014 Set up log aggregation: External blocker\u2014awaiting ops team to provision log destination. No logging infrastructure currently in codebase. Cannot proceed until blocker resolved.",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The output closes stage-four-cert-k0w (health check endpoint) and stage-four-cert-5bs (in-memory caching), each with specific evidence: a GET /api/health route, and a cache.ts module using node-cache. It does not close stage-four-cert-3ey (log aggregation). It flags that issue as still blocked, noting there is no logging infrastructure in the codebase, which matches the rubric's 'leave' decision. All three decisions are correct and reasoned. The headers follow the required format, and omitting the empty Orphaned work section is allowed. The only flaw is the stray 'Perfect! Now let me generate...' preamble, which does not affect the decisions.",
+    "pass": true
+  },
+  "passed": false,
+  "duration_seconds": 33.605016,
+  "timestamp": "2026-10-14T10:44:09.630138",
+  "logs": [
+    "\u270e I'll perform an audit of the beads issues against the actual codebase state. Let me start by gatheri",
+    "\u2192 run_command: source ~/.zshrc && bd ready -n 30",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good, I can see there are 3 open issues. Now let me get details on each one and check the codebase:",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u2192 list_directory: .",
+    "\u270e Now let me examine the source code to check if these features are implemented:",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u270e Great! I can see `cache.ts` is present and `node-cache` is in dependencies. Let me check the actual",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Perfect! Now let me check for logging setup:",
+    "\u2192 run_command: find src -type f -name \"*.ts\" | xargs grep -l \"log\\|logger\\|winston\\|pino\" 2>/de",
+    "\u2192 run_command: grep -i \"log\" package.json",
+    "\u270e Let me check if there's any logging middleware or aggregation setup:",
+    "\u2192 run_command: grep -r \"aggregat\\|winston\\|pino\\|bunyan\\|morgan\" src/ 2>/dev/null",
+    "\u2192 run_command: git log --oneline --all | head -20",
+    "\u270e Excellent! I can see from the git log that commit `cc0d4f2` is labeled \"feat: State B \u2014 add health c",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Perfect! Now let me create the audit log directory if it doesn't exist and prepare the audit report:",
+    "\u2192 run_command: ls -la audit_log/ 2>/dev/null || echo \"audit_log directory exists but empty or d",
+    "\u270e Good, the audit_log directory exists. Now let me generate the timestamp and close the issues:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u270e Perfect. Now let me close the two completed issues:",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 cache.ts",
+    "\u270e Excellent! Now let me write the audit log artifact:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T15-43-54Z.json",
+    "\u270e Perfect! Now let me generate the final report output:\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-"
+  ]
+}

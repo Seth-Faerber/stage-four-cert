@@ -30,14 +30,14 @@ deterministic_checks:
     file: .beads/interactions.jsonl
     values:
       - '"issue_id":"stage-four-cert-k0w"'
-      - '"new_value":"done"'
+      - '"new_value":"closed"'
 
   - name: SHOULD close 5bs in beads (cache module is implemented)
     type: file_contains
     file: .beads/interactions.jsonl
     values:
       - '"issue_id":"stage-four-cert-5bs"'
-      - '"new_value":"done"'
+      - '"new_value":"closed"'
 
   - name: SHOULD NOT touch 3ey in beads (log aggregation not implemented)
     type: file_does_not_contain

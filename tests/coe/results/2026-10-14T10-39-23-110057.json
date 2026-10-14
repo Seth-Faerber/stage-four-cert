@@ -1,0 +1,124 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Perfect! Now let me output the findings with the exact format specified:\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: GET /api/health endpoint implemented at src/app/api/health/route.ts returning {status: ok, timestamp}\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Cache module implemented at src/cache.ts using node-cache with configurable TTL\n\n**Flagged**\n- stage-four-cert-3ey \u2014 Set up log aggregation: Blocker issue (stage-four-cert-5bs) now resolved, but this issue is externally blocked on ops team provisioning the log destination\u2014unable to proceed without external coordination\n\n**Orphaned work**\n- 728b5d6 setup things for beads \u2014 infrastructure/system setup, not a tracked feature\n- cc0d4f2 feat: State B \u2014 add health check, cache module, and coe eval suite \u2014 partially corresponds to the two closed issues\n\n---\n\n**Audit artifact written** to `audit_log/update-beads-2026-10-14T15:39:10Z.json`",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The audit makes all three correct decisions. It closes stage-four-cert-k0w, citing the health endpoint at src/app/api/health/route.ts. It closes stage-four-cert-5bs, citing src/cache.ts using node-cache. It does not close stage-four-cert-3ey (log aggregation), instead flagging it as still blocked on external log-destination provisioning, which matches the expected 'leave' outcome since nothing was closed without evidence. The flag reasoning is slightly muddled because it mentions the resolved 5bs blocker, but the conclusion is sound. The output follows the required headers, lists orphaned commits, and notes the audit artifact. The stray 'Perfect!' preamble is a minor cosmetic flaw.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 28.145937,
+  "timestamp": "2026-10-14T10:39:23.109836",
+  "logs": [
+    "\u270e I'll help you audit the beads issues against the current codebase. Let me start by gathering the nec",
+    "\u2192 run_command: source ~/.zshrc && bd ready -n 30",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good! Now let me get details on each of the 3 open issues:",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me examine the codebase structure and check for implementations:",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: find . -type f -name \"*.js\" -o -name \"*.ts\" -o -name \"*.json\" | grep -E \"(src/|l",
+    "\u270e Excellent! Let me check these key files to verify which issues have been completed:",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: package.json",
+    "\u270e Perfect! Now let me check if there's any logging setup to cross-reference with the log aggregation i",
+    "\u2192 run_command: grep -r \"log\" src/ --include=\"*.ts\" | head -20",
+    "\u2192 run_command: find . -name \"audit_log\" -type d",
+    "\u270e Now let me check the audit_log directory and create the audit artifact:",
+    "\u2192 list_directory: audit_log",
+    "\u270e Now let me verify the implementations against each issue and close the completed ones:",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 In-memor",
+    "\u270e Good! Now let me get the current timestamp and check the git log for any orphaned work:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u270e Now let me create the audit artifact and write the findings:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T15:39:10Z.json",
+    "\u270e Perfect! Now let me output the findings with the exact format specified:\n\n## Beads Audit\n\n**Closed**"
+  ]
+}
