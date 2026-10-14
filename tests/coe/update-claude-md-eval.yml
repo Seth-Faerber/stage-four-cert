@@ -1,119 +1,47 @@
 # Isolated evaluation for the update-claude-md skill.
-# Tests whether the skill's reasoning correctly identifies CLAUDE.md discrepancies
-# given a pre-gathered codebase snapshot. State B: code updated, docs stale.
+# Tests whether the skill correctly identifies and fixes CLAUDE.md discrepancies
+# against the actual codebase. State B: code updated, docs stale.
+# A/B state: State B (stale CLAUDE.md) is committed at HEAD.
+# reset_eval.sh restores it via `git checkout HEAD -- CLAUDE.md` before and after each run.
 
-setup: 
+setup:
   before: reset_eval.sh
   after: reset_eval.sh
 
+runner: agentic
+agent_options:
+  max_turns: 20
+  allowed_tools: [list_directory, read_file, write_file, run_command]
+
 prompt-under-eval: "~/.claude/skills/update-claude-md/SKILL.md"
-
-test_input:
-  claude_md: |
-    # Stage Four Cert — Project Guide
-
-    ## Overview
-    A minimal Node.js/Express API demonstrating JWT authentication and user management. Built with TypeScript.
-    **Stack**: Express, TypeScript, dotenv, jsonwebtoken
-
-    ## Common Commands
-    | Command | Description |
-    |---------|-------------|
-    | `npm start` | Start the server (ts-node) |
-    | `npm test` | No test runner configured yet |
-
-    ## Architecture
-
-    ### API Routes
-    | Route | Auth | Description |
-    |-------|------|-------------|
-    | `GET /api/users` | Required | List all users |
-    | `GET /api/users/:id` | Required | Get a single user |
-
-    ### Authentication
-    JWT-based. All routes require a Bearer token except those in PUBLIC_PATHS in src/auth.ts.
-
-    ### Directory Structure
-    ```
-    src/
-      index.ts          — Express app entry point
-      auth.ts           — JWT middleware
-      app/api/
-        users/
-          route.ts      — GET /api/users, GET /api/users/:id
-    ```
-
-    ## Environment Variables
-    | Variable | Required | Description |
-    |----------|----------|-------------|
-    | `DATABASE_URL` | Yes | PostgreSQL connection string |
-    | `JWT_SECRET` | Yes | Secret for signing/verifying JWTs |
-    | `API_KEY` | Yes | External API key |
-    | `PORT` | No | Server port (default: 3000) |
-
-  codebase_context: |
-    package.json dependencies: express, dotenv, jsonwebtoken, node-cache
-    package.json devDependencies: @types/express, @types/jsonwebtoken, @types/node, @types/node-cache, ts-node, typescript
-
-    .env.example variables: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL
-
-    Source files:
-      src/index.ts
-      src/auth.ts
-      src/cache.ts
-      src/app/api/users/route.ts
-      src/app/api/health/route.ts
-
-    API routes:
-      GET /api/health (src/app/api/health/route.ts) — no auth, returns {status: ok, timestamp}
-      GET /api/users (src/app/api/users/route.ts) — auth required
-      GET /api/users/:id (src/app/api/users/route.ts) — auth required
-
-    src/cache.ts: in-memory caching module using node-cache; reads HEALTH_CHECK_INTERVAL env var
 
 model_for_eval: claude-haiku-4-5-20251001
 
 model_parameters:
-  max_tokens: 2000
+  max_tokens: 15000
 
 deterministic_checks:
-  - name: Returns JSON findings
-    type: contains
+  - name: Health route added to CLAUDE.md
+    type: file_contains
+    file: CLAUDE.md
     values:
-      - '"findings"'
-
-  - name: Identifies missing health route
-    type: contains
+      - "/api/health"
+  - name: Cache module added to CLAUDE.md
+    type: file_contains
+    file: CLAUDE.md
     values:
-      - "health"
-
-  - name: Identifies missing cache.ts or node-cache
-    type: contains
-    values:
-      - "cache"
-
-  - name: Identifies missing HEALTH_CHECK_INTERVAL
-    type: contains
-    values:
-      - "HEALTH_CHECK_INTERVAL"
+      - "cache.ts"
 
 model_evaluation:
   enabled: true
   model: claude-sonnet-5-5
   rubric: |
-    You are evaluating a CLAUDE.md audit response. The auditor was given a stale CLAUDE.md and
-    an updated codebase. Three specific gaps exist that the auditor should find:
-    1. GET /api/health route is missing from the API Routes table
-    2. src/cache.ts is missing from the Directory Structure
-    3. HEALTH_CHECK_INTERVAL is missing from the Environment Variables table
-    4. node-cache dependency is missing from the Stack/Overview
+    Score the model's response on a scale of 1 to 5 based on how well it audited and updated CLAUDE.md.
 
-    Score 5: Correctly identifies all 3-4 gaps with accurate details
-    Score 4: Correctly identifies at least 3 gaps, minor inaccuracies acceptable
-    Score 3: Identifies 2 of the gaps
-    Score 2: Identifies 1 gap or findings are mostly inaccurate
-    Score 1: Identifies no gaps or hallucinates non-existent issues
-
-    A score of 4+ is passing.
+    5 - Found all three discrepancies (health route, cache.ts, HEALTH_CHECK_INTERVAL); updated CLAUDE.md accurately for each; wrote a valid JSON audit artifact to audit_log/; returned a correctly formatted ## CLAUDE.md Audit block.
+    4 - Found and updated at least two discrepancies correctly; minor gap (e.g. missed env var or audit artifact format slightly off).
+    3 - Found and updated at least one discrepancy; missed others or skipped writing the audit artifact.
+    2 - Identified discrepancies in text output but did not actually update CLAUDE.md.
+    1 - Failed to run, hallucinated changes not grounded in the codebase, or made no meaningful changes.
 
     Return a JSON object: { "score": <1-5>, "reasoning": "<brief explanation>" }
