@@ -1,0 +1,65 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "## CLAUDE.md Audit\n\n**Updated:**\n- **Overview**: Added node-cache to stack; clarified caching and health check features\n- **Common Commands**: Clarified npm test is a placeholder with no test runner configured\n- **API Routes**: Added `GET /api/health` (public route) that was missing\n- **Authentication**: Corrected public path to `/health` (not just health check concept)\n- **Architecture**: Added new \"Caching\" subsection describing node-cache integration with TTL control\n- **Directory Structure**: Added `src/cache.ts`; added `health/route.ts` to API tree\n- **Environment Variables**: Added `HEALTH_CHECK_INTERVAL`; marked `DATABASE_URL` and `API_KEY` as currently unused (No)\n- **Open Issues**: Replaced stale beads list with reference to recent git history showing completed features\n- **Notes**: Added new section clarifying simulated in-memory users and unused DB/API configuration\n\n**Needs human review:**\n- None \u2014 all changes are factual corrections based on actual codebase state\n\n\u2705 **CLAUDE.md updated successfully**. Audit log written to `audit_log/update-claude-md-2025-01-24T00-00-00Z.json`.",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output identifies all three target discrepancies: the missing health route (added `GET /api/health` and `health/route.ts` to the tree), the missing `src/cache.ts` (added to the directory structure and a new Caching subsection), and the missing `HEALTH_CHECK_INTERVAL` env var (added to Environment Variables). That meets the core requirement for a 4 or 5. The output also has weaknesses that count as minor errors. The Authentication edit ('Corrected public path to /health') is vaguely worded and may be inaccurate. It marks `DATABASE_URL` and `API_KEY` as unused, and rewrites Open Issues and adds a Notes section. These go beyond the three discrepancies and are unverifiable from the output. They may be accurate, but they add some risk of over-editing. The 'Needs human review: None' claim is also somewhat overconfident given the subjective rewrites of Open Issues. Because the three key discrepancies were found and fixed, with minor extraneous or questionable changes, a 4 is appropriate.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 24.387761,
+  "timestamp": "2026-10-14T16:16:48.075295",
+  "num_turns": 6,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering gr",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Now let me check the actual files in src to understand the real structure:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: .env.example",
+    "\u270e Let me check the API routes directory:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Perfect. Now let me check for any other important files:",
+    "\u2192 list_directory: tests",
+    "\u2192 list_directory: human-tasks",
+    "\u2192 list_directory: .beads",
+    "\u270e Now I have all the ground truth. Let me create the updated CLAUDE.md and the audit log:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u2192 write_file: audit_log/update-claude-md-2025-01-24T00-00-00Z.json",
+    "\u270e ## CLAUDE.md Audit\n\n**Updated:**\n- **Overview**: Added node-cache to stack; clarified caching and he",
+    "\u2139 6 turn(s)"
+  ]
+}

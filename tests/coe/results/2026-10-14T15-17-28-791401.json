@@ -1,0 +1,68 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "---\n\n## CLAUDE.md Audit \u2014 Complete \u2705\n\n**Updated sections:**\n- Added `node-cache` to Stack (was missing from tech list)\n- Clarified `npm start` entry point (`src/index.ts`)\n- **Added missing route**: `GET /api/health` (public health check)\n- Expanded Authentication section with Bearer token header format\n- **New subsection**: Caching architecture (node-cache TTL control via `HEALTH_CHECK_INTERVAL`)\n- Updated Directory Structure to include `cache.ts` and health endpoint\n- Added `HEALTH_CHECK_INTERVAL` env var (controls cache TTL, default 60s)\n- Replaced stale open issues list with link to `.beads/` and `git log`\n\n**Needs human review:**\n1. **Unused env vars**: `DATABASE_URL` and `API_KEY` are documented as required but not used in actual code. Kept them in CLAUDE.md to match documented API contract\u2014confirm if this is intentional.\n2. **No database schema**: No `src/lib/db/schema/` directory found. Project uses in-memory user store. This is correct as-is, just noting for clarity.\n\n**Audit artifact written**: `audit_log/update-claude-md-2025-01-16T00-00-00Z.json`\n\nAll factual updates completed. CLAUDE.md now accurately reflects the codebase state (health endpoint implemented, caching layer added, routes documented).",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output identifies all three discrepancies named in the rubric: the health route (`GET /api/health` added), `cache.ts` (added to Directory Structure and a new caching subsection), and `HEALTH_CHECK_INTERVAL` (added as an env var). It also mentions the audit artifact path and uses a '## CLAUDE.md Audit' header with Updated and Needs human review lists, which is broadly the requested format. There are several reasons not to give a 5. The output has extra decoration ('Complete \u2705', a trailing summary) and the heading is preceded by a divider. It also makes several claims that cannot be verified from the output and may be hallucinated: 'Replaced stale open issues list with link to .beads/', 'Clarified npm start entry point', 'Bearer token header format', and the 'node-cache' addition. The artifact's timestamp '2025-01-16T00-00-00Z' looks fabricated and placeholder-like, and the output does not show the JSON contents, so validity cannot be confirmed. The flag about DATABASE_URL and API_KEY being unused but kept is arguably against the 'accuracy over completeness' instruction, since an unused required env var should be flagged and not left as documented. The 'no database schema' note is not really a review item. Overall the core discrepancies were found and handled, but the unverifiable extras and the questionable artifact timestamp keep this at a 4.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 29.496754,
+  "timestamp": "2026-10-14T15:17:28.791249",
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase. Let me start by gathering the grou",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -50",
+    "\u270e Good! Now let me check the actual source files and structure more thoroughly:",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Now let me check the route files and recent git history:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 run_command: git log --oneline -20 2>/dev/null || echo \"Git history unavailable\"",
+    "\u2192 run_command: ls -la .beads/ 2>/dev/null || echo \"No .beads directory\"",
+    "\u270e Perfect! Now let me check if there are any database schema files or config files I should be aware o",
+    "\u2192 run_command: find src -name \"*.ts\" -type f | sort",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Now I have a complete picture. Let me create the audit findings and update CLAUDE.md:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 write_file: audit_log/update-claude-md-2025-01-16T00-00-00Z.json",
+    "\u270e Perfect! Let me verify the updated CLAUDE.md is correct:",
+    "\u2192 read_file: CLAUDE.md",
+    "\u270e ---\n\n## CLAUDE.md Audit \u2014 Complete \u2705\n\n**Updated sections:**\n- Added `node-cache` to Stack (was missi"
+  ]
+}

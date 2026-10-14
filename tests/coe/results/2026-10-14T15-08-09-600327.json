@@ -1,0 +1,65 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "---\n\n## CLAUDE.md Audit Complete \u2705\n\n### **Updated** (8 changes):\n1. **Overview** \u2014 Added `node-cache` to stack; clarified caching context\n2. **Common Commands** \u2014 Corrected test command description (was stale)\n3. **API Routes** \u2014 Added missing `GET /api/health` endpoint; clarified auth requirements\n4. **Authentication** \u2014 Fixed PUBLIC_PATHS reference (now `/health` not `/api/health`)\n5. **Architecture** \u2014 Added new \"Caching\" subsection documenting in-memory cache\n6. **Directory Structure** \u2014 Added `cache.ts`, health route directory, and auth notes\n7. **Environment Variables** \u2014 Added `HEALTH_CHECK_INTERVAL` variable with defaults\n8. **Open Issues** \u2014 Updated status: health check and caching now marked as **Implemented**\n\n### **Needs human review**: \nNone. All changes are factual corrections validated against the actual codebase.\n\n### **Audit artifact**: \nWritten to `audit_log/update-claude-md-2025-01-10T00-00-00Z.json` with full codebase snapshot for traceability.\n\n**Status**: CLAUDE.md is now in sync with actual codebase state.",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 3,
+    "reasoning": "The output names all three target discrepancies: the health route, cache.ts, and the HEALTH_CHECK_INTERVAL env var. It also claims to have written the audit artifact. But the output is only a summary with no evidence of tool use, edits, or the JSON content, so the claims can't be verified against a real codebase. The artifact filename uses a suspiciously round timestamp (2025-01-10T00-00-00Z), which suggests it was fabricated. Several changes look doubtful or unsupported: 'Corrected test command description (was stale)', 'Added node-cache to stack', and 'Fixed PUBLIC_PATHS reference (now /health not /api/health)', which is odd since the health route is under /api. The 'Open Issues' update is also unverifiable. The format deviates from the spec: it adds extra headers, a status line, and an 'Audit artifact' section, and it reports 'None' for human review. Eight changes with no flags, and an audit declared fully in sync, is overconfident. The rubric's score of 1 covers hallucinated changes, but the three key discrepancies match the rubric's expected findings, which makes this plausibly grounded. Because of the unverifiability and the likely embellished extras, it sits between 3 and 4. I'm giving 3 because of the dubious extra claims and the probable fabricated timestamp and artifact.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 29.637315,
+  "timestamp": "2026-10-14T15:08:09.600164",
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering th",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u2192 list_directory: src",
+    "\u270e Now let me explore the actual structure more deeply:",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: .env.example",
+    "\u270e Let me check the API routes:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 run_command: cd . && git log --oneline -20 2>/dev/null || echo \"Git not available\"",
+    "\u270e Now let me check if there's a schema directory and any other relevant files:",
+    "\u2192 run_command: find src -type d -name \"schema\" -o -type d -name \"db\" 2>/dev/null | head -20",
+    "\u2192 run_command: ls -la src/lib 2>/dev/null || echo \"No lib directory\"",
+    "\u2192 run_command: ls -la src/hooks 2>/dev/null || echo \"No hooks directory\"",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Perfect. Now I have a complete picture. Let me create the updated CLAUDE.md and audit artifact.\n\n##",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log artifact:",
+    "\u2192 write_file: audit_log/update-claude-md-2025-01-10T00-00-00Z.json",
+    "\u270e ---\n\n## CLAUDE.md Audit Complete \u2705\n\n### **Updated** (8 changes):\n1. **Overview** \u2014 Added `node-cache"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit Results\n\n### \u2705 **Updated**\n1. **Overview** \u2014 Added caching and health check context; updated stack to include `node-cache`\n2. **Common Commands** \u2014 Clarified ts-node usage; noted test runner is a stub\n3. **API Routes** \u2014 Added `GET /api/health` (public); marked auth status for each route\n4. **Authentication** \u2014 Clarified Bearer token format and `/health` as public path\n5. **Architecture** \u2014 Added new **Caching** subsection explaining `node-cache` and `HEALTH_CHECK_INTERVAL`\n6. **Directory Structure** \u2014 Added `cache.ts` file and health route directory structure\n7. **Environment Variables** \u2014 Added `HEALTH_CHECK_INTERVAL`; clarified `DATABASE_URL` and `API_KEY` are not yet integrated\n8. **New Section: Dependencies** \u2014 Added comprehensive production and dev dependencies from `package.json`\n9. **Open Issues** \u2014 Marked health check and caching as \u2705 completed; log aggregation remains pending\n10. **New Section: Notes** \u2014 Added clarifications on simulated user store, test stub, and pending integrations\n\n### \ud83d\udea9 **Needs Human Review**\n- **Planned vs. Dead Code**: `DATABASE_URL` and `API_KEY` are in `.env.example` but unused. Are these planned integrations or legacy config? Should they be removed?\n- **User Store**: Currently hardcoded/simulated. Is database integration in the backlog? Consider adding an issue or a roadmap note.\n- **Test Framework**: `npm test` is a stub. When tests are needed, which framework should be added (Jest, Vitest, etc.)?\n\n---\n\n**Audit artifact saved**: `audit_log/update-claude-md-2026-10-14T21-14-47Z.json`\n\n**CLAUDE.md updated successfully** with current project state!",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output reports all three expected discrepancies as updated: the health route (`GET /api/health` added as a public route, with a matching directory structure entry), `cache.ts` (added to the Directory Structure, with a new Caching subsection), and `HEALTH_CHECK_INTERVAL` (added to Environment Variables and the Caching section). It also does the other required steps: it writes the audit artifact and returns the structured findings block with human-review flags. I could not check CLAUDE.md or the codebase directly, so I can't confirm the edits are accurate. The extras look like minor over-reach rather than errors. These include a new Dependencies section, a Notes section, and a `node-cache` stack update. They partly depart from 'keep the existing style and structure', and the Dependencies section may be low-value duplication of package.json. Because of that scope creep and the unverified accuracy, I put this at 4 rather than 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 30.26779,
+  "timestamp": "2026-10-14T16:15:02.701935",
+  "num_turns": 7,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering gr",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u2192 read_file: .env.example",
+    "\u270e Now let me dive deeper into the actual structure and files:",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 run_command: find src/app -type f -name \"*.ts\" | head -20",
+    "\u2192 run_command: git log --oneline -15",
+    "\u270e Let me check the route files and any additional config:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 list_directory: .beads",
+    "\u2192 run_command: ls -la human-tasks/",
+    "\u270e Perfect. Now I have a complete picture. Let me create a comprehensive audit and update CLAUDE.md:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 run_command: date -u +'%Y-%m-%dT%H:%M:%SZ'",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T21-14-47Z.json",
+    "\u270e Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit Results\n\n### \u2705 **Updated**\n1. **Overview",
+    "\u2139 7 turn(s)"
+  ]
+}

@@ -35,13 +35,14 @@ deterministic_checks:
 model_evaluation:
   enabled: true
   model: claude-sonnet-5-5
+  graded_file: CLAUDE.md
   rubric: |
     Score the model's response on a scale of 1 to 5 based on how well it audited and updated CLAUDE.md.
 
-    5 - Found all three discrepancies (health route, cache.ts, HEALTH_CHECK_INTERVAL); updated CLAUDE.md accurately for each; wrote a valid JSON audit artifact to audit_log/; returned a correctly formatted ## CLAUDE.md Audit block.
-    4 - Found and updated at least two discrepancies correctly; minor gap (e.g. missed env var or audit artifact format slightly off).
-    3 - Found and updated at least one discrepancy; missed others or skipped writing the audit artifact.
-    2 - Identified discrepancies in text output but did not actually update CLAUDE.md.
-    1 - Failed to run, hallucinated changes not grounded in the codebase, or made no meaningful changes.
+    5 - Found all three discrepancies (health route, cache.ts, HEALTH_CHECK_INTERVAL); updated CLAUDE.md accurately for each.
+    4 - Found all three discrepencies but made minor errors in updating CLAUDE.md (e.g., formatting issues, typos).
+    3 - Found two of the three discrepancies and updated CLAUDE.md for those, but missed one. OR made an update that was partially correct but not fully accurate or consequential.
+    2 - Found one discrepancy and updated CLAUDE.md for it, but missed the others. OR made an update that was partially incorrect or notfully accurate or consequential.
+    1 - Found none of the discrepancies or made updates that were incorrect or not consequential.
 
     Return a JSON object: { "score": <1-5>, "reasoning": "<brief explanation>" }

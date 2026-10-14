@@ -1,0 +1,65 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "## CLAUDE.md Audit\n\n**Updated:**\n- Added `GET /api/health` endpoint to API Routes table (public, no auth required)\n- Expanded Directory Structure to show actual `src/app/api/{health,users}/route.ts` layout\n- Added new \"Caching\" subsection documenting `src/cache.ts` module (node-cache with `HEALTH_CHECK_INTERVAL` TTL)\n- Removed `API_KEY` from Environment Variables (not in `.env.example`)\n- Added `HEALTH_CHECK_INTERVAL` to Environment Variables (present in `.env.example`)\n- Updated Stack to include `node-cache` (matches `package.json`)\n- Clarified that `/health` is a public path in Auth section\n- Added Notes section documenting in-memory user data and cache module readiness\n\n**Needs human review:**\n- **Beads issue IDs**: Original CLAUDE.md references specific beads IDs (`stage-four-cert-k0w`, etc.) that are not verifiable in the current `.beads/` snapshot. Consider removing the Open Issues section or verifying these separately with the beads system.\n- **Cache usage**: The `src/cache.ts` module is implemented but not actively integrated into any route handlers. Current status (\"ready but pending integration\") is documented in the Notes section.\n\nThe updated CLAUDE.md now accurately reflects the codebase state as of October 2026. An audit artifact has been written to `audit_log/update-claude-md-2026-10-14T20-09-08Z.json`.",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output covers all three target discrepancies: the health route (added `GET /api/health` and the directory structure), cache.ts (new Caching subsection), and HEALTH_CHECK_INTERVAL (added to the env vars). It also reports a removal of API_KEY and an update to the Stack. It uses the required `## CLAUDE.md Audit` format with Updated and Needs human review sections, and it says an audit artifact was written to a correctly named path in `audit_log/`. Several things keep it from a 5. The output does not show the JSON content, so its validity can't be checked. The timestamp 'October 2026' is odd. Removing `API_KEY` rests only on its absence from `.env.example`, which is risky and arguably should have been flagged rather than edited directly. The 'Notes section' about in-memory user data is extra content that may be unnecessary. The beads IDs flag is reasonable, though the output admits they are unverifiable. Overall it is strong and appears grounded, but a few minor concerns remain.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 31.195828,
+  "timestamp": "2026-10-14T15:09:22.091535",
+  "logs": [
+    "\u270e I'll audit the project's CLAUDE.md against the actual codebase state. Let me start by gathering grou",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u2192 read_file: .env.example",
+    "\u270e Now let me check the actual structure of the `src/` directory more deeply, look at the app routes, a",
+    "\u2192 list_directory: src/app",
+    "\u2192 run_command: find src -type f -name \"*.ts\" | head -20",
+    "\u2192 run_command: git log --oneline -15",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Let me check the route files and the cache module:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Now let me check if there's a beads directory to understand the open issues:",
+    "\u2192 run_command: ls -la .beads/ 2>/dev/null | head -20",
+    "\u2192 run_command: find .beads -type f -name \"*.md\" 2>/dev/null | head -10",
+    "\u270e Perfect. Now I have the ground truth. Let me compare CLAUDE.md against the codebase and identify dis",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log artifact:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T20-09-08Z.json",
+    "\u270e ## CLAUDE.md Audit\n\n**Updated:**\n- Added `GET /api/health` endpoint to API Routes table (public, no"
+  ]
+}

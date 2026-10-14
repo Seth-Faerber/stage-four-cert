@@ -1,0 +1,66 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here are the findings from the CLAUDE.md audit:\n\n---\n\n## CLAUDE.md Audit\n\n### **Updated**\n- \u2705 **Stack**: Added `node-cache` to dependencies list\n- \u2705 **Common Commands**: Corrected test command (test runner exists, exits with message)\n- \u2705 **API Routes**: Added missing `GET /api/health` endpoint (public, returns status and timestamp)\n- \u2705 **Authentication**: Clarified `PUBLIC_PATHS` includes `/health`\n- \u2705 **Directory Structure**: Added `cache.ts` and `health/route.ts`; expanded file descriptions\n- \u2705 **Environment Variables**: Added `HEALTH_CHECK_INTERVAL` (controls cache TTL); marked `PORT` as optional\n- \u2705 **New Sections**: Added \"Recent Work\" (documenting git history phases) and \"Notes\" (user store, cache interface, public routes)\n\n### **Needs human review**\n- \u26a0\ufe0f **DATABASE_URL & API_KEY marked required, but not used**: Both env vars are listed in `.env.example` and documented as required, but the codebase doesn't reference them. This may be:\n  - Stale/planned-but-unimplemented features\n  - Credentials for an external service to be integrated later\n  - \u2192 Recommend confirming whether these should remain or be removed\n  \n- \u26a0\ufe0f **No spec documentation**: Original CLAUDE.md had no \"Currently implements Specs X-Y\" section. If formal specs exist (e.g., in a design doc), recommend adding a specs tracking section.\n\n---\n\n**Audit artifact written to**: `audit_log/update-claude-md-2024-01-audit.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output reports all three target discrepancies: the health route (added `GET /api/health` and the PUBLIC_PATHS clarification), `cache.ts` (added to the directory structure), and `HEALTH_CHECK_INTERVAL` (added to the env vars with a note that it controls cache TTL). It also made extra edits: adding `node-cache`, correcting the test command, marking PORT optional, and adding 'Recent Work' and 'Notes' sections. The extras are mostly reasonable, though the 'Recent Work' section is arguably not needed. The audit artifact filename, `update-claude-md-2024-01-audit.json`, does not follow the required `<timestamp>` format, which is a minor error. Flagging DATABASE_URL and API_KEY as unused is a sensible human-review item. Since we cannot see the actual CLAUDE.md edits, accuracy is judged from the summary alone. The minor deviations (filename format, possibly unnecessary additions) fit a 4 rather than a 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 26.981439,
+  "timestamp": "2026-10-14T16:11:12.399921",
+  "num_turns": 7,
+  "logs": [
+    "\u270e I'll audit the project's CLAUDE.md against the actual codebase. Let me start by gathering ground tru",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u270e Now let me check the app structure and environment configuration:",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Let me check the API routes:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Let me check for recent git history and open issues:",
+    "\u2192 run_command: git log --oneline -20",
+    "\u2192 list_directory: .beads",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Now I have a comprehensive view. Let me create the audit and update CLAUDE.md:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 write_file: audit_log/update-claude-md-2024-01-audit.json",
+    "\u270e Perfect! Here are the findings from the CLAUDE.md audit:\n\n---\n\n## CLAUDE.md Audit\n\n### **Updated**\n-",
+    "\u2139 7 turn(s)"
+  ]
+}

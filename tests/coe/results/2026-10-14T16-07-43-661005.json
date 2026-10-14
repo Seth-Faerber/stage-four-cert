@@ -1,0 +1,65 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit Results\n\n### \u2705 Updated\n- **Stack**: Added `node-cache` (confirmed in package.json dependencies)\n- **Common Commands**: Changed npm test from \"No test runner configured\" to accurate description\n- **API Routes**: Added missing `GET /api/health` endpoint (fully implemented in `src/app/api/health/route.ts`)\n- **Authentication**: Clarified that `/health` is public and requires no Bearer token\n- **Directory Structure**: Added `cache.ts` file; restructured to reflect actual layout\n- **Environment Variables**: Added `HEALTH_CHECK_INTERVAL` (present in `.env.example` and used by `src/cache.ts`)\n- **Caching**: Added new subsection documenting the in-memory cache implementation with node-cache, TTL behavior, and API\n- **Open Issues**: Updated status\u2014health check and caching are now **implemented** (confirmed in git commit `cc0d4f2`)\n\n### \u26a0\ufe0f Needs Human Review\n**Unused Environment Variables**: The documented env vars `DATABASE_URL` and `API_KEY` are not actually used anywhere in the current codebase. They appear to be placeholders for future features. Consider whether they should:\n- Remain as documented (for planned future features)\n- Be moved to a \"Future\" section\n- Be removed entirely\n\n---\n\n**Audit artifact saved**: `audit_log/update-claude-md-2026-10-14T21:07:23Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output identifies all three target discrepancies: the missing `GET /api/health` route, the undocumented `cache.ts` (in Directory Structure and a new Caching subsection), and the missing `HEALTH_CHECK_INTERVAL` env var. Each is reported as updated, with supporting details such as the file path and `.env.example`. It also covers related items: node-cache in the Stack, the health endpoint being public in Authentication, and Open Issues status. It flags `DATABASE_URL` and `API_KEY` as unused for human review, which is reasonable under the 'flag when ambiguous' guidance. Weaknesses: the npm test change is vaguely described ('accurate description') and the output doesn't show the real edits, so accuracy can't be verified. The 'Perfect!' preamble and the unusual timestamp format in the filename (colons) are minor issues. The Directory Structure was 'restructured', which may stray from the instruction to keep the existing style. Since the output can't be checked against the actual file, these count as minor imperfections rather than failures, so the score is 4 rather than 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 26.200674,
+  "timestamp": "2026-10-14T16:07:43.660775",
+  "num_turns": 7,
+  "logs": [
+    "\u270e I'll help you audit and update CLAUDE.md against the actual codebase state. Let me start by gatherin",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -50",
+    "\u2192 read_file: package.json",
+    "\u270e Good, now let me gather more detailed information about the actual codebase structure:",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: .env.example",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Now let me check the actual route implementations and auth to understand the current state better:",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 run_command: cd .beads && ls -la",
+    "\u270e Perfect! Now I have a complete picture. Let me audit CLAUDE.md against the actual codebase and creat",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log artifact:",
+    "\u2192 run_command: date -u +'%Y-%m-%dT%H:%M:%SZ'",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T21:07:23Z.json",
+    "\u270e Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit Results\n\n### \u2705 Updated\n- **Stack**: Adde",
+    "\u2139 7 turn(s)"
+  ]
+}

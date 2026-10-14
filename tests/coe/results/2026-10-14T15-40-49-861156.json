@@ -1,0 +1,66 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "---\n\n## CLAUDE.md Audit Complete \u2705\n\n**Updated sections:**\n- Added `node-cache` to stack list\n- Added missing `GET /api/health` endpoint to API routes table\n- Added new \"Caching\" subsection documenting in-memory cache layer and TTL configuration\n- Clarified authentication: only `/health` is public; all other routes require Bearer token\n- Removed stale `src/lib/` references from directory structure\n- Corrected environment variables table:\n  - Moved `DATABASE_URL` and `API_KEY` from \"Required\" to \"No\" (with notes they're currently unused)\n  - Added `PORT` and `HEALTH_CHECK_INTERVAL` with correct defaults\n- Marked health check and caching issues as **COMPLETED** in Open Issues\n\n**Needs human review:**\n- **`DATABASE_URL` and `API_KEY`** are defined in `.env.example` but never referenced in code. Consider whether these should be:\n  1. Removed from `.env.example` (cleanup)\n  2. Kept for future implementation (document this intent)\n  3. Actually integrated into the codebase now\n\n**Audit artifact saved:** `audit_log/update-claude-md-2026-10-14T20-40-36Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output covers all three discrepancies from the rubric. It added the health route (`GET /api/health`), documented the cache layer in a new 'Caching' subsection and added `node-cache` to the stack, and added `HEALTH_CHECK_INTERVAL` to the env vars table with its default. It also reports saving an audit artifact to `audit_log/` with a timestamped filename. The final block is close to the required format, though it uses a '## CLAUDE.md Audit Complete \u2705' heading instead of '## CLAUDE.md Audit', and it uses 'Updated sections' and 'Needs human review' in place of the specified '**Updated**' and '**Needs human review**' labels. The output also has some weaknesses. Several changes go beyond the three expected discrepancies: removing `src/lib/` references, moving `DATABASE_URL` and `API_KEY` out of 'Required', and marking Open Issues as COMPLETED. Some of these could be hallucinated or overreaching, such as removing `src/lib/` while a cache module presumably lives there. Moving env vars from 'Required' to 'No' is a judgment call that the skill says should be flagged rather than edited directly, though the output does also flag it. The artifact's contents can't be verified. Because of the format deviation and the questionable extra edits, I'm scoring 4 rather than 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 28.561373,
+  "timestamp": "2026-10-14T15:40:49.860964",
+  "num_turns": 8,
+  "logs": [
+    "\u270e I'll audit the project's CLAUDE.md against the actual codebase. Let me start by gathering the ground",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: git log --oneline -30 2>/dev/null || echo \"Not a git repo\"",
+    "\u270e Now let me gather more detailed information about the actual codebase structure:",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/lib",
+    "\u2192 read_file: .env.example",
+    "\u270e Let me explore the API routes and other key files:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Now let me check the route files:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Perfect! Now I have all the information I need. Let me audit CLAUDE.md and create an updated version",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit artifact:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T20-40-36Z.json",
+    "\u270e ---\n\n## CLAUDE.md Audit Complete \u2705\n\n**Updated sections:**\n- Added `node-cache` to stack list\n- Added",
+    "\u2139 8 turn(s)"
+  ]
+}

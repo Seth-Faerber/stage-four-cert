@@ -1,0 +1,67 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit Results\n\n### **Updated**\n1. **Stack** \u2014 Added `node-cache` to the technology list (was in package.json but missing from docs)\n2. **API Routes** \u2014 Added the `GET /api/health` endpoint which was implemented but undocumented\n3. **Authentication** \u2014 Clarified that `/health` is a public path and doesn't require JWT\n4. **Architecture** \u2014 Added new \"Caching\" subsection explaining the `src/cache.ts` module and its TTL configuration\n5. **Directory Structure** \u2014 Updated to include:\n   - `cache.ts` module\n   - `health/route.ts` file\n   - All actual route files\n6. **Environment Variables** \u2014 Added `HEALTH_CHECK_INTERVAL` (default: 60 seconds)\n7. **Open Issues** \u2014 Replaced stale issue tracker references with current git history context (health check and cache are now implemented)\n\n### **Needs human review**\n- **DATABASE_URL and API_KEY** are marked as \"required\" in the env vars table, but the actual codebase doesn't use them. Confirm whether these are:\n  - Genuine requirements (for future use or external integration)\n  - Placeholder/legacy from template\n  - Should be marked as optional or removed\n\n---\n\n**Audit artifact saved**: `audit_log/update-claude-md-2025-01-16T00-00-00Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output reports all three target discrepancies: the health route (added `GET /api/health` and the public path note), cache.ts (added a Caching subsection and directory entry), and HEALTH_CHECK_INTERVAL (added to the env vars). It follows the required output structure of Updated and Needs human review, and it mentions the audit artifact. It also flags the DATABASE_URL and API_KEY ambiguity for review instead of editing, which matches the skill's guidance. There are some possible inaccuracies. Adding `node-cache` to the stack and replacing the 'Open Issues' section with git history context go beyond the three expected discrepancies, and the latter may be an unwarranted, subjective edit. The summary also starts with 'Perfect!', which is minor. The reasoning cannot be verified against the actual codebase, since no edits or tool calls are shown. Overall all three discrepancies appear to be found and handled, with minor extras or risks, so the score is 4 rather than 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 26.947059,
+  "timestamp": "2026-10-14T16:07:05.919684",
+  "num_turns": 8,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase. Let me start by gathering the grou",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -50",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Now let me gather more details:",
+    "\u2192 read_file: package.json",
+    "\u2192 read_file: .env.example",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Now let me check for any beads issues:",
+    "\u2192 run_command: ls -la .beads/ 2>/dev/null | head -20",
+    "\u2192 run_command: find .beads -type f -name \"*.md\" 2>/dev/null | xargs basename -a 2>/dev/null | s",
+    "\u270e Perfect. Now let me audit CLAUDE.md systematically and make the necessary updates:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit artifact:",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 write_file: audit_log/update-claude-md-2025-01-16T00-00-00Z.json",
+    "\u270e Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit Results\n\n### **Updated**\n1. **Stack** \u2014",
+    "\u2139 8 turn(s)"
+  ]
+}

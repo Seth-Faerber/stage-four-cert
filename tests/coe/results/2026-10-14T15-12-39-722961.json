@@ -1,0 +1,64 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "## CLAUDE.md Audit\n\n**Updated:**\n- \u2705 Added `node-cache` to stack\n- \u2705 Added `/api/health` endpoint (was completely missing)\n- \u2705 Corrected auth: `/api/health` is public, not protected\n- \u2705 Added new \"Caching\" architecture section describing the cache module\n- \u2705 Updated Directory Structure with `cache.ts` and `health/route.ts`\n- \u2705 Added missing env vars: `PORT` (with default), `HEALTH_CHECK_INTERVAL`\n- \u2705 Updated Open Issues to reflect completed work (health check \u2705, caching \u2705)\n\n**Needs human review:**\n- Log aggregation (beads issue `stage-four-cert-3ey`) \u2014 No implementation found in codebase. Check beads to confirm current status.\n\n**Audit artifact:** Written to `audit_log/update-claude-md-2025-01-13T00-00-00Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output reports all three expected discrepancies: the health route (`/api/health` added and corrected as public), `cache.ts` (Caching section and Directory Structure updated), and `HEALTH_CHECK_INTERVAL` (added to env vars). It also says an audit artifact was written to `audit_log/`, and it uses the `## CLAUDE.md Audit` block with Updated and Needs human review sections, so the format is broadly right. There are a few weaknesses. The text claims edits but gives no evidence of tool calls, so we can't verify the edits or the JSON file, and the timestamp `2025-01-13T00-00-00Z` looks placeholder-like and possibly fabricated. The output also includes extras the rubric doesn't mention: `node-cache` in the stack, a `PORT` env var, and Open Issues updates. These may be legitimate, but they could be hallucinated. It adds emoji checkmarks and an extra 'Audit artifact' line beyond the specified format. Taking the claims at face value, all three discrepancies were found and updated, which fits a 5. The uncertainty about unverifiable details and the possibly ungrounded extras (`PORT`, Open Issues) justify a slight deduction, so I give a 4.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 26.718957,
+  "timestamp": "2026-10-14T15:12:39.722753",
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering gr",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u2192 read_file: .env.example",
+    "\u270e Now let me explore the actual source structure and schema:",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 list_directory: human-tasks",
+    "\u2192 run_command: git log --oneline -15",
+    "\u270e Let me check the actual route files and see what endpoints exist:",
+    "\u2192 list_directory: src/app/api/health",
+    "\u2192 list_directory: src/app/api/users",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Let me check the route files:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Perfect! Now I have a complete picture. Let me audit and update CLAUDE.md:\n\n**Key findings:**\n1. \u2705 H",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 write_file: audit_log/update-claude-md-2025-01-13T00-00-00Z.json",
+    "\u270e ## CLAUDE.md Audit\n\n**Updated:**\n- \u2705 Added `node-cache` to stack\n- \u2705 Added `/api/health` endpoint (w"
+  ]
+}

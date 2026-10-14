@@ -1,0 +1,69 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "## CLAUDE.md Audit Results\n\n\u2705 **Updated:**\n- Added `node-cache` to Stack (confirmed in package.json)\n- Added missing `GET /api/health` route (public, no auth)\n- Added `health/` subdirectory to Directory Structure\n- Added new **Modules** section documenting `src/cache.ts` (in-memory caching layer with configurable TTL)\n- Added `HEALTH_CHECK_INTERVAL` environment variable (controls cache TTL, default 60s)\n- Clarified authentication section for public routes\n\n\u26a0\ufe0f **Needs human review:**\n- The Open Issues section lists health check and caching as open, but git history shows \"feat: State B \u2014 add health check, cache module\" was already committed. Verify whether these issues should be marked as closed or if there's additional work pending.\n\n**Artifact saved:** `audit_log/update-claude-md-2026-10-14T20-37-04Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output reports all three expected discrepancies: the health route (`GET /api/health`), `src/cache.ts` (new Modules section), and `HEALTH_CHECK_INTERVAL`. It also lists an artifact path in `audit_log/`. Its return block is close to the required format, but it uses the header 'CLAUDE.md Audit Results' instead of '## CLAUDE.md Audit', and it uses 'Updated' and 'Needs human review' with emoji decorations. Extra changes include adding `node-cache` to the Stack and clarifying the auth section. These look plausible but cannot be verified without codebase context. The flag about open issues versus git history is a sensible use of the flag-for-user path. Some doubt remains because only the output text is available, with no visible evidence of the edits or the JSON contents, and it is unclear whether the artifact is valid. A possible oddity is that the cache TTL is tied to `HEALTH_CHECK_INTERVAL`, which seems semantically odd but may reflect the actual code. Overall this is strong, with minor format deviations and unverifiable details, so it merits a 4 rather than a 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 29.735143,
+  "timestamp": "2026-10-14T15:37:16.661272",
+  "num_turns": 9,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me gather ground truth f",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u270e Now let me examine the actual directory structure and key files:",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 run_command: git log --oneline -15",
+    "\u270e Let me check the API routes structure:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 run_command: find src/app/api -type f -name \"route.ts\"",
+    "\u2192 list_directory: .beads",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Let me check the health route as well:",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 run_command: cd .beads && find . -name \"*.json\" | head -10",
+    "\u270e Now let me review the findings and create the audit. I have all the information I need:\n\n**Ground Tr",
+    "\u2192 run_command: cd .beads && grep -r \"stage-four-cert\" --include=\"*.json\" | head -5",
+    "\u270e Now I'll create the audit log and update CLAUDE.md:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T20-37-04Z.json",
+    "\u270e ## CLAUDE.md Audit Results\n\n\u2705 **Updated:**\n- Added `node-cache` to Stack (confirmed in package.json)",
+    "\u2139 9 turn(s)"
+  ]
+}

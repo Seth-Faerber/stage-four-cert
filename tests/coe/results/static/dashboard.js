@@ -132,6 +132,12 @@ function renderPromptTimeline(promptData, index) {
         promptData.results.forEach((result, rowIndex) => {
             const row = createTimelineRow(result, rowIndex, promptData, index);
             timeline.appendChild(row);
+            if (rowIndex === promptData.recent_runs - 1 && promptData.total_runs > promptData.recent_runs) {
+                const sep = document.createElement('div');
+                sep.className = 'recent-separator';
+                sep.textContent = 'Runs below are not included in the pass rate';
+                timeline.appendChild(sep);
+            }
         });
     }
 
@@ -151,6 +157,7 @@ function createTimelineRow(result, index, promptData, promptIndex) {
     const durationMs = result.duration_seconds != null
         ? `${(result.duration_seconds * 1000).toFixed(0)}ms`
         : '';
+    const turnsLabel = result.num_turns != null ? `${result.num_turns}t` : '';
 
     const header = document.createElement('div');
     header.className = 'row-header';
@@ -158,6 +165,7 @@ function createTimelineRow(result, index, promptData, promptIndex) {
         <span class="row-timestamp">${formatTimestamp(result.timestamp)}</span>
         <span class="row-status ${passed ? 'pass' : 'fail'}">${passed ? 'PASS' : 'FAIL'}</span>
         <span class="row-timing">${durationMs}</span>
+        ${turnsLabel ? `<span class="row-turns">${turnsLabel}</span>` : ''}
     `;
 
     const content = document.createElement('div');
@@ -233,7 +241,9 @@ function createTimelineRow(result, index, promptData, promptIndex) {
     row.addEventListener('click', (e) => {
         if (e.shiftKey) {
             handleShiftClick(index, promptData, promptIndex);
-        } else {
+            return;
+        }
+        if (e.target.closest('.row-header')) {
             row.classList.toggle('expanded');
         }
     });

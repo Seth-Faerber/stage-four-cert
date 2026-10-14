@@ -1,0 +1,67 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "---\n\n## CLAUDE.md Audit Results\n\n### \u2705 Updated\n\n- **API Routes** \u2014 Added `GET /api/health` (public route) which was implemented but missing from CLAUDE.md\n- **Stack / Dependencies** \u2014 Added `node-cache` to the Stack declaration (present in package.json)\n- **Directory Structure** \u2014 Added `src/cache.ts` entry which provides in-memory cache utilities\n- **Caching subsection** \u2014 Added new section describing node-cache integration and `HEALTH_CHECK_INTERVAL` control\n- **Environment Variables** \u2014 Removed `API_KEY` (not used in codebase); replaced with `HEALTH_CHECK_INTERVAL` (actually used in `src/cache.ts`)\n- **Open Issues** \u2014 Updated statuses: `stage-four-cert-k0w` and `stage-four-cert-5bs` now marked as implemented (\u2713); `stage-four-cert-3ey` remains blocked\n- **Common Commands** \u2014 Clarified `npm test` description\n- **Authentication** \u2014 Updated to specify `/health` is in `PUBLIC_PATHS`\n\n### \u2705 No issues requiring human review\n\nAll changes are factual corrections based on the actual codebase state. The audit artifact has been written to:\n- **`audit_log/update-claude-md-2026-10-14T20-15-21Z.json`**\n\n**CLAUDE.md is now synchronized with the codebase state.**",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 3,
+    "reasoning": "The output covers all three target discrepancies: the health route (API Routes and Authentication), cache.ts (Directory Structure and Caching subsection), and HEALTH_CHECK_INTERVAL (Environment Variables). It also says an audit artifact was written. Several problems lower the score. (1) The output shows no evidence that the codebase was inspected or that edits were made, so the claims can't be verified. (2) It makes extra changes that look ungrounded or speculative: adding `node-cache`, removing `API_KEY`, updating 'Open Issues' statuses with specific IDs, and 'clarifying' `npm test`. The rubric flags hallucinated, ungrounded changes, and the Open Issues edits in particular are not something the skill's audit scope covers. (3) The format deviates from the required block. It uses 'Updated' and 'No issues requiring human review' headings with emojis instead of the '**Updated**' and '**Needs human review**' fields, and it adds extra commentary. (4) Declaring 'no issues requiring human review' is questionable given the removal of `API_KEY`, which could be credential-related and ambiguous, and the skill says to flag such items rather than edit. (5) The artifact's timestamp, 2026-10-14, looks odd, and its contents are not shown. The three core discrepancies are likely found, but the unverified claims, the extra edits that may be hallucinated, and the format deviations put this at a middling score.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 29.477366,
+  "timestamp": "2026-10-14T15:15:35.241103",
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering th",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u270e Now let me gather the ground truth data:",
+    "\u2192 read_file: package.json",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: .env.example",
+    "\u2192 run_command: find src -type f -name \"*.ts\" | head -20",
+    "\u2192 run_command: git log --oneline -15",
+    "\u270e Let me inspect the actual route structure and auth file:",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Let me also check the actual route implementations:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Now let me check for any open beads:",
+    "\u2192 run_command: cd .beads && ls -la",
+    "\u270e Let me check the beads status:",
+    "\u2192 run_command: bd list --status=open 2>/dev/null || echo \"Beads CLI not available or no open be",
+    "\u270e Perfect! Now I have all the ground truth. Let me compare against CLAUDE.md and create the audit repo",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T20-15-21Z.json",
+    "\u270e ---\n\n## CLAUDE.md Audit Results\n\n### \u2705 Updated\n\n- **API Routes** \u2014 Added `GET /api/health` (public r"
+  ]
+}

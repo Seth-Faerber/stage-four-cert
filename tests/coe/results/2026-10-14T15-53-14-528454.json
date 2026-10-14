@@ -1,0 +1,69 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "---\n\n## CLAUDE.md Audit Results\n\n### \u2705 Updated\n\n1. **Stack** \u2014 Added `node-cache` (was missing from tech overview)\n2. **API Routes table** \u2014 Added `GET /api/health` endpoint (was incorrectly listed only as an open issue)\n3. **Route auth** \u2014 Clarified that `/health` is **Public** (not Required)\n4. **New section: Caching** \u2014 Documented `src/cache.ts` module with node-cache, TTL control via `HEALTH_CHECK_INTERVAL`\n5. **Directory Structure** \u2014 Added `src/cache.ts` and `src/app/api/health/route.ts` entries\n6. **Environment Variables** \u2014 Added `HEALTH_CHECK_INTERVAL` (now in `.env.example`)\n7. **Open Issues** \u2014 Marked health check and caching as **COMPLETED**; removed stale log aggregation issue\n8. **Authentication** \u2014 Clarified Bearer token placement in `Authorization` header\n\n### \u26a0\ufe0f Needs Human Review\n\n1. **DATABASE_URL** \u2014 Defined in env but no actual database layer exists in codebase yet. This is a placeholder for future integration. Consider adding a note about this?\n\n2. **API_KEY** \u2014 Defined in `.env.example` but never used anywhere in the code. Confirm if this is reserved for future use or should be removed.\n\n3. **No test framework** \u2014 Still accurate, but worth noting as a gap if tests are planned.\n\n---\n\n**Audit log saved**: `audit_log/update-claude-md-2025-10-14T15-52-00Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output covers all three target discrepancies. It documents the health route (added to the API Routes table and marked Public), cache.ts (new Caching section plus Directory Structure entries), and HEALTH_CHECK_INTERVAL (added to Environment Variables). It also reports saving an audit log at a plausible path. The format deviates from the specified block, though. The required structure is '## CLAUDE.md Audit' with '- **Updated**' and '- **Needs human review**' bullets. The output instead uses emoji headings and numbered lists, plus an extra 'Audit log saved' line. That is a minor format issue. There are also some concerns. The output makes extra claims, such as removing a 'stale log aggregation issue' and marking issues as COMPLETED, and these can't be verified without the transcript. Its flagging of 'No test framework' as needing human review is not really a flag. The JSON artifact's validity can't be verified from the output alone. Because the format is slightly off and the artifact is unverifiable, this fits a 4 rather than a 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 31.010376,
+  "timestamp": "2026-10-14T15:53:14.528254",
+  "num_turns": 7,
+  "logs": [
+    "\u270e I'll help you audit and update `CLAUDE.md` against the actual codebase state. Let me start by taking",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -50",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Now let me examine the actual code structure more carefully:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: .env.example",
+    "\u270e Now let me check if there's a `.beads/` directory with issues:",
+    "\u2192 run_command: find .beads -type f -name \"*.json\" 2>/dev/null | head -20",
+    "\u2192 run_command: ls -la .beads/ 2>/dev/null || echo \"No .beads dir\"",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Perfect! Now I have a complete picture. Let me audit CLAUDE.md and identify discrepancies:\n\n**Ground",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 write_file: audit_log/update-claude-md-2025-10-14T15-52-00Z.json",
+    "\u270e Perfect! Let me verify the updated CLAUDE.md:",
+    "\u2192 read_file: CLAUDE.md",
+    "\u270e ---\n\n## CLAUDE.md Audit Results\n\n### \u2705 Updated\n\n1. **Stack** \u2014 Added `node-cache` (was missing from",
+    "\u2139 7 turn(s)"
+  ]
+}

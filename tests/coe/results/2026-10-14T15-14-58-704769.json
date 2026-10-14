@@ -1,0 +1,62 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here's the summary of the CLAUDE.md audit:\n\n---\n\n## CLAUDE.md Audit Results\n\n### **Updated** \u2705\n- **Overview**: Added \"with in-memory caching\" to description; Stack now includes `node-cache`\n- **API Routes**: Added missing `GET /api/health` (public endpoint)\n- **Authentication**: Clarified that `/health` is in PUBLIC_PATHS allowlist\n- **Architecture**: Added new **Caching** subsection documenting `src/cache.ts` module with node-cache wrapper, TTL configurable via `HEALTH_CHECK_INTERVAL`\n- **Directory Structure**: Added `src/cache.ts` and `src/app/api/health/route.ts`; improved entry descriptions\n- **Environment Variables**: Added `HEALTH_CHECK_INTERVAL` env var (cache TTL, default 60s)\n- **Open Issues**: Updated status\u2014health check endpoint (`stage-four-cert-k0w`) and caching layer (`stage-four-cert-5bs`) both marked COMPLETED per git history (commit cc0d4f2)\n\n### **No Human Review Needed** \u2705\nAll changes are factual, grounded in actual codebase state (file structure, dependencies, route handlers, env vars). No ambiguous items flagged.\n\n### **Artifact Written**\nAudit log saved to: `audit_log/update-claude-md-2026-10-14T20-14-46Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output reports finding and updating all three target discrepancies: the health route (`GET /api/health` added, plus the PUBLIC_PATHS clarification), `src/cache.ts` (new Caching subsection and directory structure entry), and the `HEALTH_CHECK_INTERVAL` env var. It also says an audit artifact was written to `audit_log/` with a plausible timestamped filename. The content looks grounded in the codebase, citing a commit and issue IDs. Several things keep it from a 5. The output does not follow the required `## CLAUDE.md Audit` block format with `- **Updated**` and `- **Needs human review**`. It uses a different heading (\"CLAUDE.md Audit Results\"), emoji, and a \"No Human Review Needed\" section. It also opens with \"Perfect!\" filler. The artifact's JSON content isn't shown, so its validity can't be verified. Finally, claiming no items need review is a little suspicious: the Open Issues status changes and the extra Overview edits could be considered subjective. The core work is solid, but the formatting deviations and the unverifiable artifact make this a 4.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 28.119816,
+  "timestamp": "2026-10-14T15:14:58.704689",
+  "logs": [
+    "\u270e I'll audit the project's CLAUDE.md against the actual codebase state. Let me start by gathering grou",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -50",
+    "\u270e Now let me read the .env.example and check the actual route files and auth setup:",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 run_command: git log --oneline -15",
+    "\u270e Now let me check if there are any specs directories or human-tasks:",
+    "\u2192 list_directory: human-tasks",
+    "\u2192 run_command: ls -la audit_log/ 2>/dev/null || echo \"audit_log exists but empty\"",
+    "\u270e Now I have all the information I need. Let me analyze the findings and update CLAUDE.md:\n\n**Key find",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit artifact:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H-%M-%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T20-14-46Z.json",
+    "\u270e Perfect! Here's the summary of the CLAUDE.md audit:\n\n---\n\n## CLAUDE.md Audit Results\n\n### **Updated*"
+  ]
+}

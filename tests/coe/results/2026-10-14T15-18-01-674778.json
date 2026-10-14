@@ -1,0 +1,63 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "## CLAUDE.md Audit\n\n\u2705 **Successfully updated CLAUDE.md with the following changes:**\n\n### Updated:\n- Added `node-cache` to Stack section (was in package.json but not documented)\n- Added `GET /api/health` endpoint to API Routes table (newly implemented)\n- Corrected auth requirement for `/api/health` to **Public** (previously assumed all routes required auth)\n- Added `src/cache.ts` module to Directory Structure (in-memory caching layer)\n- Added `src/app/api/health/route.ts` subdirectory\n- **New section**: \"Caching\" \u2014 explains in-memory caching via node-cache with TTL control\n- Added `HEALTH_CHECK_INTERVAL` environment variable (controls cache TTL, default: 60 seconds)\n- Updated \"Open Issues\" section to show health check and caching layer are complete \u2713\n\n### Needs human review:\n1. **DATABASE_URL unused**: The env var is marked \"Required\" but users are stored in-memory, not in a database. This may be intended for future use or should be clarified (Optional vs. Required).\n2. **Open Issues format**: Previous issue IDs (`stage-four-cert-k0w`, etc.) are no longer tracked. Consider whether to keep references to specific bead IDs or simplify to a task checklist.\n\n**Audit log written to**: `audit_log/update-claude-md-2026-10-14T20:17:39Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output covers the three expected discrepancies: the health route (added to the API Routes table as Public), cache.ts (added to Directory Structure plus a new Caching section), and HEALTH_CHECK_INTERVAL (added to the env vars). It reports the changes as made, wrote an audit log with a plausible filename, and follows the '## CLAUDE.md Audit' format with Updated and Needs human review lists. It also flags real ambiguities, such as DATABASE_URL being unused.\n\nIt loses some credit for the following reasons:\n- It adds extra changes the rubric doesn't mention. These are node-cache in the Stack section, an 'Open Issues' update, and a claim that auth was 'previously assumed'. They may be grounded, but they can't be verified here.\n- There is no evidence the JSON artifact contents were valid, since only the filename is shown.\n- The timestamp in the filename contains colons, which is slightly odd but acceptable.\n- The output has extra decoration, such as a \u2705 line and ### subheaders, which departs slightly from the prescribed block.\n\nOverall it is strong and close to a 5, but the unverifiable extras and the unconfirmed artifact validity hold it at 4.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 25.632739,
+  "timestamp": "2026-10-14T15:18:01.674565",
+  "logs": [
+    "\u270e I'll help you audit and update CLAUDE.md. Let me start by gathering ground truth about the codebase",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -50",
+    "\u270e Now let me read the actual source files to verify the current state:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: .env.example",
+    "\u270e Now let me check git history and look for any beads/tasks:",
+    "\u2192 run_command: git log --oneline -20 2>/dev/null || echo \"Git history not available\"",
+    "\u2192 list_directory: .beads",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Perfect! Now let me create the audit log directory and compare findings:",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u270e Now I'll update CLAUDE.md with all the actual findings:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me write the audit log:",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T20:17:39Z.json",
+    "\u270e ## CLAUDE.md Audit\n\n\u2705 **Successfully updated CLAUDE.md with the following changes:**\n\n### Updated:\n-"
+  ]
+}

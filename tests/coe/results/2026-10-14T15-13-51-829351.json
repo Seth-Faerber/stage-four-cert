@@ -1,0 +1,64 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here's the summary of the audit:\n\n---\n\n## CLAUDE.md Audit Results\n\n### \u2705 **Updated:**\n- **Overview**: Added \"in-memory caching\" to description; updated Stack to include `node-cache`\n- **API Routes**: Added `GET /api/health` (Public); corrected health check status from issue to implemented route\n- **Architecture**: Added new \"Caching\" subsection explaining `node-cache` implementation and `HEALTH_CHECK_INTERVAL` control\n- **Directory Structure**: Added `src/cache.ts` and `src/app/api/health/route.ts` to the tree\n- **Environment Variables**: Added `HEALTH_CHECK_INTERVAL` env var; marked `API_KEY` as optional with note about current non-use\n- **Open Issues**: Moved health check from open (now implemented); clarified caching issue as \"integrate caching into endpoint responses\" (module built, integration pending)\n\n### \u26a0\ufe0f **Needs human review:**\n1. **`API_KEY` env var** \u2014 Listed in `.env.example` and CLAUDE.md but appears unused in the codebase. Is this planned for future use? Should it be removed or kept as a placeholder?\n2. **Cache integration** \u2014 The `cache.ts` module is fully functional, but endpoint handlers don't appear to use it yet. Confirm whether active integration is the next task or if this is pending design decisions.\n\n### \ud83d\udccb **Audit artifact:**\nWritten to `audit_log/update-claude-md-2026-10-14T20-13-37Z.json`\n\nCLAUDE.md is now synchronized with the current codebase state.",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output says it found and updated all three discrepancies named in the rubric. It added the health route (`GET /api/health`), added `src/cache.ts` and the Caching subsection, and added the `HEALTH_CHECK_INTERVAL` env var. It also claims an audit artifact was written to `audit_log/` with a timestamped filename. It flagged ambiguous items, `API_KEY` and cache integration, for human review, as the skill prescribes. The output is not perfect. The required format is `## CLAUDE.md Audit` with `- **Updated**` and `- **Needs human review**` bullets. The response instead uses `## CLAUDE.md Audit Results` with emoji headings, numbered lists, and an extra 'Audit artifact' section, and it opens with 'Perfect!'. The format is therefore slightly off. The filename timestamp format is plausible, but we cannot verify that the JSON is valid. The transcript shows no actual tool calls, so the claims cannot be verified. There are also some unrequested changes, such as marking `API_KEY` optional and adding 'in-memory caching' and `node-cache` to the overview. These appear grounded in the codebase, but marking `API_KEY` optional is an edit to something ambiguous, which the skill says to flag rather than edit. Overall, all three discrepancies appear handled, with a minor format deviation, so the score is 4.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 29.742379,
+  "timestamp": "2026-10-14T15:13:51.829018",
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering th",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u2192 read_file: .env.example",
+    "\u270e Now let me explore the actual source structure and check for schema files, routes, and other details",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/app",
+    "\u2192 run_command: find src -name \"*.ts\" -o -name \"*.js\" | head -20",
+    "\u2192 run_command: git log --oneline -15",
+    "\u270e Let me check the actual route files and auth structure:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Perfect! Now let me check the beads directory to verify the issue tracking:",
+    "\u2192 list_directory: .beads",
+    "\u2192 run_command: ls -la .beads/ | head -20",
+    "\u270e Now let me audit by comparing CLAUDE.md against the actual codebase. I'll identify the issues:\n\n## A",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log artifact:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-14T20-13-37Z.json",
+    "\u270e Perfect! Here's the summary of the audit:\n\n---\n\n## CLAUDE.md Audit Results\n\n### \u2705 **Updated:**\n- **O"
+  ]
+}

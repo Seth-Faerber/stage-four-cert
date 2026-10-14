@@ -1,0 +1,71 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit\n\n### \u2705 Updated:\n- **Stack**: Added `node-cache` (was missing from the list)\n- **Common Commands**: Clarified test command as a stub matching package.json reality\n- **API Routes**: Added new `GET /api/health` public endpoint; confirmed `/api/users` routes\n- **Authentication**: Refined description to list `PUBLIC_PATHS=['/health']` explicitly\n- **Caching**: Added new subsection documenting the in-memory cache layer, node-cache wrapper, TTL control via `HEALTH_CHECK_INTERVAL`, and available utilities (`get<T>`, `set<T>`, `del`)\n- **Directory Structure**: Added `src/cache.ts` and `src/app/api/health/route.ts`; clarified user data is simulated in-memory\n- **Environment Variables**: \n  - Marked `DATABASE_URL` and `API_KEY` as not required (defined but unused)\n  - Added `HEALTH_CHECK_INTERVAL` (default 60 seconds)\n  - Removed port from required list (already marked optional)\n- **New Notes Section**: Added clarifications on database (not integrated), tests (stub), and cache (available but not actively used)\n- **Culled**: Removed stale \"Open Issues\" section with beads references (health check \u2713 exists, caching \u2713 exists)\n\n### \ud83d\udea9 Needs human review:\nNone. All changes are factual corrections based on actual codebase state.\n\n**Audit artifact written to**: `audit_log/update-claude-md-2025-01-14T00-00-00Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output reports all three expected discrepancies: the health route (GET /api/health added), cache.ts (added to the directory structure, with a new Caching subsection), and HEALTH_CHECK_INTERVAL (added to the env vars). It also states that an audit artifact was written and uses the ## CLAUDE.md Audit format, with Updated and Needs human review sections. The format is slightly off: it uses emoji headers (\u2705, \ud83d\udea9) and a 'Culled' bullet, where the spec calls for plain '**Updated**' and '**Needs human review**' labels. The timestamp in the artifact filename (2025-01-14T00-00-00Z) looks fabricated or placeholder-like. Some changes go beyond the three discrepancies, such as marking DATABASE_URL and API_KEY as not required, removing the Open Issues section, and adding a Notes section. Some of these may be grounded, but they are unverifiable and carry hallucination risk. 'Needs human review: None' is questionable given the removals and the ambiguous 'defined but unused' env vars. The output also reads oddly in places ('Removed port from required list (already marked optional)'). Overall it is strong and covers the key discrepancies, but the minor format deviations and the unverified extra edits keep it from a 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 30.745263,
+  "timestamp": "2026-10-14T15:39:40.532653",
+  "num_turns": 9,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering gr",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u270e Now let me gather the actual codebase state:",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: package.json",
+    "\u2192 read_file: .env.example",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Let me explore the actual API routes and auth implementation:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Now let me check the actual route implementations:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 run_command: find . -name \"*.ts\" -path \"*/src/*\" -type f | grep -v node_modules | head -20",
+    "\u270e Let me check for any test configuration and the beads issues:",
+    "\u2192 run_command: find . -name \"vitest.config.*\" -o -name \"jest.config.*\" -o -name \".mocharc*\" 2>/",
+    "\u2192 list_directory: .beads",
+    "\u2192 run_command: cd .beads && ls -la | head -20",
+    "\u270e Let me check the human-tasks to understand what specs are being tracked:",
+    "\u2192 list_directory: human-tasks",
+    "\u2192 run_command: ls -la human-tasks/ 2>/dev/null | head -20",
+    "\u270e Perfect. Now I have all the ground truth. Let me audit and update CLAUDE.md:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log artifact:",
+    "\u2192 write_file: audit_log/update-claude-md-2025-01-14T00-00-00Z.json",
+    "\u270e Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit\n\n### \u2705 Updated:\n- **Stack**: Added `node",
+    "\u2139 9 turn(s)"
+  ]
+}
