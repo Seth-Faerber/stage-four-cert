@@ -1,0 +1,124 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "## Step 5 \u2014 Return findings\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: Implemented \u2014 src/app/api/health/route.ts returns {status: ok, timestamp}\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Implemented \u2014 src/cache.ts uses NodeCache with TTL, installed in dependencies\n\n**Flagged**\n- none\n\n**Orphaned work**\n- none\n\nAudit written to: audit_log/update-beads-2026-10-14T18:24:39Z.json\n\n---\n\n\u2705 **Audit complete.** All steps confirmed:\n- [x] Step 1: Retrieved 3 open issues and recent git history\n- [x] Step 2: Reviewed each issue against codebase and closed 2 completed issues\n- [x] Step 3: Checked git history; no orphaned work detected\n- [x] Step 4: Wrote JSON artifact to `audit_log/update-beads-2026-10-14T18:24:39Z.json`\n- [x] Step 5: Returned findings in required format",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The output closes stage-four-cert-k0w (health endpoint) and stage-four-cert-5bs (in-memory cache), each with evidence (src/app/api/health/route.ts, src/cache.ts using NodeCache with TTL). It does not close stage-four-cert-3ey (log aggregation), so that issue is correctly left alone. The checklist mentions 3 open issues and 2 closures, which implies the third was left open. 3ey is not listed under Flagged or Closed, and leaving it alone is acceptable under the skill's rules. The required format is followed with all three sections and the artifact path. Minor quibbles: the output has an extra '## Step 5' header and a trailing checklist, which are not strictly in the required format. These do not affect the decisions. All three decisions match the rubric, so the score is 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 34.07856,
+  "timestamp": "2026-10-14T13:24:49.835044",
+  "logs": [
+    "\u270e I'll audit the beads issues against the codebase state. Let me start with Step 1.\n\n## Step 1 \u2014 Get c",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I found 3 open issues. The `in_progress` list is empty. Now let me check each issue in detail.",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Good, now I have the issue details:\n- **stage-four-cert-k0w**: Add health check endpoint (`GET /api/",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: find . -type f -name \"*.ts\" -o -name \"*.js\" -o -name \"*.json\" | grep -E \"(src|ap",
+    "\u270e Excellent! I see the relevant files. Let me check them:",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: package.json",
+    "\u270e Perfect! Now let me check for log aggregation work:",
+    "\u2192 run_command: grep -r \"winston\\|pino\\|bunyan\\|log.*aggregat\" src/ 2>/dev/null || echo \"No log",
+    "\u2192 read_file: src/index.ts",
+    "\u270e Excellent! Now let me evaluate each issue:\n\n### Issue 1: stage-four-cert-k0w \u2014 Add health check endp",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 src/app/",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 src/cach",
+    "\u270e Perfect! Both issues closed successfully. Now let me check for orphaned work in the git log:\n\n## Ste",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 run_command: date -u +'%Y-%m-%dT%H:%M:%SZ'",
+    "\u270e Now I'll write the audit artifact:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T18:24:39Z.json",
+    "\u270e Perfect! Now let me verify the artifact was written:",
+    "\u2192 read_file: audit_log/update-beads-2026-10-14T18:24:39Z.json",
+    "\u270e ## Step 5 \u2014 Return findings\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check end"
+  ]
+}

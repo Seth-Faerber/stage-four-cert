@@ -1,0 +1,130 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Perfect! The two issues have been closed successfully. Only the blocked log aggregation issue remains open.\n\n---\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: Implemented \u2014 src/app/api/health/route.ts returns {status: ok, timestamp}\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Implemented \u2014 src/cache.ts provides node-cache module with TTL support\n\n**Flagged**\n- stage-four-cert-3ey \u2014 Set up log aggregation: Blocked on ops team provisioning log destination; no log aggregation code found\n\n**Orphaned work**\n- none\n\nAudit written to: audit_log/update-beads-2026-10-14T19:27:27Z.json",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The output closes stage-four-cert-k0w, citing src/app/api/health/route.ts. It closes stage-four-cert-5bs, citing src/cache.ts with node-cache. It leaves stage-four-cert-3ey open, noting that no log aggregation code was found and that the issue is blocked. These match the three correct decisions in the rubric. The output also follows the required format: the Closed, Flagged, and Orphaned work headers are present, and the artifact path is on the last line. Listing 3ey under 'Flagged' instead of leaving it silent is a minor deviation, since the skill says 'leave alone' for work that does not exist. It is still not closed, so the decision is correct. The 'Perfect!' preamble is extraneous but harmless. The score is 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 38.245466,
+  "timestamp": "2026-10-14T14:27:41.854739",
+  "logs": [
+    "\u270e I'll execute the update-beads audit process step by step.\n\n## Step 1 \u2014 Get current issues\n\nLet me fe",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I found 3 open issues and 0 in-progress. Now let me review each one.\n\n## Step 2 \u2014 Cross-refere",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now I need to search the codebase for evidence of these implementations:\n\n**Issue stage-four-cert-k0",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: find . -name \"*.ts\" -o -name \"*.js\" | head -20",
+    "\u2192 run_command: cat package.json | grep -E \"node-cache|cache|winston|pino|bunyan\" || echo \"no ma",
+    "\u270e Excellent! I found:\n1. `./src/app/api/health/route.ts` \u2014 health endpoint exists\n2. `./src/cache.ts`",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 run_command: grep -r \"log\" src/ --include=\"*.ts\" | grep -E \"winston|pino|bunyan\" | head -5",
+    "\u270e Perfect! Now let me close the issues that have been completed. Let me do this one at a time:\n\n**Issu",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 src/app/",
+    "\u270e Great! Now close the cache issue:",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 src/cach",
+    "\u270e Perfect! Now for the log aggregation issue (stage-four-cert-3ey), it's explicitly blocked on ops tea",
+    "\u2192 run_command: source ~/.zshrc && bd flag stage-four-cert-3ey --reason=\"Blocked on ops team pro",
+    "\u270e The `bd flag` command doesn't exist. That's OK \u2014 I'll note this as a flagged item in the audit repor",
+    "\u2192 run_command: git log --oneline -5",
+    "\u2192 run_command: git show --stat cc0d4f2",
+    "\u270e Good! The commit `cc0d4f2` directly describes adding health check and cache module, which matches th",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 list_directory: audit_log",
+    "\u270e Good, the `audit_log/` directory exists. Now I'll write the audit artifact:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T19:27:27Z.json",
+    "\u270e Perfect! Now let me verify the audit was written correctly:",
+    "\u2192 read_file: audit_log/update-beads-2026-10-14T19:27:27Z.json",
+    "\u270e Excellent! All steps are complete. Let me verify the beads status:",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u270e Perfect! The two issues have been closed successfully. Only the blocked log aggregation issue remain"
+  ]
+}

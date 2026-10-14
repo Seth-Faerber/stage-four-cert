@@ -1,0 +1,141 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Now I'll create the audit artifact file:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is only the sentence \"Now I'll create the audit artifact file:\". It makes no decisions about any of the three issues. It does not close stage-four-cert-k0w or stage-four-cert-5bs, and it does not say whether to leave stage-four-cert-3ey. It contains no findings, no evidence, and none of the required sections (Closed, Flagged, Orphaned work). It reads as a truncated intermediate statement made before the work was done. Under the rubric, 'no decisions made' scores 1.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 36.827236,
+  "timestamp": "2026-10-14T11:23:44.781509",
+  "logs": [
+    "\u270e I'll execute the beads audit following all five steps. Let me start by gathering the current state o",
+    "\u2192 run_command: source ~/.zshrc && bd ready -n 30",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good. Now let me get details on each open issue. Step 1 shows 3 open issues. Let me check each one:",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me scan the codebase to check if these features are implemented. Let me look at the director",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: find . -type f -name \"*.js\" -o -name \"*.json\" | grep -E \"(src/|lib/|server|app|i",
+    "\u270e Let me check the src directory structure:",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u270e Good! I can see `cache.ts` exists. Let me check its content and the main app files:",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 list_directory: src/app",
+    "\u270e Let me check the health endpoint:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 list_directory: src/app/api/health",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Excellent! Now let me check the users route to see if cache is being used:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Now let me check if there's any logging infrastructure or configuration:",
+    "\u2192 run_command: find . -type f \\( -name \"*.ts\" -o -name \"*.js\" \\) | xargs grep -l \"log\\|winston\\",
+    "\u2192 run_command: ls -la src/",
+    "\u270e Let me also check git commits related to these features:",
+    "\u2192 run_command: git log --oneline --grep=\"health\\|cache\\|log\" -20",
+    "\u2192 run_command: git log --oneline --all | head -30",
+    "\u270e Perfect! Now I have enough information to proceed with Step 2. Let me analyze each issue:\n\n**Issue A",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 Health e",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 Cache mo",
+    "\u270e Now let me check for orphaned work by examining the git history more carefully:",
+    "\u2192 run_command: git log --oneline -30 --pretty=format:\"%h %s\"",
+    "\u2192 run_command: git show --name-only --pretty=format:\"%h %s\" cc0d4f2 | head -20",
+    "\u270e Good. The git history appears to directly correspond to the beads issues. Let me verify there are no",
+    "\u2192 run_command: git log --oneline -10 | while read commit msg; do echo \"$commit: $msg\"; done",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=closed 2>/dev/null | head -20",
+    "\u270e Perfect! Now let me create the audit artifact. First, let me ensure the audit_log directory exists:",
+    "\u2192 run_command: ls -la audit_log/ 2>/dev/null || echo \"Directory exists\"",
+    "\u270e Good, the directory exists. Now let me create the audit artifact with a current ISO 8601 timestamp:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u270e Now I'll create the audit artifact file:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T16:23:38Z.json"
+  ]
+}

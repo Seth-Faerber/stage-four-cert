@@ -1,0 +1,136 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "These are eval infrastructure and test results. They don't correspond to business feature issues. This is intentional eval work. No orphaned work exists.\n\nNow let me create the audit artifact in Step 4:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is a fragment that makes no decisions on any of the three issues. It says only that 'These are eval infrastructure and test results' that 'don't correspond to business feature issues' and that no orphaned work exists, then announces it will write the audit artifact. It never mentions stage-four-cert-k0w, 5bs, or 3ey. It closes none of them, so it misses both required closures (k0w and 5bs). It doesn't explicitly leave 3ey either, and it doesn't follow the required output format. The reasoning also seems to come from a different context, since it refers to eval infrastructure rather than the health endpoint, caching, or logging issues. With no correct decisions and no evidence, this meets the Score 1 criterion of 'no decisions made'.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 37.413552,
+  "timestamp": "2026-10-14T12:57:57.438489",
+  "logs": [
+    "\u270e I'll help you audit the beads issues against the codebase. Let me start by running the required comm",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! Step 1 is complete. I have:\n- **3 open issues**: stage-four-cert-3ey, stage-four-cert-5bs, sta",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me cross-reference these issues with the codebase. I need to check the codebase structure an",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: find . -type f -name \"*.js\" -o -name \"*.json\" | grep -E \"(package\\.json|server|a",
+    "\u270e Let me check the source code structure:",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u270e Great! I can see `cache.ts` exists. Let me examine the key files:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app",
+    "\u270e Excellent! I can see:\n1. **Health check endpoint**: exists in `src/app/api/health/route`\n2. **Cachin",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 run_command: find src -name \"*health*\" -o -name \"*log*\"",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 run_command: grep -r \"winston\\|pino\\|bunyan\\|log\\|logger\" src --include=\"*.ts\" | head -20",
+    "\u270e Perfect! Now let me check the git log more carefully to map commits to issues:",
+    "\u2192 run_command: git log --oneline -20 | grep -i \"health\\|cache\\|log\"",
+    "\u2192 run_command: git show cc0d4f2 --stat",
+    "\u270e Perfect! Now I have all the information I need. Let me now proceed with Step 2 \u2014 Cross-reference wit",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 In-memor",
+    "\u270e Excellent! Both issues closed successfully. Now let me check for orphaned work by examining the rece",
+    "\u2192 run_command: git log --oneline -20",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=closed | head -30",
+    "\u270e Now let me check for orphaned work by analyzing recent commits that don't correspond to issues:",
+    "\u2192 run_command: git log --oneline -20 | awk '{print $1}' | while read commit; do echo \"=== $comm",
+    "\u270e Let me identify which commits correspond to beads issues:",
+    "\u2192 run_command: source ~/.zshrc && bd list --all | grep -E \"stage-four-cert\"",
+    "\u270e Good! Now analyzing the commits vs issues:\n- **cc0d4f2**: \"feat: State B \u2014 add health check, cache m",
+    "\u2192 run_command: git show b33d797 --stat",
+    "\u270e These are eval infrastructure and test results. They don't correspond to business feature issues. Th",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 list_directory: audit_log"
+  ]
+}

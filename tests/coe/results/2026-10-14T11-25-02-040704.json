@@ -1,0 +1,135 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Perfect! Both issues closed successfully. Now let me create the audit log directory if it doesn't exist and write the audit artifact:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 2,
+    "reasoning": "The output is a single truncated fragment: 'Both issues closed successfully. Now let me create the audit log directory...' It never names the issues, so there is no evidence for any decision. 'Both issues' suggests two were closed, which would fit k0w and 5bs, but that is only an inference. Nothing shows 3ey was left alone. The output has no per-issue reasoning, no evidence such as the health route file or node-cache, and no findings in the required structure. The audit artifact was not written, only announced. The 'Both issues' wording hints the two closures may have been right, so the score is not 1. But the response gives too little to confirm any decision, and it is far from the 5 or 4 bands, which require visible correct decisions. Score 2 reflects incomplete output with only an implied, unverifiable partial match.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 31.853469,
+  "timestamp": "2026-10-14T11:25:02.040485",
+  "logs": [
+    "\u270e I'll perform a complete beads audit by running through all five steps. Let me start.",
+    "\u2192 run_command: source ~/.zshrc && bd ready -n 30",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good! I got the results. Now let me examine each of the 3 open issues in detail:\n\n**Step 1 Results:*",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me examine the codebase to see if these features have been implemented. Let me check the rep",
+    "\u2192 list_directory: .",
+    "\u270e Let me explore the src directory to check for health check, caching, and logging implementations:",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u270e Good! I can see `cache.ts` exists and `node-cache` is in dependencies. Let me examine the main files",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app",
+    "\u270e Let me check the health endpoint and users api:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Excellent! Now let me check if there's any logging setup:",
+    "\u2192 run_command: find src -type f -name \"*log*\" -o -name \"*logger*\"",
+    "\u2192 run_command: grep -r \"log\\|logger\\|winston\\|pino\\|bunyan\" src --include=\"*.ts\" | head -20",
+    "\u270e Now let me check the git commit history more closely and the recent work:",
+    "\u2192 run_command: git log --oneline -10 --format=\"%H %s\"",
+    "\u270e Let me check the commit message for the one that added the health check and cache:",
+    "\u2192 run_command: git log --format=\"%H %s\" | grep -i \"health\\|cache\\|log\"",
+    "\u270e Perfect! Let me verify that commit details:",
+    "\u2192 run_command: git show cc0d4f21fd65ae2b92ffc4a1e5b9516e8c24df40 --stat",
+    "\u270e Excellent! Now let me check the auth middleware to see if health endpoint bypasses auth:",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Perfect! Now let me analyze the findings:\n\n**Step 2 Analysis:**\n\n1. **stage-four-cert-k0w** (Add hea",
+    "\u2192 run_command: git log --oneline --all -50 | head -30",
+    "\u270e Now let me close the two completed issues and create the audit artifact. First, let me close the iss",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 cache mo",
+    "\u270e Perfect! Both issues closed successfully. Now let me create the audit log directory if it doesn't ex",
+    "\u2192 run_command: mkdir -p audit_log"
+  ]
+}

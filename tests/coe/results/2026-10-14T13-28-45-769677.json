@@ -1,0 +1,128 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "The commit `cc0d4f2 feat: State B \u2014 add health check, cache module, and coe eval suite` directly corresponds to the two issues I just closed (health check and cache module). This is accounted for. The other commits are for different features (eval suite, API routes, tests, etc.) and don't correspond to the open beads issues.\n\n## Step 4 \u2014 Write audit artifact\n\nLet me create the audit log directory and write the artifact:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The output is a partial transcript, not the full final response. It says 'the two issues I just closed (health check and cache module)', so the two correct closures (k0w and 5bs) appear to have happened. The commit cc0d4f2 'add health check, cache module' matches those issues. The excerpt says nothing about log aggregation (3ey) and does not close it. Since the only closures mentioned are health check and cache, 3ey was most likely left alone, which is correct. The excerpt does not show the close commands, the evidence, or the final formatted output. The reasoning is thin and the output is incomplete (it stops at Step 4 before writing the artifact). It seems to reach the right decisions, but with limited visible evidence, so 4 rather than 5.",
+    "pass": true
+  },
+  "passed": false,
+  "duration_seconds": 30.194801,
+  "timestamp": "2026-10-14T13:28:45.769476",
+  "logs": [
+    "\u270e I'll execute the update-beads skill to audit the beads issues against the actual codebase state.\n\n##",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I have 3 open issues and no in_progress issues. Recent commits show relevant work including a",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me search for the health check endpoint in the codebase:",
+    "\u2192 run_command: find . -name \"*.ts\" -o -name \"*.js\" | grep -E \"(server|app|health)\" | head -20",
+    "\u2192 run_command: grep -r \"health\" --include=\"*.ts\" --include=\"*.js\" . 2>/dev/null | head -20",
+    "\u270e Good! The health check exists. Let me check its implementation:",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Perfect! The health check endpoint is implemented and matches the requirements. Let me close this is",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u270e \u2713 Closed stage-four-cert-k0w. Now let me check the second issue.\n\n### Issue 2: stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u270e Good! I found a `cache.ts` file earlier. Let me check it:",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Let me check if node-cache is in the dependencies:",
+    "\u2192 run_command: grep -i \"node-cache\" package.json",
+    "\u270e Excellent! The cache module is implemented using node-cache. Let me also check if it's being used fo",
+    "\u2192 run_command: grep -r \"cache\\.\" --include=\"*.ts\" src/ | grep -i user | head -5",
+    "\u270e Let me check the users route to see if it uses the cache:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e The cache module exists and is properly set up with node-cache, but it's not yet integrated into the",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 src/cach",
+    "\u270e \u2713 Closed stage-four-cert-5bs. Now let me check the third issue.\n\n### Issue 3: stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u270e This issue is blocked on ops team provisioning. Let me search the codebase for any log aggregation s",
+    "\u2192 run_command: grep -r \"winston\\|pino\\|bunyan\\|logging\" --include=\"*.ts\" --include=\"*.js\" src/",
+    "\u270e No log aggregation setup found. Since this issue is explicitly blocked on ops team provisioning, I'l",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e The commit `cc0d4f2 feat: State B \u2014 add health check, cache module, and coe eval suite` directly cor",
+    "\u2192 run_command: mkdir -p audit_log"
+  ]
+}

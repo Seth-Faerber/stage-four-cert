@@ -1,0 +1,137 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "These commits appear to be related to test/eval infrastructure, not specific feature work that should have beads issues. The main feature work (health check and cache) already has corresponding closed beads issues. Let me verify there are no open issues related to these commits:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is a mid-process fragment, not a completed audit. It makes no decisions about the three issues. It never closes k0w or 5bs and never mentions 3ey. It does not use the required format (Closed/Flagged/Orphaned work sections) and does not name an audit artifact. It says the main feature work 'already has corresponding closed beads issues', which suggests the issues were already closed or assumed so, with no evidence of any `bd close` calls. It only comments on orphaned commits and ends by saying it will verify there are no open issues. No decisions were made, so the score is 1.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 34.779011,
+  "timestamp": "2026-10-14T12:53:16.834012",
+  "logs": [
+    "\u270e I'll audit the beads issues against the codebase. Let me start by executing all the required command",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I have 3 open issues and 0 in_progress issues. Now let me examine each open issue.\n\n## Step 2",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me search the codebase for evidence of these implementations:",
+    "\u2192 run_command: find . -type f -name \"*.js\" -o -name \"*.json\" | grep -v node_modules | head -20",
+    "\u2192 run_command: grep -r \"health\" --include=\"*.js\" . 2>/dev/null | head -10",
+    "\u2192 run_command: grep -r \"cache\\|Cache\" --include=\"*.js\" . 2>/dev/null | head -10",
+    "\u270e Let me look for the main application file:",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u270e Excellent! There's a `cache.ts` file. Let me examine the relevant source files:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Perfect! Now let me check for logging setup:",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.js\" | xargs grep -l \"log\\|winston\\|pin",
+    "\u2192 read_file: package.json",
+    "\u270e Now let me check the git history more carefully for evidence of these implementations:",
+    "\u2192 run_command: git log --all --oneline | grep -i \"health\\|cache\\|log\"",
+    "\u2192 run_command: git show cc0d4f2 --stat",
+    "\u270e Perfect! Now I have all the evidence I need. Let me now close the completed issues. I'll start with",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 in-memor",
+    "\u270e Excellent! Both issues closed. Now let me check for orphaned work by examining recent commits:\n\n## S",
+    "\u2192 run_command: git log --oneline -20 --all",
+    "\u270e Let me examine these commits to see if any represent work without corresponding open issues:",
+    "\u2192 run_command: git show b33d797 --stat",
+    "\u2192 run_command: git show 728b5d6 --stat",
+    "\u2192 run_command: git show 935fb1d --stat",
+    "\u270e These are all test result files. Let me check the more relevant commits for actual feature work:",
+    "\u2192 run_command: git show dff6b0e --stat",
+    "\u2192 run_command: git show 80f9d7a --stat",
+    "\u270e These commits appear to be related to test/eval infrastructure, not specific feature work that shoul",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open --status=in_progress"
+  ]
+}

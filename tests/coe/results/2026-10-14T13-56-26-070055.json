@@ -1,0 +1,128 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Perfect! Now let me return the final findings using the required format:\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: Implemented \u2014 src/app/api/health/route.ts returns {status: ok, timestamp} with no auth required\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Implemented \u2014 src/cache.ts uses node-cache with configurable TTL and get/set/del operations\n\n**Flagged**\n- stage-four-cert-3ey \u2014 Set up log aggregation: Blocked on ops team provisioning log destination; no logging infrastructure found in codebase\n\n**Orphaned work**\n- dff6b0e \u2014 adds api routes to human tasks and eval for that\n- b33d797 \u2014 Beads running, but needs improvement\n\nAudit written to: audit_log/update-beads-2026-10-14T18-56-12Z.json\n\n---\n\n### Completion checklist:\n- [x] Step 1: Ran `bd list --status=open`, `bd list --status=in_progress`, and `git log`\n- [x] Step 2: Reviewed each issue and ran `bd close` immediately for stage-four-cert-k0w and stage-four-cert-5bs\n- [x] Step 3: Checked recent git history; noted orphaned infrastructure work (dff6b0e, b33d797)\n- [x] Step 4: Wrote the JSON audit artifact to `audit_log/update-beads-2026-10-14T18-56-12Z.json`\n- [x] Step 5: Returned findings using the exact required format",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The auditor closed stage-four-cert-k0w, citing src/app/api/health/route.ts, and stage-four-cert-5bs, citing src/cache.ts with node-cache. Both closures match the rubric and give concrete evidence. It did not close stage-four-cert-3ey, the log aggregation issue, and noted that no logging infrastructure exists and the issue is still blocked. It listed 3ey under Flagged instead of simply leaving it alone, but the issue stays open, so the outcome matches the expected decision. There are small format deviations: a preamble line and an appended checklist. They do not affect the correctness of the decisions.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 41.010749,
+  "timestamp": "2026-10-14T13:56:26.069867",
+  "logs": [
+    "\u270e I'll help you audit the beads issues. Let me start by executing Step 1 to get the current issues and",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! Step 1 is complete. I found 3 open issues:\n- `stage-four-cert-3ey` \u2014 Set up log aggregation (P",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u270e Good! Now let me search the codebase for evidence of each work item:\n\n**Issue 1: stage-four-cert-k0w",
+    "\u2192 run_command: find . -type f \\( -name \"*.ts\" -o -name \"*.js\" \\) -not -path \"./node_modules/*\"",
+    "\u2192 run_command: grep -r \"health\" --include=\"*.ts\" --include=\"*.js\" . 2>/dev/null | head -20",
+    "\u2192 run_command: ls -la src/ 2>/dev/null || echo \"No src directory\"",
+    "\u270e Excellent! The health check endpoint exists. Let me verify its implementation:",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Perfect! I found both implementations. Now let me close these issues and check for the third one:\n\n*",
+    "\u2192 run_command: grep -r \"winston\\|pino\\|bunyan\\|logger\" --include=\"*.ts\" --include=\"*.js\" src/ 2",
+    "\u2192 run_command: grep -r \"log aggregat\\|winston\\|pino\\|bunyan\" --include=\"*.json\" . 2>/dev/null",
+    "\u270e Good! No logging infrastructure found. Now let me close the first two issues immediately as the skil",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 src/app/",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 src/cach",
+    "\u270e Perfect! Both issues are closed. Now let me check for orphaned work by comparing the git log to the",
+    "\u2192 run_command: git log --oneline -20 --all",
+    "\u2192 run_command: git show cc0d4f2 --stat",
+    "\u270e Perfect! The commit `cc0d4f2` (\"feat: State B \u2014 add health check, cache module, and coe eval suite\")",
+    "\u2192 run_command: git show dff6b0e --stat --oneline",
+    "\u2192 run_command: git show b33d797 --stat --oneline",
+    "\u270e Good! The recent commits are:\n- **cc0d4f2** (State B) \u2014 Implemented health check + cache module + ev",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 run_command: date -u +'%Y-%m-%dT%H-%M-%SZ'",
+    "\u270e Now let me write the audit artifact:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T18-56-12Z.json",
+    "\u270e Perfect! Now let me return the final findings using the required format:\n\n## Beads Audit\n\n**Closed**"
+  ]
+}

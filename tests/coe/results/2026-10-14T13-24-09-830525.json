@@ -1,0 +1,130 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "The JWT auth is implemented. This commit `518d6bc feat: State A \u2014 minimal Express API with JWT auth` has no corresponding open/closed issue, making it orphaned work.\n\n## Step 4 \u2014 Write audit artifact\n\nLet me create the audit log directory and write the artifact:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": false
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is a fragment, not a completed audit. It says JWT auth is implemented and that a commit is orphaned, then starts Step 4 without finishing it. It never mentions the three issues (k0w, 5bs, 3ey). It runs no bd close for the health endpoint or the caching module, and it never says to leave log aggregation alone. It does not use the required output format with Closed, Flagged, and Orphaned sections. No decisions about the issues are made, so this fits Score 1 ('no decisions made').",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 35.675362,
+  "timestamp": "2026-10-14T13:24:09.830315",
+  "logs": [
+    "\u270e I'll audit the beads issues against the codebase state. Let me start by gathering the current state.",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I have 3 open issues. Now let me check each one in detail.\n\n## Step 2 \u2014 Cross-reference with c",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me search the codebase for evidence of these features:\n\n**Issue stage-four-cert-k0w** \u2014 Add",
+    "\u2192 run_command: find . -type f -name \"*.ts\" -o -name \"*.js\" | head -20",
+    "\u2192 run_command: grep -r \"health\\|/api/health\" --include=\"*.ts\" --include=\"*.js\" . 2>/dev/null |",
+    "\u270e Great! Let me check the health endpoint implementation:",
+    "\u2192 read_file: ./src/app/api/health/route.ts",
+    "\u270e Perfect! The health endpoint exists and matches the requirements. Let me close this issue:",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 src/app/",
+    "\u270e Excellent! Now let me check **Issue stage-four-cert-5bs** \u2014 Add in-memory caching layer:",
+    "\u2192 read_file: ./src/cache.ts",
+    "\u270e Let me verify node-cache is in dependencies:",
+    "\u2192 run_command: grep -i \"node-cache\" package.json",
+    "\u270e Perfect! The cache module is implemented with node-cache. However, the issue is labeled `partial-imp",
+    "\u2192 read_file: ./src/app/api/users/route.ts",
+    "\u270e The user lookup is not currently using the cache module. The cache module exists but is not integrat",
+    "\u2192 run_command: git log --oneline --all | grep -i \"cache\\|user\"",
+    "\u270e The cache module was added in the \"State B\" commit. The issue notes it's marked `partial-impl`. Sinc",
+    "\u2192 run_command: grep -r \"winston\\|pino\\|bunyan\\|log\\|logger\" --include=\"*.ts\" --include=\"*.js\" s",
+    "\u270e No log aggregation setup found. Let me check if there's any structured logging:",
+    "\u2192 run_command: grep -r \"logger\\|winston\\|pino\\|bunyan\" --include=\"*.ts\" --include=\"*.js\" src/ 2",
+    "\u270e No logging infrastructure is set up. The issue notes it's blocked on ops team provisioning the log d",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=closed | head -20",
+    "\u270e Let me check if there's any issue in any status related to JWT or auth:",
+    "\u2192 run_command: source ~/.zshrc && bd list --all | grep -i \"auth\\|jwt\"",
+    "\u270e No issues for JWT auth. Let me verify the auth work is actually in the codebase:",
+    "\u2192 read_file: ./src/auth.ts",
+    "\u270e The JWT auth is implemented. This commit `518d6bc feat: State A \u2014 minimal Express API with JWT auth`",
+    "\u2192 run_command: mkdir -p audit_log"
+  ]
+}

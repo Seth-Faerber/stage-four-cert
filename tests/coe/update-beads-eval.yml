@@ -10,7 +10,7 @@ setup:
 runner: agentic
 
 agent_options:
-  max_turns: 15
+  max_turns: 30
   allowed_tools:
     - list_directory
     - read_file
@@ -22,7 +22,7 @@ prompt-under-eval: "~/.claude/skills/update-beads/SKILL.md"
 model_for_eval: claude-haiku-4-5-20251001
 
 model_parameters:
-  max_tokens: 1500
+  max_tokens: 15000
 
 deterministic_checks:
   - name: SHOULD close k0w in beads (health check is implemented)

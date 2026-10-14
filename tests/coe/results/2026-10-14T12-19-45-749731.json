@@ -1,0 +1,135 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Good, the directory exists. Now let me generate the timestamp and create the audit artifact:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is only a fragment: 'Good, the directory exists. Now let me generate the timestamp and create the audit artifact.' It shows no decisions on any of the three issues. It doesn't close k0w (health check) or 5bs (caching), doesn't leave 3ey (log aggregation) open, and gives no evidence or findings. It also doesn't use the required output format (Closed/Flagged/Orphaned sections). No decisions were made, which fits the Score 1 description.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 35.453593,
+  "timestamp": "2026-10-14T12:19:45.749528",
+  "logs": [
+    "\u270e I'll audit the beads issues against the codebase. Let me start by executing all the initial commands",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I have 3 open issues and 0 in-progress issues. Now let me review each open issue to cross-refe",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me search the codebase to verify if these features are actually implemented:",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: find . -type f -name \"*.js\" -o -name \"*.ts\" -o -name \"*.json\" | grep -E \"(app|se",
+    "\u2192 run_command: grep -r \"health\" --include=\"*.js\" --include=\"*.ts\" . 2>/dev/null | head -5",
+    "\u2192 run_command: grep -r \"cache\" --include=\"*.js\" --include=\"*.ts\" . 2>/dev/null | head -5",
+    "\u270e Excellent! Both the health check endpoint and cache module exist. Let me examine them more closely:",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Perfect! Both features are implemented. Now let me check for log aggregation to verify if that's don",
+    "\u2192 run_command: grep -r \"log\" --include=\"*.js\" --include=\"*.ts\" ./src 2>/dev/null | grep -i \"agg",
+    "\u2192 run_command: find ./src -type f \\( -name \"*.ts\" -o -name \"*.js\" \\) | xargs grep -l \"logger\\|l",
+    "\u270e Log aggregation doesn't appear to be implemented. Now let me check the git log for any work that mig",
+    "\u2192 run_command: git log --oneline --all | head -30",
+    "\u270e I can see that commit `cc0d4f2` mentions \"add health check, cache module\" which matches two of the o",
+    "\u2192 run_command: git show cc0d4f2 --stat | head -20",
+    "\u270e Perfect! This confirms that both the health check and cache features were implemented in commit `cc0",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 in-memor",
+    "\u270e Excellent! Now I need to check the remaining open issue (log aggregation) more carefully. Let me loo",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u270e Good. The log aggregation issue (stage-four-cert-3ey) has a note that it's \"Blocked on ops team prov",
+    "\u2192 run_command: git log --oneline --all -20",
+    "\u270e Looking at the recent commits, most of them appear to be related to the evaluation framework and tes",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=closed | head -20",
+    "\u270e Good, the closed issues are the two I just closed. The remaining commits appear to be evaluation and",
+    "\u2192 read_file: .beads",
+    "\u270e Let me check the .beads directory structure:",
+    "\u2192 list_directory: .beads",
+    "\u270e Now let me create the audit artifact. First, let me create the audit_log directory if it doesn't exi",
+    "\u2192 run_command: ls -la audit_log/ 2>/dev/null || mkdir -p audit_log",
+    "\u270e Good, the directory exists. Now let me generate the timestamp and create the audit artifact:",
+    "\u2192 run_command: date -u +'%Y-%m-%dT%H:%M:%SZ'"
+  ]
+}

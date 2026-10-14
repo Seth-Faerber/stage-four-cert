@@ -1,0 +1,136 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "The State A commit is the baseline. No orphaned work detected. All recent commits are either eval infrastructure (tests, results) or features that correspond to closed beads.\n\n## Step 4 \u2014 Write audit artifact\n\nNow let me create the audit log directory and write the audit artifact:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is a mid-process fragment, not a final audit. It says no orphaned work was detected and that recent commits correspond to \"closed beads,\" but it names no issues and shows no `bd close` commands. It makes no decisions on stage-four-cert-k0w, stage-four-cert-5bs, or stage-four-cert-3ey. It also omits the required Closed/Flagged/Orphaned sections, and it stops at \"Now let me create the audit log directory\" without writing the artifact. Since no decisions are visible, it fits the score 1 description (\"no decisions made\").",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 34.223881,
+  "timestamp": "2026-10-14T12:10:45.886837",
+  "logs": [
+    "\u270e I'll audit the beads issues against the codebase. Let me start by running the required commands in p",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I have 3 open issues and 0 in-progress issues. Let me now examine each open issue in detail.",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me search the codebase for evidence of these features:",
+    "\u2192 run_command: find . -type f \\( -name \"*.js\" -o -name \"*.ts\" -o -name \"*.json\" \\) ! -path \"./n",
+    "\u2192 run_command: grep -r \"GET /api/health\\|/health\\|health.*endpoint\" --include=\"*.js\" --include=",
+    "\u2192 run_command: grep -r \"cache\\|Cache\" --include=\"*.js\" --include=\"*.ts\" --include=\"*.jsx\" --inc",
+    "\u270e Excellent! I found evidence of both the health endpoint and cache implementation. Let me verify thes",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 run_command: find ./src -type f -name \"*health*\" 2>/dev/null",
+    "\u270e Let me check for the health route implementation:",
+    "\u2192 run_command: find ./src -type f -path \"*health*\" 2>/dev/null",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Perfect! Both features are implemented. Now let me check if logging aggregation is set up:",
+    "\u2192 run_command: grep -r \"log\\|Logger\\|logging\" --include=\"*.ts\" --include=\"*.js\" ./src | grep -i",
+    "\u270e No log aggregation found. Let me check the git log for the features mentioned in the recent commits:",
+    "\u2192 run_command: git log --oneline cc0d4f2..HEAD",
+    "\u2192 run_command: git show cc0d4f2 --stat",
+    "\u270e Perfect! The commit `cc0d4f2` shows that both the health check endpoint and cache module were added.",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u270e Great! Now close the caching layer issue:",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 In-memor",
+    "\u270e Excellent! Now let me check the remaining issue (log aggregation). According to the issue details, i",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u270e ## Step 3 \u2014 Check for orphaned work\n\nLet me review the recent git history to identify any work witho",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Let me check what these recent commits contain:",
+    "\u2192 run_command: git show b33d797 --stat",
+    "\u2192 run_command: git show 728b5d6 --stat",
+    "\u2192 run_command: git show dff6b0e --stat",
+    "\u270e These commits are related to eval infrastructure and test setup, not unreported features. The work i",
+    "\u2192 run_command: git show 518d6bc --stat",
+    "\u270e The State A commit is the baseline. No orphaned work detected. All recent commits are either eval in",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\""
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Perfect! Now let me generate the final output:\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: Implemented GET /api/health with {status, timestamp} response, correctly excluded from auth\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Implemented cache module using node-cache in src/cache.ts with get/set/del methods\n\n**Flagged**\n- stage-four-cert-3ey \u2014 Set up log aggregation: Remains blocked on ops team provisioning log destination; no code changes possible yet\n\n**Orphaned work**\n- cc0d4f2: State B commits containing health check and cache implementations (now closed as issues)\n- 518d6bc: State A baseline commit with JWT auth and user routes\n\n---\n\n**Summary**: 2 issues closed (both fully implemented and verified in codebase). 1 issue remains open pending external blocker. Audit artifact written to `audit_log/update-beads-2026-10-14T16-11-31Z.json`.",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The output makes all three decisions the rubric requires. It closes stage-four-cert-k0w (health check) and cites GET /api/health with the auth exclusion. It closes stage-four-cert-5bs (caching) and cites src/cache.ts using node-cache. It leaves stage-four-cert-3ey (log aggregation) open and flags it as blocked on ops provisioning, with no closure. The output uses the required headers. Minor flaws: a stray 'Perfect! Now let me...' preamble, and the orphaned-work entries list commits that correspond to issues that were just closed, so they are not really orphaned. These do not affect the core decisions.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 43.61516,
+  "timestamp": "2026-10-14T11:11:47.071998",
+  "logs": [
+    "\u270e I'll audit the beads issues against the codebase. Let me start by gathering the current state.",
+    "\u2192 run_command: source ~/.zshrc && bd ready -n 30",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good! I have 3 open issues and 0 in_progress. Let me examine each one in detail:",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me check the codebase to see which of these issues have been implemented. Let me explore the",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u270e Let me check the main app files to see if the issues have been implemented:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Excellent! Now let me check the git history more closely to understand the work that's been done:",
+    "\u2192 run_command: git log --all --oneline --decorate -30",
+    "\u2192 run_command: git show --stat cc0d4f2 | head -50",
+    "\u2192 run_command: git show --stat 518d6bc | head -50",
+    "\u270e Perfect! Now I have a clear picture. The commits show:\n- **stage-four-cert-k0w** (Add health check e",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Excellent! The health endpoint is correctly excluded from auth. Now let me create the audit log dire",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u270e Now I'll close the two completed issues and write the audit artifact:",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 in-memor",
+    "\u270e Perfect! Now let me write the audit artifact:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T16-11-31Z.json",
+    "\u270e Perfect! Now let me generate the final output:\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 A"
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "## Step 5 \u2014 Return findings\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: Implemented \u2014 src/app/api/health/route.ts returns {status: ok, timestamp}\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Implemented \u2014 src/cache.ts module with node-cache and TTL configuration\n\n**Flagged**\n- stage-four-cert-3ey \u2014 Set up log aggregation: Blocked pending external log destination provisioning from ops team\n\n**Orphaned work**\n- b33d797 Beads running, but needs improvement\n- 728b5d6 setup things for beads\n- 518d6bc feat: State A \u2014 minimal Express API with JWT auth\n\nAudit written to: audit_log/update-beads-2026-10-14T18-53-22Z.json",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The output closes stage-four-cert-k0w, citing src/app/api/health/route.ts as evidence. It closes stage-four-cert-5bs, citing src/cache.ts with node-cache and TTL config. It does not close stage-four-cert-3ey, which stays open and is listed under Flagged as blocked on external log destination provisioning. The skill says to leave issues alone when the work does not exist, so listing it under Flagged is a minor stylistic deviation, not a wrong closure. All three decisions match the rubric. The format is also followed, apart from an extra 'Step 5' header line, and orphaned commits and the artifact path are included.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 37.93637,
+  "timestamp": "2026-10-14T13:53:34.547138",
+  "logs": [
+    "\u270e I'll audit the beads issues against the codebase. Let me start by running the required commands.\n\n##",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I found 3 open issues. Now let me examine each one in detail.\n\n## Step 2 \u2014 Cross-reference wit",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u2192 list_directory: .",
+    "\u270e Now let me explore the codebase to verify each issue:\n\n**Issue 1: stage-four-cert-k0w \u2014 Add health c",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 list_directory: src/app/api/health",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Perfect! The health endpoint exists. Now let me check the users route for cache usage:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Now let me verify the issues:\n\n**Issue stage-four-cert-k0w:** Health endpoint exists at `src/app/api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 src/app/",
+    "\u270e **Issue stage-four-cert-5bs \u2014 Close it:**",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 src/cach",
+    "\u270e **Issue stage-four-cert-3ey \u2014 Flag it:**\n\nThis issue is \"Blocked on ops team provisioning the log de",
+    "\u2192 run_command: source ~/.zshrc && bd flag stage-four-cert-3ey --reason=\"Blocked pending externa",
+    "\u270e The `flag` command doesn't exist. I'll note this issue as flagged in my audit without trying to upda",
+    "\u2192 list_directory: audit_log",
+    "\u270e Now let me write the audit artifact with the current timestamp:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T18-53-22Z.json",
+    "\u270e Perfect! Now let me verify the artifact was written:",
+    "\u2192 read_file: audit_log/update-beads-2026-10-14T18-53-22Z.json",
+    "\u270e ## Step 5 \u2014 Return findings\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check end"
+  ]
+}

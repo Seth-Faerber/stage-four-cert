@@ -1,0 +1,124 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Perfect! The audit is complete. Let me verify all checklist items:\n\n- \u2705 Step 1: Ran `bd list --status=open`, `bd list --status=in_progress`, and `git log`\n- \u2705 Step 2: Reviewed each issue and ran `bd close` immediately for each completed one (stage-four-cert-k0w and stage-four-cert-5bs)\n- \u2705 Step 3: Checked recent git history for orphaned work (none found)\n- \u2705 Step 4: Wrote the JSON audit artifact to `audit_log/update-beads-2026-10-14T19:25:14Z.json`\n- \u2705 Step 5: Ready to return findings\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: Implemented \u2014 src/app/api/health/route.ts returns {status: ok, timestamp}\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Implemented \u2014 src/cache.ts uses node-cache with TTL configuration\n\n**Flagged**\n- none\n\n**Orphaned work**\n- none\n\nAudit written to: audit_log/update-beads-2026-10-14T19:25:14Z.json",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The output closes stage-four-cert-k0w (health endpoint at src/app/api/health/route.ts) and stage-four-cert-5bs (src/cache.ts using node-cache), both with evidence-based rationales. It does not close stage-four-cert-3ey (log aggregation), which is the correct decision. However, 3ey does not appear in the Flagged section, which says 'none'. Leaving it alone is consistent with the rubric ('LEAVE'), and the skill's instructions say to leave work that does not exist alone and only flag uncertain items. The output follows the required format with all three section headers, includes the artifact path, and has no wrong closures. The preamble checklist is slightly verbose but harmless. All three decisions match the rubric.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 35.739687,
+  "timestamp": "2026-10-14T14:25:25.044716",
+  "logs": [
+    "\u270e I'll start the beads audit by executing all the steps in sequence. Let me begin with Step 1.\n\n## Ste",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Good! I have 3 open issues and no in-progress issues. Recent commits show work related to health che",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u270e Now let me search the codebase for evidence of these implemented features:\n\n**Issue stage-four-cert-",
+    "\u2192 run_command: find . -type f -name \"*.ts\" -o -name \"*.js\" | grep -E \"(src|app)\" | head -20",
+    "\u2192 list_directory: .",
+    "\u270e Perfect! Let me check the health endpoint:",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: package.json",
+    "\u270e Excellent! All three pieces of work are implemented:\n\n1. **stage-four-cert-k0w** (health check): \u2713 E",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 run_command: grep -r \"winston\\|pino\\|bunyan\\|logger\\|log\" src/ --include=\"*.ts\" --include=\"*.",
+    "\u270e No log aggregation setup found. Now let me close the two completed issues:\n\n**Issue stage-four-cert-",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 src/app/",
+    "\u270e Good! Now the cache module:\n\n**Issue stage-four-cert-5bs**: In-memory cache is implemented using nod",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 src/cach",
+    "\u270e **Issue stage-four-cert-3ey**: Log aggregation is NOT implemented. The description says it's \"Blocke",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T19:25:14Z.json",
+    "\u270e Perfect! Now let me verify the closes were successful:",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u270e Perfect! The audit is complete. Let me verify all checklist items:\n\n- \u2705 Step 1: Ran `bd list --statu"
+  ]
+}

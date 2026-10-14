@@ -1,0 +1,134 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Now I'll write the audit log:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 1,
+    "reasoning": "The output is only the single line 'Now I'll write the audit log:'. It makes no decisions about any of the three issues. It does not close stage-four-cert-k0w or stage-four-cert-5bs, does not say whether stage-four-cert-3ey stays open, and gives no evidence, findings, or structured audit output. Under the rubric, 'no decisions made' scores 1.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 35.584227,
+  "timestamp": "2026-10-14T11:02:45.803134",
+  "logs": [
+    "\u270e I'll conduct a comprehensive audit of the beads issues against the codebase. Let me start with Step",
+    "\u2192 run_command: source ~/.zshrc && bd ready -n 30",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good! I have 3 open issues. Let me now examine each one in detail to cross-reference with the codeba",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me search the codebase for evidence of these implementations. Let me explore the project str",
+    "\u2192 list_directory: .",
+    "\u270e Let me examine the src directory and package.json to understand the project structure:",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u270e Good! I can see `cache.ts` exists. Let me examine the source files:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app",
+    "\u270e Now let me check the api routes:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Perfect! Now let me check the git history for evidence of when these features were implemented:",
+    "\u2192 run_command: git log --oneline --all | grep -i \"health\\|cache\\|log\"",
+    "\u2192 run_command: git show --stat cc0d4f2",
+    "\u270e Excellent! Now I have clear evidence. Let me verify that the health endpoint does not require auth b",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Perfect! Now let me check for logging infrastructure to understand the status of issue stage-four-ce",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.js\" | xargs grep -l \"log\\|winston\\|pin",
+    "\u2192 run_command: grep -n \"log\" src/index.ts",
+    "\u270e Now let me check if the audit_log directory exists and create it if needed:",
+    "\u2192 run_command: ls -la audit_log/ 2>/dev/null || echo \"Directory does not exist\"",
+    "\u270e Good, the directory exists. Now let me get the current timestamp and create the audit report. Let me",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 In-memor",
+    "\u270e Perfect! Now let me create the audit log file with the current timestamp:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u270e Now I'll write the audit log:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T16:02:38Z.json"
+  ]
+}

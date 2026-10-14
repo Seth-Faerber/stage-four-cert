@@ -1,0 +1,136 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Analysis of orphaned work:\n\n1. **dff6b0e** \u2014 \"adds api routes to human tasks and eval for that\" \u2014 This adds test evaluation infrastructure, not tied to the three open beads issues. It's infrastructure work for eval testing.\n\n2. **935fb1d** \u2014 \"human eval deterministic passes\" \u2014 This is test result output, not feature work.\n\n3. **cc0d4f2** \u2014 \"feat: State B \u2014 add health check, cache module, and coe eval suite\" \u2014 This is tied to the two closed issues (k0w and 5bs), so not orphaned.\n\nThe work in commits related to human tasks evaluation and eval infrastructure (dff6b0e, etc.) is orphaned in the sense that it's not tracked by the three current/previous beads issues.\n\n## Step 4 \u2014 Write audit artifact\n\nNow let me create the audit artifact:",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": false
+        },
+        {
+          "value": "**Closed**",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": false
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 3,
+    "reasoning": "The output is a partial transcript, not a full audit. It never lists the closed issues explicitly and never mentions 3ey (log aggregation). The only evidence of decisions is the line saying cc0d4f2 is 'tied to the two closed issues (k0w and 5bs)', which implies k0w and 5bs were closed. That matches the rubric, and it also refers to 'three open beads issues', so 3ey was seemingly left open. But the output gives no close reasons or evidence for these decisions, and no explicit statement that 3ey was left alone. It also ends at 'Step 4' without writing the artifact or returning the structured findings (Closed/Flagged/Orphaned headers). The decisions look correct by inference, but the response is incomplete and poorly evidenced. That justifies something between a 3 and a 4. I give a 3 because the evidence for the decisions is only implicit and the task is unfinished.",
+    "pass": false
+  },
+  "passed": false,
+  "duration_seconds": 34.502765,
+  "timestamp": "2026-10-14T11:30:03.509951",
+  "logs": [
+    "\u270e I'll audit the beads issues against the actual codebase state. Let me start by completing all five s",
+    "\u2192 run_command: source ~/.zshrc && bd ready -n 30",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good. I have:\n- **Ready**: 2 issues (stage-four-cert-5bs, stage-four-cert-k0w)\n- **Open**: 3 issues",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me check the codebase structure to see what's actually been implemented:",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u270e Perfect! I can see there's already a `cache.ts` file. Let me check its contents and the main app fil",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/app/index.ts",
+    "\u2192 read_file: src/index.ts",
+    "\u270e Great! I can see the health endpoint is already implemented. Let me check the health route file:",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 list_directory: src/app/api/users",
+    "\u270e Excellent! Let me check the users route to see if cache is being used:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Now let me check the git log more carefully and look for any logging setup:",
+    "\u2192 run_command: grep -r \"log\" src/ --include=\"*.ts\" | head -20",
+    "\u2192 run_command: grep -r \"aggregat\" . --include=\"*.ts\" --include=\"*.json\" --include=\"*.md\" 2>/dev",
+    "\u270e Good. Now let me check if there's already an audit_log directory and recent audit files:",
+    "\u2192 list_directory: audit_log",
+    "\u270e Good, the directory exists. Now let me check one of the most recent audit files to see what decision",
+    "\u2192 read_file: audit_log/update-beads-2026-10-14T22-30-00Z.json",
+    "\u270e Perfect! I can see the previous audit already correctly identified the state. Now let me verify the",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 in-memor",
+    "\u270e Excellent! Both issues closed. Now let me verify the remaining state and check for orphaned work:\n\n#",
+    "\u2192 run_command: git log --pretty=format:\"%h %s\" -20",
+    "\u2192 run_command: git log --all --oneline | grep -i \"human\\|eval\\|test\" | head -10",
+    "\u270e Let me verify what these recent commits added:",
+    "\u2192 run_command: git show --stat dff6b0e | head -30",
+    "\u2192 run_command: git show --stat 935fb1d | head -30",
+    "\u270e Analysis of orphaned work:\n\n1. **dff6b0e** \u2014 \"adds api routes to human tasks and eval for that\" \u2014 Th",
+    "\u2192 run_command: date -u +'%Y-%m-%dT%H:%M:%SZ'"
+  ]
+}

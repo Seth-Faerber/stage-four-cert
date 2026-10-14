@@ -1,0 +1,123 @@
+{
+  "prompt_name": "update-beads-eval",
+  "test_input": null,
+  "output": "Perfect! Now let me provide the findings:\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: GET /api/health fully implemented with {status: ok, timestamp} response and no auth required\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: NodeCache module with get/set/del functions and configurable TTL\n\n**Flagged**\n- stage-four-cert-3ey \u2014 Set up log aggregation: Legitimately blocked on ops team provisioning; no logging framework installed yet; awaiting external blocker resolution\n\n**Orphaned work**\n- Human task infrastructure additions (dff6b0e) \u2014 created API routes for human eval tasks, not tied to current open issues",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": false
+        }
+      ],
+      "overall_pass": false
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The output closes stage-four-cert-k0w, citing the implemented GET /api/health endpoint, and closes stage-four-cert-5bs, citing the NodeCache module with TTL. It does not close stage-four-cert-3ey. It lists it under Flagged with the reason that no logging framework is installed and it is still blocked on ops, so the issue stays open, which matches the expected 'leave' decision. Flagging rather than silently leaving it is a defensible reading of the skill's guidance. The output follows the required section headers, and the orphaned work entry is plausible. The only blemish is the stray 'Perfect! Now let me provide the findings:' preamble, which does not affect the decisions.",
+    "pass": true
+  },
+  "passed": false,
+  "duration_seconds": 31.594515,
+  "timestamp": "2026-10-14T11:13:05.563523",
+  "logs": [
+    "\u270e I'll audit the beads issues against the codebase. Let me start by gathering the current state.",
+    "\u2192 run_command: source ~/.zshrc && bd ready -n 30",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good! I have 3 open issues and no in-progress issues. Let me examine each open issue in detail.",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w",
+    "\u270e Now let me explore the codebase to cross-reference with the issues. Let me look for these features:",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u270e Now let me check for log aggregation setup:",
+    "\u2192 run_command: grep -r \"log\" src/ --include=\"*.ts\" | grep -i \"aggregat\\|winston\\|pino\\|bunyan\\|",
+    "\u2192 read_file: package.json",
+    "\u270e Perfect! Now I have all the information I need. Let me analyze each issue:\n\n**Analysis:**\n\n1. **stag",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 GET /api",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 NodeCach",
+    "\u270e Excellent! Now let me write the audit log artifact:",
+    "\u2192 write_file: audit_log/update-beads-2026-10-14T00-00-00Z.json",
+    "\u270e Perfect! Now let me provide the findings:\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add he"
+  ]
+}
