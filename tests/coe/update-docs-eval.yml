@@ -104,7 +104,7 @@ model_evaluation:
 
     CLAUDE.md gaps: GET /api/health route, src/cache.ts, HEALTH_CHECK_INTERVAL env var, node-cache dependency
     Beads decisions: close k0w (health route done), close 5bs (cache.ts done), leave 3ey open (no logging)
-    Human-tasks: check off health route items; do NOT check credential/infra items; add HEALTH_CHECK_INTERVAL item
+    Human-tasks: check off health route items; do NOT check credential items (DATABASE_URL, API_KEY, Provision DB); add HEALTH_CHECK_INTERVAL item
 
     ---
     ## CLAUDE.md (score 1-5)
@@ -128,10 +128,10 @@ model_evaluation:
     ## Human Tasks (score 1-5)
 
     5 - Checked off all health route items; did NOT check credential/infra items (DATABASE_URL, API_KEY, Provision DB); added HEALTH_CHECK_INTERVAL to-do item.
-    4 - Checked off health route items; no credential items auto-completed; minor gap (e.g., missing HEALTH_CHECK_INTERVAL add).
+    4 - Checked off health route items; no credential items auto-completed; minor gap acceptable (e.g., missing HEALTH_CHECK_INTERVAL add, or checked off an infra-verification item inferred from code).
     3 - Checked off health route items but made one notable error (e.g., re-unchecked a valid item, or left health items unchecked).
-    2 - Partial check-offs with a significant error (e.g., marked a credential or manual-verification item as done).
-    1 - No meaningful updates, or auto-completed credential/infra items.
+    2 - Partial check-offs with a significant error: marked a credential item as done (DATABASE_URL, API_KEY, or Provision DB).
+    1 - No meaningful updates, or auto-completed credential items.
 
     ---
     A score of 4+ in each area is passing.

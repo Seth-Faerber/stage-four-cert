@@ -10,7 +10,7 @@
 
 ## Application Verification
 - [x] Confirm `npm start` launches without errors
-- [ ] Verify JWT authentication works (test with a valid token against GET /api/users)
+- [x] Verify JWT authentication works (test with a valid token against GET /api/users)
 - [ ] Confirm database connection is live (check logs for connection errors)
 
 ## API Routes
