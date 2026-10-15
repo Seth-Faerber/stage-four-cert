@@ -1,0 +1,226 @@
+{
+  "prompt_name": "update-docs-eval",
+  "test_input": null,
+  "output": "Good! Now I'll output the structured summary using the exact format required:\n\n---\n\n## Documentation Audit Summary\n\n### CLAUDE.md\n- **Updated**: Stack section added node-cache; API Routes added GET /api/health (public); Authentication clarified /health public path; new Caching section with node-cache documentation; Directory Structure added cache.ts and health/route.ts; Environment Variables added HEALTH_CHECK_INTERVAL; Open Issues annotated with completion status\n- **Needs human review**: None \u2014 all updates are based on codebase verification\n\n---\n\n## Beads Audit\n\n**Closed**\n- stage-four-cert-k0w \u2014 Add health check endpoint: Implemented \u2014 src/app/api/health/route.ts returns {status: ok, timestamp} with no auth required\n- stage-four-cert-5bs \u2014 Add in-memory caching layer: Implemented \u2014 src/cache.ts provides node-cache module with get/set/del functions and TTL configuration\n\n**Flagged**\n- stage-four-cert-3ey \u2014 Set up log aggregation: Blocked on ops team provisioning log destination; cannot close until external dependencies resolved\n\n**Orphaned work**\n- none\n\nAudit written to: audit_log/update-beads-2024-10-15T18:18:13Z.json\n\n---\n\n### Human-Tasks\n- **Checked off**: Create `src/app/api/health/route.ts` file (file exists and implements endpoint); Implement `GET /api/health` endpoint (route handler exists and returns {status: ok, timestamp}); Implement in-memory cache module (src/cache.ts exists with node-cache)\n- **Added**: Caching section with cache module implementation and integration tasks\n- **Needs human review**: Copy `.env.example` to `.env` and fill in values (credential configuration); Provision PostgreSQL database and set `DATABASE_URL` (infrastructure/credential); Obtain API key and set `API_KEY` (credential setup); Confirm database connection is live (runtime verification); Implement `POST /api/users` endpoint (not yet implemented); Integrate cache into user lookup operations (module exists but not integrated)\n- **Skipped**: none\n\n---\n\n**Audit Summary:**\n- \u2705 **2 beads issues closed** \u2014 health check and caching layer now complete per codebase audit\n- \u2705 **CLAUDE.md fully synchronized** \u2014 7 sections updated with current architecture, routes, and env vars\n- \u2705 **Human-tasks checklist updated** \u2014 3 items checked off, 6 items flagged for human action, 1 new section added\n- \u23f8\ufe0f **1 beads issue remains flagged** \u2014 log aggregation blocked on external ops team\n\nAll audit artifacts written to `audit_log/` directory and aggregated entry appended to `audit_log.jsonl`.",
+  "deterministic_checks": {
+    "SHOULD close k0w in beads (health check is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-k0w\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD close 5bs in beads (cache module is implemented)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-5bs\"",
+          "passed": true
+        },
+        {
+          "value": "\"new_value\":\"closed\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT touch 3ey in beads (log aggregation not implemented)": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "\"issue_id\":\"stage-four-cert-3ey\"",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD output Beads Audit header with Closed section": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "## Beads Audit",
+          "passed": true
+        },
+        {
+          "value": "**Closed**",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD report k0w and 5bs as closed in audit output": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "stage-four-cert-k0w",
+          "passed": true
+        },
+        {
+          "value": "stage-four-cert-5bs",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD write audit artifact to audit_log/": {
+      "type": "contains",
+      "checks": [
+        {
+          "value": "audit_log/update-beads-",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD mark health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "Scores per area: claude_md_score 5, beads_score 5, human_tasks_score 4. The overall score of 4 is the minimum of the three, since passing needs 4 or more in every area.\n\nCLAUDE.md (5): The output covers all four expected gaps. It adds the GET /api/health route, src/cache.ts, the HEALTH_CHECK_INTERVAL env var and the node-cache dependency. It also adds a Caching section and directory structure entries.\n\nBeads (5): k0w and 5bs are closed with correct rationales, and 3ey is left open and only flagged. The output follows the required format. The timestamp format is slightly unusual but doesn't matter.\n\nHuman tasks (4): The health route items are checked off. The credential and infra items (DATABASE_URL, API_KEY, Provision DB, .env copy) are correctly left for human review and not auto-completed. The only gap is that no HEALTH_CHECK_INTERVAL to-do item is explicitly added. The output lists only a \"Caching section\" as added. The rubric allows this as a minor gap. The cache-module check-off is inferred from code, which is reasonable.",
+    "pass": true
+  },
+  "passed": true,
+  "error": false,
+  "duration_seconds": 91.870659,
+  "timestamp": "2026-10-15T13:19:25.176798",
+  "num_turns": 28,
+  "logs": [
+    "\u270e I'll execute this full documentation audit by running through each step. Let me start by gathering t",
+    "\u2192 run_command: find src -type f -o -type d 2>/dev/null | head -30",
+    "\u270e Now let me get a fuller snapshot:",
+    "\u2192 read_file: package.json",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: git log --oneline -30 2>/dev/null || echo \"Not a git repo\"",
+    "\u270e Good. Now let me check for environment files and the API routes structure:",
+    "\u2192 read_file: .env.example",
+    "\u2192 run_command: find src/app/api -name \"route.ts\" 2>/dev/null",
+    "\u2192 list_directory: specs",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Now let me read the three sub-skill definitions and execute them. Starting with update-claude-md:",
+    "\u2192 read_file: ~/.claude/skills/update-claude-md/SKILL.md",
+    "\u270e Let me expand the path correctly:",
+    "\u2192 run_command: ls -la ~/.claude/skills/ 2>/dev/null || echo \"No .claude dir\"",
+    "\u270e Good, now let me read the skill files properly:",
+    "\u2192 run_command: cat ~/.claude/skills/update-claude-md/SKILL.md",
+    "\u2192 run_command: cat ~/.claude/skills/update-beads/SKILL.md",
+    "\u2192 run_command: cat ~/.claude/skills/update-human-tasks/SKILL.md",
+    "\u270e Excellent. Now I'll execute each sub-skill in sequence, starting with **update-claude-md**:\n\n## Step",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 run_command: find src -type f -name \"*.ts\" | head -20",
+    "\u2192 run_command: find src -type d",
+    "\u270e Good! Now let me read the actual route files to verify current implementation:",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/index.ts",
+    "\u270e Now let me check the auth file:",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Perfect. Now I can audit the CLAUDE.md. Let me identify what needs updating:\n\n1. **Health endpoint**",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit artifact for update-claude-md:",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2024-10-15T18:18:13Z.json",
+    "\u270e Good! Now let me execute **Step 3 \u2014 Run update-beads**:",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=open 2>&1",
+    "\u2192 run_command: source ~/.zshrc && bd list --status=in_progress 2>&1",
+    "\u270e Good! I have 3 open issues. Let me now examine each one in detail and cross-reference with the codeb",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-k0w 2>&1 | grep -v \"zstyle\\|Oh My\"",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-5bs 2>&1 | grep -v \"zstyle\\|Oh My\"",
+    "\u2192 run_command: source ~/.zshrc && bd show stage-four-cert-3ey 2>&1 | grep -v \"zstyle\\|Oh My\"",
+    "\u270e Perfect. Now let me check the git log for context:",
+    "\u2192 run_command: git log --oneline -20",
+    "\u270e Excellent. Now I can evaluate each issue:\n\n**Issue stage-four-cert-k0w** \u2014 Wants `GET /api/health` w",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-k0w --reason=\"Implemented \u2014 src/app/",
+    "\u2192 run_command: source ~/.zshrc && bd close stage-four-cert-5bs --reason=\"Implemented \u2014 src/cach",
+    "\u270e Perfect! Both issues closed. Now let me check for orphaned work by looking at the commit log more ca",
+    "\u2192 run_command: git log --oneline -30 | head -10",
+    "\u270e Looking at the recent commits, they're all related to the eval infrastructure and running tests \u2014 no",
+    "\u2192 write_file: audit_log/update-beads-2024-10-15T18:18:13Z.json",
+    "\u270e Excellent! Now let me execute **Step 4 \u2014 Run update-human-tasks**:",
+    "\u2192 read_file: human-tasks/001-setup.md",
+    "\u270e Now let me audit these items against the codebase state:\n\n**Already checked (\u2713):**\n- Clone repo, ins",
+    "\u2192 run_command: grep -n \"POST\\|post\" src/app/api/users/route.ts",
+    "\u270e POST endpoint doesn't exist. Let me now update the human-tasks file:",
+    "\u2192 write_file: human-tasks/001-setup.md",
+    "\u270e Now let me create the audit artifact for human-tasks:",
+    "\u2192 write_file: audit_log/update-human-tasks-2024-10-15T18:18:13Z.json",
+    "\u270e Perfect! Now let me execute **Step 5 \u2014 Aggregate findings and write audit log**:",
+    "\u2192 run_command: cat audit_log/update-claude-md-2024-10-15T18:18:13Z.json",
+    "\u2192 run_command: cat audit_log/update-beads-2024-10-15T18:18:13Z.json",
+    "\u2192 run_command: cat audit_log/update-human-tasks-2024-10-15T18:18:13Z.json",
+    "\u270e Now let me append the aggregated entry to `audit_log.jsonl`:",
+    "\u2192 run_command: cat audit_log.jsonl | tail -1",
+    "\u270e Good, the file exists. Let me read it and append the new entry:",
+    "\u2192 read_file: audit_log.jsonl",
+    "\u270e Now let me create a new aggregated entry and append it:",
+    "\u2192 run_command: cat > /tmp/new_entry.json << 'EOF'\n{\"run_id\": \"2024-10-15T18:18:13Z\", \"timestamp",
+    "\u270e Perfect! Now let me present the final findings with the exact format required:",
+    "\u2192 run_command: tail -1 audit_log.jsonl | head -c 100",
+    "\u270e Good! Now I'll output the structured summary using the exact format required:\n\n---\n\n## Documentation",
+    "\u2139 28 turn(s)"
+  ],
+  "result_file": "2026-10-15T13-19-25-177012.json"
+}
