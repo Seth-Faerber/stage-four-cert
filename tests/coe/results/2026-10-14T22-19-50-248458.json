@@ -1,0 +1,65 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here are the findings:\n\n---\n\n## CLAUDE.md Audit\n\n### **Updated**\n1. **Stack Overview** \u2014 Added `node-cache` to dependency list (was missing from description)\n2. **Common Commands** \u2014 Clarified that `test` script is a placeholder, not truly \"no runner configured\"\n3. **API Routes** \u2014 Added `GET /api/health` endpoint (newly completed; was missing from docs)\n4. **Authentication** \u2014 Expanded explanation of Bearer token requirement and `PUBLIC_PATHS` list\n5. **New Caching Section** \u2014 Added comprehensive subsection covering:\n   - In-memory caching via `node-cache`\n   - TTL control via `HEALTH_CHECK_INTERVAL` env var\n   - Public cache API (`get<T>`, `set<T>`, `del`)\n6. **Directory Structure** \u2014 Updated to include:\n   - `src/cache.ts` (new module)\n   - `src/app/api/health/route.ts` (new route)\n   - Clarified roles of each file\n7. **Environment Variables** \u2014 Added `HEALTH_CHECK_INTERVAL` variable (was used in code but not documented)\n8. **Open Issues** \u2014 Marked health check and caching tasks as \u2713 Completed; noted that log aggregation can now unblock\n\n### **Needs human review**\nNone \u2014 all changes are factual corrections backed by actual code inspection.\n\n---\n\n**Audit artifact written to**: `audit_log/update-claude-md-2025-01-01T00-00-00Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The final CLAUDE.md covers all three discrepancies named in the rubric. The health route is documented in the API Routes table, in the directory structure, and in the open issues. `src/cache.ts` has its own Caching section and a directory entry. `HEALTH_CHECK_INTERVAL` is in the env var table and the caching description. Some details look unverified or slightly off. The Stack line lists `node-cache`, but the Caching section calls it a 'node-cache module', which is awkward. The `DATABASE_URL` and `API_KEY` entries are described as required, but the file doesn't show whether the code uses them. The Open Issues section has leftover strikethrough text and a 'can unblock' note that reads like an agent comment, a minor formatting and style flaw. The file also doesn't show whether the agent flagged ambiguous items or wrote the audit artifact, but the graded content is only CLAUDE.md. Overall the three updates are accurate with only minor stylistic problems, so the score is 4.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 25.753498,
+  "timestamp": "2026-10-14T22:19:50.248376",
+  "num_turns": 7,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering gr",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u270e Now let me explore the actual code structure more deeply:",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: .env.example",
+    "\u270e Let me check the API routes more thoroughly:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 run_command: find src/app/api -type f -name \"*.ts\" | head -20",
+    "\u2192 run_command: git log --oneline -15 2>/dev/null || echo \"No git history available\"",
+    "\u270e Let me read the route files to see their exact implementations:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Perfect! Now I have a complete picture. Let me audit CLAUDE.md and create the findings:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 write_file: audit_log/update-claude-md-2025-01-01T00-00-00Z.json",
+    "\u270e Perfect! Here are the findings:\n\n---\n\n## CLAUDE.md Audit\n\n### **Updated**\n1. **Stack Overview** \u2014 Ad",
+    "\u2139 7 turn(s)"
+  ]
+}

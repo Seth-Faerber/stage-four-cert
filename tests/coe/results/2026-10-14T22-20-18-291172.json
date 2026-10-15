@@ -1,0 +1,67 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit\n\n### **Updated**\n1. **Stack** \u2014 Added `node-cache` to the technology list (was missing from original)\n2. **API Routes** \u2014 Added `GET /api/health` endpoint (was completely missing from documentation despite being implemented)\n3. **Authentication** \u2014 Corrected public path reference from `/api/health` to `/health` to match actual `PUBLIC_PATHS` in code\n4. **New Caching Section** \u2014 Documented the `src/cache.ts` in-memory caching module with TTL configuration\n5. **Directory Structure** \u2014 Added `cache.ts` and `health/route.ts` entries; clarified route organization\n6. **Environment Variables** \u2014 Added `HEALTH_CHECK_INTERVAL` env var (controls cache TTL)\n7. **Open Issues** \u2014 Updated status to reflect that health check and caching features are now complete \u2713\n\n### **Needs human review**\n- None. All changes are factual corrections based on actual codebase state.\n\n---\n\n**Audit artifact written**: `audit_log/update-claude-md-2024.json`\n\nThe CLAUDE.md now accurately reflects the current codebase state, including the health endpoint and caching layer that were recently implemented.",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The final CLAUDE.md covers all three discrepancies from the rubric. (1) The health route appears in the API Routes table and the directory structure, with the auth section noting `/health` is public. (2) `cache.ts` is documented in the directory structure and in a new Caching section. (3) `HEALTH_CHECK_INTERVAL` is in the environment variables table and referenced in the Caching section. The updates look accurate and in the existing style. There are minor issues. The Open Issues section lists 'Log aggregation blocked pending further work', which is vague and unverified. The `npm test` row reads as a command, and `npm start` is described as ts-node, which may not match package.json. We cannot see the audit artifact or the agent's output, but the final file state shows all three discrepancies handled. The small imperfections justify 4 rather than 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 23.288409,
+  "timestamp": "2026-10-14T22:20:18.290992",
+  "num_turns": 6,
+  "logs": [
+    "\u270e I'll help you audit and update the CLAUDE.md file against the actual codebase. Let me start by gathe",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -50",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Good start! Now let me gather more detailed information:",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Now let me check the route handlers and cache module:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Perfect! Now let me check for any test files and other infrastructure:",
+    "\u2192 list_directory: tests",
+    "\u2192 list_directory: human-tasks",
+    "\u2192 run_command: find . -name \".beads\" -type d | head -1 | xargs ls 2>/dev/null || echo \"No .bead",
+    "\u270e Excellent! Now I have a clear picture. Let me create the audit and update CLAUDE.md:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 write_file: audit_log/update-claude-md-2024.json",
+    "\u270e Perfect! Here's the audit summary:\n\n---\n\n## CLAUDE.md Audit\n\n### **Updated**\n1. **Stack** \u2014 Added `n",
+    "\u2139 6 turn(s)"
+  ]
+}

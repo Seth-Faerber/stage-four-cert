@@ -1,0 +1,67 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "---\n\n## CLAUDE.md Audit Complete\n\n### Updated\n- **Overview**: Added 'in-memory caching' to description; updated Stack to include node-cache\n- **API Routes**: Added GET /api/health (public endpoint) to route table\n- **Authentication**: Clarified Bearer token format and PUBLIC_PATHS config; noted /health is public\n- **Directory Structure**: Added src/cache.ts; added health/ route group; clarified module purposes\n- **New Section (Caching)**: Documented in-memory cache module using node-cache with configurable TTL\n- **Environment Variables**: Removed DATABASE_URL and API_KEY from required list; added HEALTH_CHECK_INTERVAL; noted unused vars\n- **Open Issues**: Marked health check (k0w) and caching (5bs) as COMPLETED\n\n### Needs Human Review\n- **Unused Environment Variables**: `DATABASE_URL` and `API_KEY` are in `.env.example` but not used in the codebase. Should these be removed or are they reserved for future use?\n- **Log Aggregation Status**: Issue `stage-four-cert-3ey` (log aggregation) status is unknown\u2014no corresponding code found. Should the status be updated or is this planned?\n\n**Audit artifact written to**: `audit_log/update-claude-md-2026-10-15T03-29-46Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The final CLAUDE.md accurately covers all three discrepancies: the public health route (routes table, auth section, PUBLIC_PATHS, directory listing), the cache.ts module (directory structure, Caching section, node-cache in the stack), and the HEALTH_CHECK_INTERVAL env var (env table with default, cross-referenced in Caching). It also notes unused env vars in .env.example. Formatting is clean and consistent, with no visible errors. Only minor uncertainty remains, such as the 'status unknown' line for an open issue, but this is not consequential.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 29.070532,
+  "timestamp": "2026-10-14T22:30:00.652818",
+  "num_turns": 8,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase. Let me start by gathering ground t",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: .",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -30",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: git log --oneline -30",
+    "\u270e Now let me check the actual source structure and environment variables:",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Now let me check the API route files and cache module:",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Now let me check for any beads issues and other important files:",
+    "\u2192 run_command: ls -la .beads/ 2>/dev/null | head -20",
+    "\u2192 run_command: find . -name \"*.md\" -type f | grep -v node_modules",
+    "\u270e Perfect! Now I have the full picture. Let me audit `CLAUDE.md` against reality and create the update",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log artifact:",
+    "\u2192 run_command: date -u +%Y-%m-%dT%H:%M:%SZ",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-15T03-29-46Z.json",
+    "\u270e ---\n\n## CLAUDE.md Audit Complete\n\n### Updated\n- **Overview**: Added 'in-memory caching' to descripti",
+    "\u2139 8 turn(s)"
+  ]
+}

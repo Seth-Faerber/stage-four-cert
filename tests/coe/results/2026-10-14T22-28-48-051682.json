@@ -1,0 +1,66 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "---\n\n## CLAUDE.md Audit Results\n\n### \u2705 Updated\n- **Tech Stack**: Added `node-cache` (was missing from overview)\n- **API Routes**: Added `/api/health` GET endpoint (public, no auth)\n- **Authentication**: Clarified `/health` is in PUBLIC_PATHS\n- **Architecture**: New **Caching** subsection documenting `src/cache.ts` and node-cache usage\n- **Directory Structure**: Added `src/cache.ts` and `src/app/api/health/route.ts`\n- **Environment Variables**: Removed unused `API_KEY`; added `HEALTH_CHECK_INTERVAL` (used by cache)\n- **Open Issues**: Marked health check and caching as **COMPLETED**; log aggregation not yet started\n\n### \u2713 No human review needed\nAll changes are factual corrections based on:\n- Actual file structure in `src/`\n- Routes registered in `src/index.ts`\n- Package.json dependencies and scripts\n- Environment variables in `.env.example`\n- Recent git history showing health check and cache completion\n\n**Artifact created**: `audit_log/update-claude-md-2025-01-10T00-00-00Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 5,
+    "reasoning": "The final CLAUDE.md documents all three discrepancies: the /api/health route (routes table, PUBLIC_PATHS note, directory structure), the cache.ts node-cache layer (Caching section, directory listing, Stack line), and the HEALTH_CHECK_INTERVAL env var (env table and Caching section). The updates are accurate, consistent, and well formatted. The only blemish is that completed issues remain under 'Current open issues', which is minor and may have been in the original.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 26.559008,
+  "timestamp": "2026-10-14T22:28:48.051467",
+  "num_turns": 7,
+  "logs": [
+    "\u270e I'll audit the project's CLAUDE.md against the actual codebase state. Let me start by gathering grou",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/lib",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: git log --oneline -30 2>/dev/null || echo \"Git not available\"",
+    "\u270e Now let me dive deeper into the codebase structure:",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u270e Let me check the route files and cache module:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Perfect! Now let me check for any specs or human-tasks:",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Now I have enough ground truth. Let me compare and audit CLAUDE.md:\n\n## Key Findings from Codebase:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit artifact:",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u2192 write_file: audit_log/update-claude-md-2025-01-10T00-00-00Z.json",
+    "\u270e ---\n\n## CLAUDE.md Audit Results\n\n### \u2705 Updated\n- **Tech Stack**: Added `node-cache` (was missing fro",
+    "\u2139 7 turn(s)"
+  ]
+}

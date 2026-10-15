@@ -1,0 +1,69 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "---\n\n## CLAUDE.md Audit \u2014 Complete \u2705\n\n**Updated sections:**\n1. **Overview** \u2014 Added `node-cache` to stack; clarified caching focus\n2. **Common Commands** \u2014 Noted port 3000 default; clarified test script status\n3. **API Routes** \u2014 Added missing `GET /api/health` public endpoint\n4. **Authentication** \u2014 Clarified `/health` is in PUBLIC_PATHS; documented Bearer token format\n5. **Architecture** \u2014 Added new \"Caching\" subsection; updated Directory Structure with cache.ts and health route\n6. **Environment Variables** \u2014 Added `HEALTH_CHECK_INTERVAL` (default 60s) and `PORT` (default 3000)\n7. **Dependencies** \u2014 New section listing all npm packages (core, caching, dev)\n8. **Open Issues** \u2014 Marked health check and caching as complete; linked to setup checklist\n\n**Needs human review:**\n- None. All changes are factual corrections backed by code inspection.\n\n**Artifact:** Audit log written to `audit_log/update-claude-md-2026-10-15T03-28-02Z.json`",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The final CLAUDE.md covers all three discrepancies named in the rubric. (1) The health route appears in the API Routes table, in the Directory Structure, and as the `PUBLIC_PATHS` bypass in the Authentication section. (2) `cache.ts` is documented in the Caching section, the directory tree, and the dependencies list (`node-cache`). (3) `HEALTH_CHECK_INTERVAL` is listed in the Environment Variables table and in the Caching section. The document looks internally consistent.\n\nThere are minor issues. The file lists `DATABASE_URL` and `API_KEY` as required, which may be stale or unverified, since no database or external API is evidently used. The Open Issues section has a questionable item ('blocked by caching completion' while caching is marked complete) and a reference to `human-tasks/001-setup.md` that may not exist. The Directory Structure shows `app/api/health/route.ts`, which looks like a Next.js layout rather than an Express one, and may be inaccurate. Also, we only see the final file, not the audit artifact or the findings output. These are small inaccuracies rather than misses, so a 4 fits better than a 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 30.670454,
+  "timestamp": "2026-10-14T22:28:14.966557",
+  "num_turns": 9,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase. Let me start by gathering the grou",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 read_file: package.json",
+    "\u2192 read_file: .env.example",
+    "\u270e Now let me explore the actual source code structure to verify the routes and auth patterns:",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: src/app",
+    "\u2192 run_command: find src -type f -name \"*.ts\" | head -20",
+    "\u2192 run_command: git log --oneline -15 2>/dev/null || echo \"Git not available\"",
+    "\u270e Let me read the actual route files and auth/cache modules:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u270e Excellent. Now let me check the .beads directory and human-tasks to understand what specs/issues are",
+    "\u2192 list_directory: .beads",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Let me check for open beads issues and understand the current project state better:",
+    "\u2192 run_command: cd .beads && ls embeddeddolt/ 2>/dev/null | head -10 || echo \"Beads system prese",
+    "\u2192 read_file: human-tasks/001-setup.md",
+    "\u270e Now I have all the information I need. Let me audit CLAUDE.md against the actual codebase:\n\n## Findi",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log artifact:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-15T03-28-02Z.json",
+    "\u270e ---\n\n## CLAUDE.md Audit \u2014 Complete \u2705\n\n**Updated sections:**\n1. **Overview** \u2014 Added `node-cache` to",
+    "\u2139 9 turn(s)"
+  ]
+}

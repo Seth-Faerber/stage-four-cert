@@ -1,0 +1,68 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "## CLAUDE.md Audit Complete \u2713\n\nI've successfully audited the project's `CLAUDE.md` against the actual codebase. Here are the findings:\n\n### **Updated**\n\n1. **Stack** \u2014 Added `node-cache` to the technology stack (was missing from original)\n2. **Common Commands** \u2014 Clarified test command behavior\n3. **API Routes** \u2014 Added missing `GET /api/health` endpoint (public, no auth required)\n4. **Authentication** \u2014 Updated public paths example to show `/health`\n5. **Directory Structure** \u2014 Added `cache.ts` and `health/` route group; corrected structure\n6. **Environment Variables** \u2014 Added `HEALTH_CHECK_INTERVAL` env var (controls cache TTL)\n7. **New Section** \u2014 Added \"Caching\" subsection documenting the node-cache API and configuration\n8. **Open Issues** \u2014 Marked health check (\u2713) and caching layer (\u2713) as completed per git history\n\n### **Needs human review**\n\nNone. All changes are factual corrections based on actual code state.\n\n**Artifact written**: `audit_log/update-claude-md-2024-12-19T00-00-00Z.json`\n\nThe CLAUDE.md is now synchronized with the current codebase state and ready for use.",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The final CLAUDE.md covers all three discrepancies named in the rubric. The health route is documented as `GET /api/health`, marked Exempt/public, and listed in both the routes table and the directory structure. `cache.ts` appears in the directory structure and has a dedicated Caching section listing its exported functions. `HEALTH_CHECK_INTERVAL` is in the environment variable table and explained in the Caching section. The auth section was also updated to mention `PUBLIC_PATHS`. There are minor accuracy and consequence issues. The Open Issues section records completed items with checkmarks, which is clutter, and it may not belong in CLAUDE.md at all. The directory structure shows `src/app/api/health/route.ts` in an Express app, which seems odd, though it may match the actual repo. `DATABASE_URL` and `API_KEY` are listed as required, but nothing indicates they were verified against the code. The Open Issues, directory layout, and unverified env vars are small blemishes, not substantive misses. No audit log or flagged items can be verified from the final file, but the grading is based on file content. Overall all three discrepancies were handled with minor imperfections.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 26.70743,
+  "timestamp": "2026-10-14T22:27:39.341358",
+  "num_turns": 8,
+  "logs": [
+    "\u270e I'll audit the project's `CLAUDE.md` against the actual codebase state. Let me start by gathering gr",
+    "\u2192 list_directory: .",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: specs",
+    "\u2192 read_file: CLAUDE.md",
+    "\u270e Now let me gather more detailed information about the actual codebase structure:",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: package.json",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u270e Let me check the app/api structure and recent git history:",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 run_command: find src/app/api -type f -name \"*.ts\" | head -20",
+    "\u2192 run_command: git log --oneline -30",
+    "\u2192 read_file: src/index.ts",
+    "\u270e Let me check the actual route files to see what endpoints are implemented:",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 list_directory: human-tasks",
+    "\u270e Perfect. Now I have a complete picture. Let me create the audit log directory and prepare the update",
+    "\u2192 run_command: mkdir -p audit_log",
+    "\u270e Now let me update the CLAUDE.md file with the corrections and write the audit log:",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me write the audit log artifact:",
+    "\u2192 write_file: audit_log/update-claude-md-2024-12-19T00-00-00Z.json",
+    "\u270e ## CLAUDE.md Audit Complete \u2713\n\nI've successfully audited the project's `CLAUDE.md` against the actua",
+    "\u2139 8 turn(s)"
+  ]
+}

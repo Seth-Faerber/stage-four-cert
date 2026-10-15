@@ -1,0 +1,65 @@
+{
+  "prompt_name": "update-claude-md-eval",
+  "test_input": null,
+  "output": "## CLAUDE.md Audit\n\n**Updated:**\n- Stack: Added `node-cache` to technology list\n- API Routes: Added missing `GET /api/health` (public) endpoint to route table\n- Authentication: Clarified `/health` is in PUBLIC_PATHS\n- Architecture: Added new \"Caching\" subsection describing in-memory cache via `node-cache`, TTL control, and exported functions\n- Directory Structure: Added `cache.ts` and `health/route.ts` to reflect actual codebase\n- Environment Variables: Added `HEALTH_CHECK_INTERVAL` env var (TTL control, default 60s)\n- Open Issues: Marked \"Add health check endpoint\" and \"Add in-memory caching layer\" as completed \u2713\n\n**Needs human review:**\n- None. All findings were factual corrections backed by file inspection.\n\nThe audit log has been written to `audit_log/update-claude-md-2026-10-15T03-18-32Z.json`.",
+  "deterministic_checks": {
+    "Health route added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "/api/health",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "Cache module added to CLAUDE.md": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "cache.ts",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "The final CLAUDE.md covers all three discrepancies named in the rubric. (1) The health route appears in the API Routes table as `GET /api/health`, as a public endpoint, and in the directory structure. (2) `cache.ts` has its own Caching section, a directory-structure entry, and `node-cache` in the stack. (3) `HEALTH_CHECK_INTERVAL` is in the env var table and the Caching section. Some minor issues remain. The Authentication section says `/health` is public, while the routes table says `/api/health`. That path mismatch could be a real inconsistency, or it could reflect how the code defines PUBLIC_PATHS. The Open Issues section lists completed issues with checkmarks, which is clutter and arguably should have been culled or flagged. The directory structure shows `src/app/api/.../route.ts` in an Express app, which looks odd and may not match the real layout. `npm test` is described as 'No test runner configured yet', which is fine. I can't see the audit artifact or the agent's output, only the final file. The file is accurate and complete for the three target items, with minor imperfections, so a 4 is appropriate.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 26.188428,
+  "timestamp": "2026-10-14T22:18:43.590124",
+  "num_turns": 7,
+  "logs": [
+    "\u270e I'll audit the project's CLAUDE.md against the actual codebase. Let me start by gathering ground tru",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: CLAUDE.md",
+    "\u2192 list_directory: src",
+    "\u2192 read_file: package.json",
+    "\u2192 run_command: find src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -40",
+    "\u270e Now let me check the actual API routes and auth structure:",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: .env.example",
+    "\u2192 run_command: git log --oneline -20 2>/dev/null || echo \"No git history available\"",
+    "\u270e Let me check for the cache.ts file and look at the app directory structure more carefully:",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 list_directory: src/app",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 run_command: cd .beads && ls -la 2>/dev/null | head -20",
+    "\u270e Perfect. Now I have all the information I need. Let me analyze the findings and update CLAUDE.md:\n\n*",
+    "\u2192 write_file: CLAUDE.md",
+    "\u270e Now let me create the audit log:",
+    "\u2192 run_command: date -u +\"%Y-%m-%dT%H:%M:%SZ\"",
+    "\u2192 write_file: audit_log/update-claude-md-2026-10-15T03-18-32Z.json",
+    "\u270e ## CLAUDE.md Audit\n\n**Updated:**\n- Stack: Added `node-cache` to technology list\n- API Routes: Added",
+    "\u2139 7 turn(s)"
+  ]
+}
