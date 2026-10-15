@@ -3,184 +3,138 @@
 # all in a single prompt. Measures whether the coordinator-level instructions
 # produce correct outputs across all three domains simultaneously.
 
-# prompt-under-eval: |
-#   You are auditing a project's documentation — CLAUDE.md, beads issues, and human-tasks
-#   checklists — against the actual codebase state.
-
-#   Given the full context below, produce a structured audit covering all three domains:
-
-#   1. CLAUDE.md: Identify every discrepancy (missing, stale, or wrong information). Check all
-#      sections: overview/stack, commands, API routes, directory structure, and environment variables.
-
-#   2. Beads issues: For each open issue, decide: close (work is done), leave (not done), or flag (ambiguous).
-
-#   3. Human-tasks: Only evaluate items currently marked [ ] (incomplete). For each:
-#      - check_off: ONLY if codebase source code directly proves the feature is implemented (e.g. a route file exists, a dependency is in package.json). These MUST go in leave, not check_off: copying/creating local files, setting env vars, provisioning databases, obtaining credentials, running manual tests, verifying runtime behavior.
-#      - leave: requires human action (infrastructure, credentials, copying files, manual testing, runtime verification) — add to leave
-#      - flag: genuinely ambiguous — add to flag
-#      Do NOT include items already marked [x] in any list. Note new items to add based on what's new in the codebase.
-
-#   Return your findings as a single JSON object:
-#   {
-#     "claude_md": {
-#       "findings": [
-#         { "section": "<section>", "action": "add|update|remove", "detail": "<one line>" }
-#       ]
-#     },
-#     "beads": {
-#       "decisions": [
-#         { "id": "<id>", "title": "<title>", "decision": "close|leave|flag", "reason": "<one line>" }
-#       ]
-#     },
-#     "human_tasks": {
-#       "check_off": [ { "item": "<currently-incomplete item now proven done>", "evidence": "<one line>" } ],
-#       "leave": [ { "item": "<item>", "reason": "<why>" } ],
-#       "flag": [ { "item": "<item>", "reason": "<why>" } ],
-#       "add": [ { "item": "<new item>", "reason": "<why>" } ]
-#     }
-#   }
-
 setup: 
   before: reset_eval.sh
   after: reset_eval.sh
 
+runner: agentic
+
+agent_options:
+  max_turns: 60
+  allowed_tools:
+    - list_directory
+    - read_file
+    - write_file
+    - run_command
+
 prompt-under-eval: "~/.claude/skills/update-docs/SKILL.md"
-
-test_input:
-  claude_md: |
-    # Stage Four Cert — Project Guide
-
-    ## Overview
-    A minimal Node.js/Express API demonstrating JWT authentication and user management. Built with TypeScript.
-    **Stack**: Express, TypeScript, dotenv, jsonwebtoken
-
-    ## Common Commands
-    | Command | Description |
-    |---------|-------------|
-    | `npm start` | Start the server (ts-node) |
-    | `npm test` | No test runner configured yet |
-
-    ## Architecture
-
-    ### API Routes
-    | Route | Auth | Description |
-    |-------|------|-------------|
-    | `GET /api/users` | Required | List all users |
-    | `GET /api/users/:id` | Required | Get a single user |
-
-    ### Directory Structure
-    ```
-    src/
-      index.ts
-      auth.ts
-      app/api/users/route.ts
-    ```
-
-    ## Environment Variables
-    | Variable | Required | Description |
-    |----------|----------|-------------|
-    | `DATABASE_URL` | Yes | PostgreSQL connection string |
-    | `JWT_SECRET` | Yes | Secret for signing/verifying JWTs |
-    | `API_KEY` | Yes | External API key |
-    | `PORT` | No | Server port (default: 3000) |
-
-  open_issues: |
-    ID: stage-four-cert-k0w | Title: Add health check endpoint | Status: open
-    Body: Add GET /api/health that returns {status: ok, timestamp}. No auth required.
-
-    ID: stage-four-cert-5bs | Title: Add in-memory caching layer | Status: in_progress
-    Body: Add a simple cache module to reduce repeated computation. Consider node-cache.
-
-    ID: stage-four-cert-3ey | Title: Set up log aggregation | Status: open (blocked by 5bs)
-    Body: Configure structured logging. Blocked on ops team provisioning log destination.
-
-  human_tasks: |
-    ## Environment Setup
-    - [x] Clone the repository
-    - [x] Install Node.js 20+
-    - [x] Run `npm install`
-    - [ ] Copy `.env.example` to `.env` and fill in values
-    - [ ] Provision a PostgreSQL database and set `DATABASE_URL`
-    - [ ] Obtain API key and set `API_KEY`
-
-    ## Application Verification
-    - [x] Confirm `npm start` launches without errors
-    - [ ] Verify JWT authentication works (test with a valid token against GET /api/users)
-    - [ ] Confirm database connection is live
-
-    ## Ongoing
-    - [ ] Set up log aggregation for production
-
-  codebase_context: |
-    package.json dependencies: express, dotenv, jsonwebtoken, node-cache
-    .env.example vars: DATABASE_URL, API_KEY, JWT_SECRET, HEALTH_CHECK_INTERVAL
-    Note: .env does NOT exist. No credentials have been set. No database has been provisioned.
-
-    Source files:
-      src/index.ts, src/auth.ts, src/cache.ts (NEW), src/app/api/users/route.ts
-      src/app/api/health/route.ts (NEW — GET /api/health, no auth required)
-
-    Recent git log:
-      abc123 Add health check endpoint and cache module
-      518d6bc feat: State A
 
 model_for_eval: claude-haiku-4-5-20251001
 
 model_parameters:
-  max_tokens: 3000
+  max_tokens: 15000
 
 deterministic_checks:
-  - name: Returns all three domains in JSON
+  # Beads checks
+  - name: SHOULD close k0w in beads (health check is implemented)
+    type: file_contains
+    file: .beads/interactions.jsonl
+    values:
+      - '"issue_id":"stage-four-cert-k0w"'
+      - '"new_value":"closed"'
+
+  - name: SHOULD close 5bs in beads (cache module is implemented)
+    type: file_contains
+    file: .beads/interactions.jsonl
+    values:
+      - '"issue_id":"stage-four-cert-5bs"'
+      - '"new_value":"closed"'
+
+  - name: SHOULD NOT touch 3ey in beads (log aggregation not implemented)
+    type: file_does_not_contain
+    file: .beads/interactions.jsonl
+    values:
+      - '"issue_id":"stage-four-cert-3ey"'
+
+  - name: SHOULD output Beads Audit header with Closed section
     type: contains
     values:
-      - '"claude_md"'
-      - '"beads"'
-      - '"human_tasks"'
+      - "## Beads Audit"
+      - "**Closed**"
 
-  - name: Identifies health check gap in CLAUDE.md
-    type: contains
-    values:
-      - "health"
-
-  - name: References health check beads issue for closure
+  - name: SHOULD report k0w and 5bs as closed in audit output
     type: contains
     values:
       - "stage-four-cert-k0w"
+      - "stage-four-cert-5bs"
 
-  - name: References caching beads issue
+  - name: SHOULD write audit artifact to audit_log/
     type: contains
     values:
-      - "stage-four-cert-5bs"
+      - "audit_log/update-beads-"
+
+  # CLAUDE.md checks
+  - name: Health route added to CLAUDE.md
+    type: file_contains
+    file: CLAUDE.md
+    values:
+      - "/api/health"
+  - name: Cache module added to CLAUDE.md
+    type: file_contains
+    file: CLAUDE.md
+    values:
+      - "cache.ts"
+    
+  # Human-tasks checks
+  - name: SHOULD mark health routes complete
+    type: file_contains
+    file: human-tasks/001-setup.md
+    values: 
+      - "- [x] Create `src/app/api/health/route.ts` file"
+      - "- [x] Implement `GET /api/health` endpoint"
+  - name: SHOULD uncheck previously checked items if they are not found in the work.
+    type: file_does_not_contain
+    file: human-tasks/001-setup.md
+    values:
+      - "- [ ] Create `src/app/api/users/route.ts` file"
+  - name: SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)
+    type: file_contains
+    file: human-tasks/001-setup.md
+    values:
+      - "- [ ] Implement `POST /api/users` endpoint"
 
 model_evaluation:
   enabled: true
   model: claude-sonnet-5-5
   rubric: |
-    You are evaluating a full documentation audit response covering CLAUDE.md, beads, and human-tasks.
+    You are evaluating a full documentation audit response covering three areas.
+    Score each area independently on a 1-5 scale.
 
     Expected correct findings:
 
-    CLAUDE.md (3-4 gaps):
-    - GET /api/health route missing from API Routes table
-    - src/cache.ts missing from Directory Structure
-    - HEALTH_CHECK_INTERVAL missing from Environment Variables
-    - node-cache missing from Stack/dependencies
+    CLAUDE.md gaps: GET /api/health route, src/cache.ts, HEALTH_CHECK_INTERVAL env var, node-cache dependency
+    Beads decisions: close k0w (health route done), close 5bs (cache.ts done), leave 3ey open (no logging)
+    Human-tasks: check off health route items; do NOT check credential/infra items; add HEALTH_CHECK_INTERVAL item
 
-    Beads (3 decisions):
-    - stage-four-cert-k0w: CLOSE (health route implemented)
-    - stage-four-cert-5bs: CLOSE (cache.ts with node-cache implemented)
-    - stage-four-cert-3ey: LEAVE (no logging infrastructure)
+    ---
+    ## CLAUDE.md (score 1-5)
 
-    Human-tasks:
-    - Do NOT check off any credential/manual-verification items
-    - ADD: something about HEALTH_CHECK_INTERVAL needing to be set
+    5 - Found all 3-4 gaps (health route, cache.ts, HEALTH_CHECK_INTERVAL, node-cache); updated CLAUDE.md accurately for each.
+    4 - Found at least 3 of 4 gaps and updated them; minor formatting issues acceptable.
+    3 - Found 2 gaps and updated them correctly; missed the others.
+    2 - Found only 1 gap, or made partially incorrect updates.
+    1 - Found none, or made updates that were wrong or inconsequential.
 
-    Score 5: All three domains correct; no false auto-completions of credential/infra items; HEALTH_CHECK_INTERVAL add item present
-    Score 4: CLAUDE.md and beads fully correct; human-tasks minor issues acceptable (e.g. checking off JWT auth item because auth.ts exists is borderline OK; missing HEALTH_CHECK_INTERVAL add is a minor gap). Core rule: credential and infrastructure items (DATABASE_URL, API_KEY, Provision DB) must NOT be in check_off.
-    Score 3: One domain has notable errors; e.g. checking off DATABASE_URL or API_KEY provisioning items, or beads decisions wrong
-    Score 2: Two or more domains significantly wrong
-    Score 1: Mostly wrong or no structured output
+    ---
+    ## Beads (score 1-5)
 
-    A score of 4+ is passing.
+    5 - Correctly closed k0w and 5bs; correctly left 3ey open with no changes.
+    4 - Closed k0w and 5bs correctly; minor output formatting issues; 3ey untouched.
+    3 - Got 2 of 3 decisions right (e.g., closed one of k0w/5bs, left 3ey alone).
+    2 - Got 1 decision right; or closed 3ey incorrectly.
+    1 - No correct decisions, or closed 3ey when it should have been left open.
 
-    Return a JSON object: { "score": <1-5>, "reasoning": "<brief explanation>" }
+    ---
+    ## Human Tasks (score 1-5)
+
+    5 - Checked off all health route items; did NOT check credential/infra items (DATABASE_URL, API_KEY, Provision DB); added HEALTH_CHECK_INTERVAL to-do item.
+    4 - Checked off health route items; no credential items auto-completed; minor gap (e.g., missing HEALTH_CHECK_INTERVAL add).
+    3 - Checked off health route items but made one notable error (e.g., re-unchecked a valid item, or left health items unchecked).
+    2 - Partial check-offs with a significant error (e.g., marked a credential or manual-verification item as done).
+    1 - No meaningful updates, or auto-completed credential/infra items.
+
+    ---
+    A score of 4+ in each area is passing.
+
+    Return a JSON object:
+    { "claude_md_score": <1-5>, "beads_score": <1-5>, "human_tasks_score": <1-5>, "reasoning": "<brief explanation per area>" }
