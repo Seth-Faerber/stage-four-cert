@@ -1,0 +1,31 @@
+skill: update-beads
+deterministic_checks:
+  - name: beads audit log was written
+    type: git_diff_contains
+    values:
+      - "audit_log/update-beads"
+model_evaluation:
+  enabled: true
+  model: claude-haiku-4-5-20251001
+  pass_threshold: 4
+  rubric: |
+    On a scale of 1–5, evaluate whether the skill correctly managed beads issues.
+    Review the git diff, which includes the newly written audit log in audit_log/.
+
+    The skill's evidence bar (from its SKILL.md):
+    - Presence of the described artifact (file, route, module, dependency) is sufficient to close.
+    - Wiring and import verification are explicitly out of scope.
+    - Issues with no artifact evidence must be left open.
+
+    Specifically evaluate:
+    - Were issues with clear artifact presence correctly closed?
+    - Were issues lacking evidence left open?
+    - Were any issues flagged appropriately for human review?
+    - Does the audit log accurately reflect what was done?
+
+    Score:
+    5 — All closure decisions well-justified and evidence-based.
+    4 — Most decisions correct; minor imprecision.
+    3 — One questionable closure or missed flag.
+    2 — Several issues mismanaged.
+    1 — No meaningful actions or clearly incorrect closures.

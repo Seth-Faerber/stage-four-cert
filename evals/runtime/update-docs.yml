@@ -1,0 +1,46 @@
+skill: update-docs
+deterministic_checks:
+  - name: aggregated audit log was written
+    type: git_diff_contains
+    values:
+      - "audit_log.jsonl"
+  - name: CLAUDE.md was modified
+    type: git_diff_contains
+    values:
+      - "CLAUDE.md"
+  - name: beads audit log was written
+    type: git_diff_contains
+    values:
+      - "audit_log/update-beads"
+  - name: human-tasks file was modified
+    type: git_diff_contains
+    values:
+      - "human-tasks/"
+model_evaluation:
+  enabled: true
+  model: claude-haiku-4-5-20251001
+  pass_threshold: 4
+  rubric: |
+    On a scale of 1–5, evaluate the overall quality of the full docs update cycle.
+    Review the git diff, which covers all three sub-skill outputs (CLAUDE.md, beads audit
+    log, human-tasks files) and the aggregated audit_log.jsonl.
+
+    Evaluate across three dimensions — score the weakest dimension:
+
+    CLAUDE.md accuracy:
+    - Are code changes accurately reflected with no omissions or hallucinations?
+
+    Beads management:
+    - Were issues closed only when artifact evidence is present?
+    - Were issues without evidence left open?
+
+    Human tasks management:
+    - Were tasks checked off only when codebase evidence supports it?
+    - Were infra/credential/verification items left unchecked?
+
+    Score:
+    5 — All three dimensions accurate with no meaningful errors.
+    4 — Minor imprecision in one dimension.
+    3 — One significant issue in any dimension.
+    2 — Multiple dimensions have problems.
+    1 — The run produced no meaningful output or was clearly wrong across dimensions.

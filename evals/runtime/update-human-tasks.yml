@@ -1,0 +1,32 @@
+skill: update-human-tasks
+deterministic_checks:
+  - name: human-tasks file was modified
+    type: git_diff_contains
+    values:
+      - "human-tasks/"
+model_evaluation:
+  enabled: true
+  model: claude-haiku-4-5-20251001
+  pass_threshold: 4
+  rubric: |
+    On a scale of 1–5, evaluate whether the skill correctly managed human tasks.
+    Review the git diff for changes to files in human-tasks/.
+
+    The skill's rules (from its SKILL.md):
+    - Infrastructure and credential items must never be checked off — only flagged.
+    - Verification items (manual test flows, QA checks) must stay unchecked unless
+      automated tests explicitly cover them.
+    - Roadmap and setup items can be checked off when codebase evidence is clear.
+
+    Specifically evaluate:
+    - Were tasks with clear codebase evidence correctly checked off?
+    - Were tasks that violate the above rules (infra, credentials, verification) left unchecked?
+    - Were tasks lacking evidence left unchecked?
+    - Were no tasks incorrectly checked or unchecked?
+
+    Score:
+    5 — All task status changes accurate and rule-compliant.
+    4 — Most changes correct; minor imprecision or one borderline check.
+    3 — At least one rule violation or questionable check-off.
+    2 — Several items incorrectly managed or rules ignored.
+    1 — No meaningful changes or clearly wrong check-offs.
