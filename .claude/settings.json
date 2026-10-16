@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c '[ \"$COE_MODE\" = promotion ] && exit 0; coe runtime-check --from-hook'",
+            "command": "bash -c '[ \"$COE_MODE\" = promotion ] && exit 0; /Users/seth.faerber/Library/Python/3.9/bin/coe runtime-check --from-hook'",
             "timeout": 90,
             "statusMessage": "Evaluating skill output...",
             "onFailure": "continue"
