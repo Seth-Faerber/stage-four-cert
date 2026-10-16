@@ -4,18 +4,18 @@ deterministic_checks:
     type: git_diff_contains
     values:
       - "audit_log.jsonl"
-  - name: CLAUDE.md was modified
+  - name: update-claude-md ran
     type: git_diff_contains
     values:
-      - "CLAUDE.md"
-  - name: beads audit log was written
+      - "audit_log/update-claude-md"
+  - name: update-beads ran
     type: git_diff_contains
     values:
       - "audit_log/update-beads"
-  - name: human-tasks file was modified
+  - name: update-human-tasks ran
     type: git_diff_contains
     values:
-      - "human-tasks/"
+      - "audit_log/update-human-tasks"
 model_evaluation:
   enabled: true
   model: claude-haiku-4-5-20251001
