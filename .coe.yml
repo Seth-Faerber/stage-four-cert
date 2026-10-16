@@ -1,0 +1,3 @@
+# coe project configuration
+eval_dir: evals/promotion
+runtime_eval_dir: evals/runtime

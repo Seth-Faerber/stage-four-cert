@@ -1,0 +1,30 @@
+skill: update-claude-md
+
+deterministic_checks:
+  - name: CLAUDE.md was modified
+    type: git_diff_contains
+    values:
+      - "CLAUDE.md"
+
+model_evaluation:
+  enabled: true
+  model: claude-haiku-4-5-20251001
+  pass_threshold: 4
+  rubric: |
+    On a scale of 1–5, evaluate whether the changes shown in the git diff accurately
+    reflect the current state of the codebase.
+
+    Specifically:
+    - Are API routes, environment variables, or architectural facts that changed in src/
+      correctly documented or updated in CLAUDE.md?
+    - Are there no obvious omissions — things that changed in code but are missing from
+      the CLAUDE.md update?
+    - Is there no hallucinated content — things added to CLAUDE.md that do not correspond
+      to actual code changes?
+
+    Score:
+    5 — All code changes are accurately reflected in CLAUDE.md with no omissions or errors.
+    4 — Most changes reflected accurately; minor omission or imprecision.
+    3 — Some changes reflected but at least one significant omission or inaccuracy.
+    2 — CLAUDE.md was updated but mostly inaccurate or incomplete.
+    1 — CLAUDE.md was not meaningfully updated, or the diff shows no CLAUDE.md change at all.
