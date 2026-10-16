@@ -46,6 +46,18 @@ src/
 | `API_KEY` | Yes | External API key |
 | `PORT` | No | Server port (default: 3000) |
 
+## Evaluation
+
+Promotion evals live at `evals/promotion/` and are run with `coe promote` from the repo root. Results land in `evals/promotion/results/`.
+
+Runtime evals live at `evals/runtime/<skill-name>.yml`. The `PostToolUse` hook in `.claude/settings.json` fires `coe runtime-check --from-hook` after every Skill tool call, grades the live output, and feeds structured feedback back to Claude on failure (up to 3 retries before human escalation). Test manually with:
+
+```bash
+coe runtime-check --skill <name>
+```
+
+The runtime hook is skipped automatically during `coe promote` runs (`COE_MODE=promotion`).
+
 ## Open Issues
 
 Tracked in beads (`.beads/`). Current open issues:
