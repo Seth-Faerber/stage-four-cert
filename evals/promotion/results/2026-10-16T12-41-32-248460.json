@@ -1,0 +1,77 @@
+{
+  "prompt_name": "update-human-tasks-eval",
+  "test_input": null,
+  "output": "## Human-Tasks Audit\n\n- **Checked off**:\n  - `Create src/app/api/health/route.ts file`: the file exists and `src/index.ts` mounts it.\n  - `Implement GET /api/health endpoint`: the route returns `{status, timestamp}` and is mounted at `/api/health`.\n- **Added**:\n  - `Generate a strong JWT_SECRET and set it in .env`. `JWT_SECRET` is in `.env.example`, and `auth.ts` falls back to an empty secret if it's unset.\n- **Needs human review**:\n  - **Copy `.env.example` to `.env`**: there is no `.env` in the repo root. It may be gitignored, so only you can confirm.\n  - **`DATABASE_URL`, `API_KEY` and the live DB connection check**:\n    - Both variables are in `.env.example`, but no code in `src/` uses either one.\n    - `package.json` has no DB client, so the DB connection check can't mean anything yet.\n    - I didn't check off the credential items.\n  - **JWT verification (already `[x]`)**: `auth.ts` and the users route exist, but `npm test` is a no-op, so I can't confirm the check was done.\n  - **Possible bug in the health endpoint**:\n    - `authMiddleware` is mounted globally, so `req.path` is `/api/health`, not `/health`.\n    - `PUBLIC_PATHS = [\"/health\"]` therefore never matches, and the health endpoint probably requires a JWT.\n    - Please confirm whether it should be public.\n  - **`POST /api/users`**: left unchecked. The users route only has `GET /` and `GET /:id`.\n  - **Log aggregation**: this is an infrastructure task, and the codebase has no evidence either way.\n- **Skipped**: nothing. The `human-tasks/` directory exists.\n\nI couldn't run `git log --oneline -30` because I have no shell tool, so the audit doesn't use git history. I also had no clock, so the timestamp in the audit file (`audit_log/update-human-tasks-2026-10-16T01-00-00Z.json`) is approximate.",
+  "deterministic_checks": {
+    "SHOULD mark health routes complete": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [x] Create `src/app/api/health/route.ts` file",
+          "passed": true
+        },
+        {
+          "value": "- [x] Implement `GET /api/health` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD uncheck previously checked items if they are not found in the work.": {
+      "type": "file_does_not_contain",
+      "checks": [
+        {
+          "value": "- [ ] Create `src/app/api/users/route.ts` file",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    },
+    "SHOULD NOT check off items that are not done in the codebase (e.g. credentials, manual verification)": {
+      "type": "file_contains",
+      "checks": [
+        {
+          "value": "- [ ] Implement `POST /api/users` endpoint",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-sonnet-5-5",
+    "score": 4,
+    "reasoning": "All six human-action items were left or flagged, and none was checked off. That covers copying .env, DATABASE_URL/provisioning the DB, API_KEY, the JWT verification, the live DB connection check, and log aggregation. The credential items were handled correctly. The JWT item was flagged as unverifiable because `npm test` is a no-op. The health endpoint roadmap items were checked off with evidence, which is reasonable. The weakness is the \"Added\" section. It added a JWT_SECRET item but not the expected HEALTH_CHECK_INTERVAL env var or a verification item for the new /api/health endpoint. It did flag a possible bug in the health endpoint's auth handling, which is useful but is not an added item. The rubric allows a score of 4 when that add is missing. The output also disclosed that it had no shell tool, so it skipped git history and used an approximate timestamp.",
+    "pass": true
+  },
+  "passed": true,
+  "error": false,
+  "duration_seconds": 26.566583,
+  "timestamp": "2026-10-16T12:41:32.248281",
+  "num_turns": 7,
+  "logs": [
+    "\u2192 list_directory: human-tasks",
+    "\u2192 list_directory: .",
+    "\u2192 read_file: human-tasks/001-setup.md",
+    "\u2192 read_file: .env.example",
+    "\u2192 read_file: package.json",
+    "\u2192 list_directory: src",
+    "\u2192 list_directory: audit_log",
+    "\u2192 list_directory: src/app",
+    "\u2192 read_file: src/index.ts",
+    "\u2192 list_directory: tests",
+    "\u2192 list_directory: src/app/api",
+    "\u2192 list_directory: src/app/api/health",
+    "\u2192 list_directory: src/app/api/users",
+    "\u2192 read_file: src/app/api/health/route.ts",
+    "\u2192 read_file: src/app/api/users/route.ts",
+    "\u2192 read_file: src/auth.ts",
+    "\u2192 read_file: src/cache.ts",
+    "\u2192 write_file: human-tasks/001-setup.md",
+    "\u2192 write_file: audit_log/update-human-tasks-2026-10-16T01-00-00Z.json",
+    "\u270e ## Human-Tasks Audit\n\n- **Checked off**:\n  - `Create src/app/api/health/route.ts file`: the file exi",
+    "\u2139 7 turn(s)"
+  ],
+  "result_file": "2026-10-16T12-41-32-248460.json"
+}
