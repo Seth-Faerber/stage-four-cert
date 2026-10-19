@@ -1,0 +1,28 @@
+{
+  "prompt_name": "update-claude-md",
+  "output": "diff --git a/CLAUDE.md b/CLAUDE.md\nindex be7a63d..383382c 100644\n--- a/CLAUDE.md\n+++ b/CLAUDE.md\n@@ -4,7 +4,7 @@\n \n A minimal Node.js/Express API demonstrating JWT authentication and user management. Built with TypeScript.\n \n-**Stack**: Express, TypeScript, dotenv, jsonwebtoken\n+**Stack**: Express, TypeScript, dotenv, jsonwebtoken, node-cache\n \n ## Common Commands\n \n@@ -19,6 +19,7 @@ A minimal Node.js/Express API demonstrating JWT authentication and user manageme\n \n | Route | Auth | Description |\n |-------|------|-------------|\n+| `GET /api/health` | None | Health check (returns status + timestamp) |\n | `GET /api/users` | Required | List all users |\n | `GET /api/users/:id` | Required | Get a single user |\n \n@@ -32,7 +33,10 @@ JWT-based. All routes require a Bearer token except those in the `PUBLIC_PATHS`\n src/\n   index.ts          \u2014 Express app entry point\n   auth.ts           \u2014 JWT middleware\n+  cache.ts          \u2014 In-memory cache (node-cache, TTL from HEALTH_CHECK_INTERVAL)\n   app/api/\n+    health/\n+      route.ts      \u2014 GET /api/health\n     users/\n       route.ts      \u2014 GET /api/users, GET /api/users/:id\n ```\n@@ -45,6 +49,7 @@ src/\n | `JWT_SECRET` | Yes | Secret for signing/verifying JWTs |\n | `API_KEY` | Yes | External API key |\n | `PORT` | No | Server port (default: 3000) |\n+| `HEALTH_CHECK_INTERVAL` | No | Cache TTL in seconds (default: 60) |\n \n ## Evaluation\n \n",
+  "deterministic_checks": {
+    "CLAUDE.md was modified": {
+      "type": "git_diff_contains",
+      "checks": [
+        {
+          "value": "CLAUDE.md",
+          "passed": true
+        }
+      ],
+      "overall_pass": true
+    }
+  },
+  "model_evaluation": {
+    "enabled": true,
+    "model": "claude-haiku-4-5-20251001",
+    "score": 4,
+    "reasoning": "The diff shows comprehensive and internally consistent updates to CLAUDE.md reflecting what appears to be a health check feature with caching. Stack dependencies, new routes, file structure, and environment variables are all logically updated. The documentation is well-organized and specific (e.g., mentioning TTL from HEALTH_CHECK_INTERVAL). However, without access to the actual source code changes, I cannot definitively verify there are no omissions (e.g., other routes or configuration changes) or confirm that all documented features actually exist in the implementation. The updates appear professional and complete for the feature scope, suggesting likely accuracy, warranting a 4 rather than 5.",
+    "pass": true
+  },
+  "passed": true,
+  "duration_seconds": 8.022,
+  "timestamp": "2026-10-19T14:11:50.400151",
+  "retry_count": 1,
+  "result_file": "2026-10-19T14-11-50-400339.json"
+}
